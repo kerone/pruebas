@@ -4,28 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard de Fichaje</title>
-    
-    <!-- Firebase -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, where } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-        
-        // TODO: Reemplazar con tu configuración de Firebase
-        const firebaseConfig = {
-            // Aquí irá tu configuración cuando crees el proyecto Firebase
-            apiKey: "AIzaSyB5zYYE2RMQTEzyIqOkxuPhJdkwSaWufl8",
-            authDomain: "fichajesana.firebaseapp.com",
-            projectId: "fichajesana",
-            storageBucket: "fichajesana.firebasestorage.app",
-            messagingSenderId: "977376825258"",
-            appId: "1:977376825258:web:7eecf60a795c8d778f25d3"
-        };
-        
-        window.firebaseApp = initializeApp(firebaseConfig);
-        window.db = getFirestore(window.firebaseApp);
-        window.firebaseImports = { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, where };
-    </script>
-    
     <style>
         * {
             margin: 0;
@@ -47,6 +25,77 @@
             border-radius: 15px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
             overflow: hidden;
+        }
+
+        .header-bar {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .sync-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #dc3545;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.online {
+            background: #28a745;
+        }
+
+        .status-dot.syncing {
+            background: #ffc107;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .sync-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .sync-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .sync-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .sync-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .tabs {
@@ -406,79 +455,6 @@
             font-weight: 600;
         }
 
-        .user-key-modal {
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .user-key-content {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        .user-key-content h2 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-
-        .user-key-content p {
-            color: #666;
-            margin-bottom: 30px;
-            line-height: 1.5;
-        }
-
-        .user-key-input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            font-size: 16px;
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .user-key-input:focus {
-            outline: none;
-            border-color: #007bff;
-        }
-
-        .online-indicator {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            z-index: 1000;
-        }
-
-        .online-indicator.online {
-            background: #28a745;
-            color: white;
-        }
-
-        .online-indicator.offline {
-            background: #dc3545;
-            color: white;
-        }
-
         .config-section {
             background: white;
             border-radius: 10px;
@@ -540,23 +516,29 @@
     </style>
 </head>
 <body>
-    <!-- Indicador de conexión -->
-    <div class="online-indicator" id="onlineIndicator">🔴 Offline</div>
-
-    <!-- Modal de clave personal -->
-    <div class="user-key-modal" id="userKeyModal">
-        <div class="user-key-content">
-            <h2>🔑 Acceso Personal</h2>
-            <p>Introduce tu clave personal para acceder a tus datos. Puede ser tu nombre, DNI, o cualquier texto que recuerdes.</p>
-            <input type="text" class="user-key-input" id="userKeyInput" placeholder="Tu clave personal" maxlength="50">
-            <button class="btn btn-primary" onclick="setUserKey()">🚀 Acceder</button>
-            <p style="font-size: 12px; color: #999; margin-top: 15px;">
-                💡 Usa la misma clave en todos tus dispositivos para sincronizar datos
-            </p>
+    <div class="container">
+        <!-- Barra de estado y sincronización -->
+        <div class="header-bar">
+            <div class="sync-status">
+                <div class="status-indicator">
+                    <span class="status-dot" id="statusDot"></span>
+                    <span id="statusText">Conectando...</span>
+                </div>
+                <span id="lastSync">Última sync: --</span>
+            </div>
+            <div class="sync-buttons">
+                <button class="sync-btn" id="syncBtn" onclick="manualSync()" disabled>
+                    🔄 Sync Manual
+                </button>
+                <button class="sync-btn" onclick="exportData()">
+                    📤 Backup
+                </button>
+                <button class="sync-btn" onclick="toggleAutoSync()">
+                    <span id="autoSyncText">⚡ Auto: ON</span>
+                </button>
+            </div>
         </div>
-    </div>
 
-    <div class="container" id="mainContainer" style="display: none;">
         <div class="tabs">
             <button class="tab active" onclick="showTab('fichaje')">Fichaje</button>
             <button class="tab" onclick="showTab('registro')">Registro</button>
@@ -599,37 +581,37 @@
                 <button class="btn btn-primary" onclick="exportData()">📤 Exportar Datos</button>
                 <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">📥 Importar Datos</button>
                 <input type="file" id="importFile" class="file-input" accept=".json" onchange="importData(event)">
-            </div>
-
-            <div class="filter-section" style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 10px; border: 2px solid #e9ecef;">
-                <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-                    <label style="font-weight: 600; color: #333;">🔍 Filtrar por:</label>
-                    <select id="filtroTipo" onchange="applyFilters()" style="padding: 8px 12px; border: 2px solid #e9ecef; border-radius: 5px; font-size: 14px;">
-                        <option value="todos">Todos los días</option>
-                        <option value="ultimo-mes">Último mes</option>
-                        <option value="mes-actual">Mes actual</option>
-                        <option value="ultimos-7">Últimos 7 días</option>
-                        <option value="ultimos-30">Últimos 30 días</option>
-                        <option value="L-V">Solo L-V (Laborables)</option>
-                        <option value="S-D-F">Solo S-D-F (Fines de semana)</option>
-                        <option value="festivos">Solo Festivos</option>
-                        <option value="nacional">Solo Nacional</option>
-                        <option value="internacional">Solo Internacional</option>
-                        <option value="taller">Solo Taller</option>
-                        <option value="cliente">Solo Cliente</option>
-                        <option value="personalizado">Rango personalizado</option>
-                    </select>
-                    
-                    <div id="rangoPersonalizado" style="display: none; gap: 10px; align-items: center;">
-                        <label style="font-size: 14px; color: #666;">Desde:</label>
-                        <input type="date" id="fechaDesde" onchange="applyFilters()" style="padding: 6px; border: 2px solid #e9ecef; border-radius: 5px;">
-                        <label style="font-size: 14px; color: #666;">Hasta:</label>
-                        <input type="date" id="fechaHasta" onchange="applyFilters()" style="padding: 6px; border: 2px solid #e9ecef; border-radius: 5px;">
+                
+                <div style="margin-left: auto; display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <label for="fechaInicio" style="font-weight: 500; color: #555; white-space: nowrap;">Desde:</label>
+                        <input type="date" id="fechaInicio" onchange="updateRegistroTable()" style="padding: 8px 12px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 14px;">
                     </div>
                     
-                    <button onclick="resetFilters()" class="btn btn-secondary" style="padding: 8px 16px; font-size: 14px;">🔄 Limpiar</button>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <label for="fechaFin" style="font-weight: 500; color: #555; white-space: nowrap;">Hasta:</label>
+                        <input type="date" id="fechaFin" onchange="updateRegistroTable()" style="padding: 8px 12px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 14px;">
+                    </div>
                     
-                    <span id="contadorResultados" style="margin-left: auto; font-weight: 500; color: #666; font-size: 14px;"></span>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <label for="filtroTipo" style="font-weight: 500; color: #555; white-space: nowrap;">Tipo:</label>
+                        <select id="filtroTipo" onchange="updateRegistroTable()" style="padding: 8px 12px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 14px;">
+                            <option value="todos">Todos</option>
+                            <option value="L-V">L-V</option>
+                            <option value="sabado-manana">Sáb Mañana</option>
+                            <option value="sabado-tarde">Sáb Tarde</option>
+                            <option value="S-D-F">Domingo</option>
+                            <option value="festivo">Festivos</option>
+                            <option value="nacional">Nacional</option>
+                            <option value="internacional">Internacional</option>
+                            <option value="taller">Taller</option>
+                            <option value="cliente">Cliente</option>
+                        </select>
+                    </div>
+                    
+                    <button onclick="limpiarFiltros()" style="padding: 8px 16px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; white-space: nowrap;">
+                        🔄 Limpiar
+                    </button>
                 </div>
             </div>
             
@@ -738,6 +720,48 @@
                 </div>
             </div>
 
+            <div class="config-section">
+                <div class="config-title">🔥 Configuración Firebase</div>
+                <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <strong>🔧 Instrucciones de configuración:</strong><br>
+                    1. Ve a <a href="https://console.firebase.google.com" target="_blank">Firebase Console</a><br>
+                    2. Crea un nuevo proyecto<br>
+                    3. Activa Firestore Database<br>
+                    4. Copia la configuración aquí abajo<br>
+                    5. Guarda la configuración
+                </div>
+                <div class="config-grid">
+                    <div class="form-group">
+                        <label>API Key</label>
+                        <input type="text" id="firebaseApiKey" placeholder="AIza...">
+                    </div>
+                    <div class="form-group">
+                        <label>Auth Domain</label>
+                        <input type="text" id="firebaseAuthDomain" placeholder="proyecto.firebaseapp.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Project ID</label>
+                        <input type="text" id="firebaseProjectId" placeholder="proyecto-id">
+                    </div>
+                    <div class="form-group">
+                        <label>Storage Bucket</label>
+                        <input type="text" id="firebaseStorageBucket" placeholder="proyecto.appspot.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Messaging Sender ID</label>
+                        <input type="text" id="firebaseMessagingSenderId" placeholder="123456789">
+                    </div>
+                    <div class="form-group">
+                        <label>App ID</label>
+                        <input type="text" id="firebaseAppId" placeholder="1:123:web:abc">
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 15px;">
+                    <button class="btn btn-primary" onclick="saveFirebaseConfig()">💾 Guardar Config Firebase</button>
+                    <button class="btn btn-secondary" onclick="testFirebaseConnection()">🔌 Probar Conexión</button>
+                </div>
+            </div>
+
             <div style="text-align: center; margin-top: 20px;">
                 <button class="btn btn-primary" onclick="saveConfig()">💾 Guardar Configuración</button>
             </div>
@@ -783,10 +807,10 @@
             <h3>🍽️ Salida para Comer</h3>
             <form id="formSalidaComer">
                 <div class="form-group" id="comidaGroup">
-                    <label>¿Comida?</label>
+                    <label>¿Se ha comido?</label>
                     <select id="seHaComido">
-                        <option value="no">No</option>
                         <option value="si">Sí</option>
+                        <option value="no">No</option>
                     </select>
                 </div>
                 <div class="modal-buttons">
@@ -813,17 +837,17 @@
             <h3>🌙 Fin de Jornada</h3>
             <form id="formFinJornada">
                 <div class="form-group" id="cenaGroup">
-                    <label>¿Cena?</label>
+                    <label>¿Se ha cenado?</label>
                     <select id="seHaCenado">
-                        <option value="no">No</option>
                         <option value="si">Sí</option>
+                        <option value="no">No</option>
                     </select>
                 </div>
                 <div class="form-group" id="pernoctaGroup">
                     <label>¿Hay pernocta?</label>
                     <select id="hayPernocta">
-                        <option value="no">No</option>
                         <option value="si">Sí</option>
+                        <option value="no">No</option>
                     </select>
                 </div>
                 <div class="modal-buttons">
@@ -834,101 +858,312 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        // Configuración Firebase - Se carga desde localStorage
+        let firebaseConfig = {};
+        let db = null;
+        let isFirebaseInitialized = false;
+        let autoSyncEnabled = true;
+        let syncInterval = null;
+        let userId = null;
+
+        // Importar Firebase (CDN)
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+        import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+
         // Variables globales
         let currentSession = null;
         let allSessions = [];
         let config = {};
-        let userKey = null;
-        let isOnline = false;
 
-        // Funciones de Firebase
-        async function initFirebase() {
-            try {
-                if (window.db) {
-                    isOnline = true;
-                    updateOnlineIndicator();
-                    return true;
-                }
-            } catch (error) {
-                console.log('Firebase offline, usando localStorage');
-                isOnline = false;
-                updateOnlineIndicator();
-                return false;
-            }
-        }
-
-        function updateOnlineIndicator() {
-            const indicator = document.getElementById('onlineIndicator');
-            if (isOnline) {
-                indicator.textContent = '🟢 Online';
-                indicator.className = 'online-indicator online';
-            } else {
-                indicator.textContent = '🔴 Offline';
-                indicator.className = 'online-indicator offline';
-            }
-        }
-
-        async function saveToFirebase(data, collection) {
-            if (!isOnline || !userKey) return false;
-            try {
-                const { addDoc, collection: fbCollection } = window.firebaseImports;
-                await addDoc(fbCollection(window.db, collection), {
-                    ...data,
-                    userKey: userKey,
-                    timestamp: new Date()
-                });
-                return true;
-            } catch (error) {
-                console.error('Error saving to Firebase:', error);
-                return false;
-            }
-        }
-
-        async function loadFromFirebase(collection) {
-            if (!isOnline || !userKey) return [];
-            try {
-                const { getDocs, query, where, collection: fbCollection } = window.firebaseImports;
-                const q = query(fbCollection(window.db, collection), where("userKey", "==", userKey));
-                const querySnapshot = await getDocs(q);
-                return querySnapshot.docs.map(doc => ({ firebaseId: doc.id, ...doc.data() }));
-            } catch (error) {
-                console.error('Error loading from Firebase:', error);
-                return [];
-            }
-        }
-
-        function setUserKey() {
-            const input = document.getElementById('userKeyInput');
-            const key = input.value.trim();
-            
-            if (!key) {
-                alert('Por favor, introduce una clave personal');
-                return;
-            }
-            
-            userKey = key;
-            localStorage.setItem('userKey', userKey);
-            document.getElementById('userKeyModal').style.display = 'none';
-            document.getElementById('mainContainer').style.display = 'block';
-            
-            // Inicializar aplicación
-            initApp();
-        }
-
-        async function initApp() {
-            await initFirebase();
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFirebaseConfig();
             loadConfig();
-            await loadSessions();
+            loadSessions();
             updateClock();
             updateButtonsState();
             updateSummary();
-            filteredSessions = [...allSessions];
             updateRegistroTable();
-            updateContadorResultados();
             setInterval(updateClock, 1000);
+            
+            // Intentar inicializar Firebase
+            if (firebaseConfig.apiKey) {
+                initializeFirebase();
+            }
+            
+            updateSyncStatus('offline', 'Sin configurar');
+        });
+
+        // Funciones Firebase
+        async function initializeFirebase() {
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                const auth = getAuth(app);
+                
+                // Autenticación anónima
+                await signInAnonymously(auth);
+                
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        isFirebaseInitialized = true;
+                        updateSyncStatus('online', 'Conectado');
+                        document.getElementById('syncBtn').disabled = false;
+                        
+                        // Iniciar auto-sync
+                        if (autoSyncEnabled) {
+                            startAutoSync();
+                        }
+                        
+                        // Sync inicial
+                        syncFromFirebase();
+                    }
+                });
+                
+            } catch (error) {
+                console.error('Error inicializando Firebase:', error);
+                updateSyncStatus('offline', 'Error de conexión');
+            }
         }
 
+        function updateSyncStatus(status, message) {
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            
+            statusDot.className = `status-dot ${status}`;
+            statusText.textContent = message;
+        }
+
+        async function syncToFirebase() {
+            if (!isFirebaseInitialized || !userId) {
+                console.log('Firebase no inicializado');
+                return false;
+            }
+            
+            try {
+                updateSyncStatus('syncing', 'Sincronizando...');
+                
+                const userData = {
+                    sessions: allSessions,
+                    config: config,
+                    currentSession: currentSession,
+                    lastModified: new Date().toISOString()
+                };
+                
+                await setDoc(doc(db, 'users', userId), userData);
+                
+                updateSyncStatus('online', 'Sincronizado');
+                document.getElementById('lastSync').textContent = 
+                    `Última sync: ${new Date().toLocaleTimeString()}`;
+                return true;
+                
+            } catch (error) {
+                console.error('Error syncing to Firebase:', error);
+                updateSyncStatus('offline', 'Error al sincronizar');
+                return false;
+            }
+        }
+
+        async function syncFromFirebase() {
+            if (!isFirebaseInitialized || !userId) return false;
+            
+            try {
+                updateSyncStatus('syncing', 'Descargando...');
+                
+                const docRef = doc(db, 'users', userId);
+                const docSnap = await getDoc(docRef);
+                
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    
+                    // Solo actualizar si hay datos más recientes
+                    const localLastModified = localStorage.getItem('lastModified') || '1970-01-01';
+                    const remoteLastModified = data.lastModified || '1970-01-01';
+                    
+                    if (remoteLastModified > localLastModified) {
+                        allSessions = data.sessions || [];
+                        config = data.config || {};
+                        currentSession = data.currentSession || null;
+                        
+                        // Guardar localmente
+                        saveSessions();
+                        saveConfig();
+                        if (currentSession) saveCurrentSession();
+                        localStorage.setItem('lastModified', remoteLastModified);
+                        
+                        // Actualizar UI
+                        updateRegistroTable();
+                        updateSummary();
+                        updateButtonsState();
+                        loadConfig(); // Recargar campos de configuración
+                        
+                        updateSyncStatus('online', 'Datos actualizados');
+                    } else {
+                        updateSyncStatus('online', 'Datos actuales');
+                    }
+                } else {
+                    // Primera vez, subir datos locales
+                    syncToFirebase();
+                }
+                
+                document.getElementById('lastSync').textContent = 
+                    `Última sync: ${new Date().toLocaleTimeString()}`;
+                return true;
+                
+            } catch (error) {
+                console.error('Error syncing from Firebase:', error);
+                updateSyncStatus('offline', 'Error al descargar');
+                return false;
+            }
+        }
+
+        async function manualSync() {
+            if (!isFirebaseInitialized) {
+                alert('Firebase no está configurado. Ve a la pestaña Configuración.');
+                return;
+            }
+            
+            // Primero descargar, luego subir
+            await syncFromFirebase();
+            await syncToFirebase();
+        }
+
+        function startAutoSync() {
+            if (syncInterval) clearInterval(syncInterval);
+            
+            syncInterval = setInterval(() => {
+                if (autoSyncEnabled && isFirebaseInitialized) {
+                    syncToFirebase();
+                }
+            }, 30000); // Cada 30 segundos
+        }
+
+        function toggleAutoSync() {
+            autoSyncEnabled = !autoSyncEnabled;
+            const text = document.getElementById('autoSyncText');
+            text.textContent = autoSyncEnabled ? '⚡ Auto: ON' : '⏸️ Auto: OFF';
+            
+            if (autoSyncEnabled && isFirebaseInitialized) {
+                startAutoSync();
+            } else if (syncInterval) {
+                clearInterval(syncInterval);
+            }
+            
+            localStorage.setItem('autoSyncEnabled', autoSyncEnabled);
+        }
+
+        function saveFirebaseConfig() {
+            firebaseConfig = {
+                apiKey: document.getElementById('firebaseApiKey').value,
+                authDomain: document.getElementById('firebaseAuthDomain').value,
+                projectId: document.getElementById('firebaseProjectId').value,
+                storageBucket: document.getElementById('firebaseStorageBucket').value,
+                messagingSenderId: document.getElementById('firebaseMessagingSenderId').value,
+                appId: document.getElementById('firebaseAppId').value
+            };
+            
+            localStorage.setItem('firebaseConfig', JSON.stringify(firebaseConfig));
+            alert('Configuración Firebase guardada. Recarga la página para aplicar.');
+        }
+
+        function loadFirebaseConfig() {
+            const stored = localStorage.getItem('firebaseConfig');
+            if (stored) {
+                firebaseConfig = JSON.parse(stored);
+                
+                // Cargar en los campos
+                document.getElementById('firebaseApiKey').value = firebaseConfig.apiKey || '';
+                document.getElementById('firebaseAuthDomain').value = firebaseConfig.authDomain || '';
+                document.getElementById('firebaseProjectId').value = firebaseConfig.projectId || '';
+                document.getElementById('firebaseStorageBucket').value = firebaseConfig.storageBucket || '';
+                document.getElementById('firebaseMessagingSenderId').value = firebaseConfig.messagingSenderId || '';
+                document.getElementById('firebaseAppId').value = firebaseConfig.appId || '';
+            }
+            
+            // Cargar preferencia de auto-sync
+            const autoSyncStored = localStorage.getItem('autoSyncEnabled');
+            if (autoSyncStored !== null) {
+                autoSyncEnabled = autoSyncStored === 'true';
+                const text = document.getElementById('autoSyncText');
+                if (text) text.textContent = autoSyncEnabled ? '⚡ Auto: ON' : '⏸️ Auto: OFF';
+            }
+        }
+
+        async function testFirebaseConnection() {
+            if (!firebaseConfig.apiKey) {
+                alert('Primero guarda la configuración Firebase');
+                return;
+            }
+            
+            try {
+                updateSyncStatus('syncing', 'Probando conexión...');
+                await initializeFirebase();
+                alert('✅ Conexión exitosa con Firebase!');
+            } catch (error) {
+                alert('❌ Error de conexión: ' + error.message);
+                updateSyncStatus('offline', 'Error de conexión');
+            }
+        }
+
+        // Sobrescribir funciones de guardado para incluir sync
+        const originalSaveSessions = saveSessions;
+        const originalSaveConfig = saveConfig;
+        const originalSaveCurrentSession = saveCurrentSession;
+
+        window.saveSessions = function() {
+            originalSaveSessions();
+            localStorage.setItem('lastModified', new Date().toISOString());
+            if (isFirebaseInitialized && autoSyncEnabled) {
+                syncToFirebase();
+            }
+        };
+
+        window.saveConfig = function() {
+            config = {
+                horaInicioNocturno: document.getElementById('horaInicioNocturno').value,
+                horaFinNocturno: document.getElementById('horaFinNocturno').value,
+                precioComida: document.getElementById('precioComida').value,
+                precioCena: document.getElementById('precioCena').value,
+                pernoctaLV: document.getElementById('pernoctaLV').value,
+                pernoctaSDF: document.getElementById('pernoctaSDF').value,
+                sinPernoctaLV: document.getElementById('sinPernoctaLV').value,
+                sinPernoctaSDF: document.getElementById('sinPernoctaSDF').value,
+                dietaInternacionalLV: document.getElementById('dietaInternacionalLV').value,
+                dietaInternacionalSDF: document.getElementById('dietaInternacionalSDF').value,
+                extraTaller: document.getElementById('extraTaller').value,
+                extraCliente: document.getElementById('extraCliente').value,
+                extraEspecial: document.getElementById('extraEspecial').value,
+                extraInternacional: document.getElementById('extraInternacional').value
+            };
+            
+            localStorage.setItem('config', JSON.stringify(config));
+            localStorage.setItem('lastModified', new Date().toISOString());
+            alert('Configuración guardada correctamente');
+            
+            if (isFirebaseInitialized && autoSyncEnabled) {
+                syncToFirebase();
+            }
+        };
+
+        window.saveCurrentSession = function() {
+            localStorage.setItem('currentSession', JSON.stringify(currentSession));
+            localStorage.setItem('lastModified', new Date().toISOString());
+            if (isFirebaseInitialized && autoSyncEnabled) {
+                syncToFirebase();
+            }
+        };
+
+        // Hacer funciones globales para que funcionen con los botones
+        window.manualSync = manualSync;
+        window.toggleAutoSync = toggleAutoSync;
+        window.saveFirebaseConfig = saveFirebaseConfig;
+        window.testFirebaseConnection = testFirebaseConnection;
+    </script>
+
+    <script>
         // Funciones de tiempo
         function updateClock() {
             const now = new Date();
@@ -1350,63 +1585,29 @@
             currentSession.importeTotal = Math.round(total * 100) / 100;
         }
 
-        // Funciones de almacenamiento híbrido (Firebase + localStorage)
+        // Funciones de almacenamiento
         function saveCurrentSession() {
             localStorage.setItem('currentSession', JSON.stringify(currentSession));
         }
 
-        async function saveSessions() {
-            // Guardar localmente siempre
+        function saveSessions() {
             localStorage.setItem('allSessions', JSON.stringify(allSessions));
             localStorage.removeItem('currentSession');
-            
-            // Intentar guardar en Firebase
-            if (isOnline && userKey) {
-                try {
-                    // Guardar la sesión más reciente en Firebase
-                    const latestSession = allSessions[allSessions.length - 1];
-                    if (latestSession && !latestSession.firebaseId) {
-                        await saveToFirebase(latestSession, 'sessions');
-                    }
-                } catch (error) {
-                    console.log('Error saving to Firebase, data saved locally');
-                }
-            }
         }
 
-        async function loadSessions() {
-            // Cargar desde localStorage primero
+        function loadSessions() {
             const stored = localStorage.getItem('allSessions');
             if (stored) {
                 allSessions = JSON.parse(stored);
             }
             
-            // Intentar sincronizar con Firebase
-            if (isOnline && userKey) {
-                try {
-                    const firebaseSessions = await loadFromFirebase('sessions');
-                    
-                    // Combinar datos locales y de Firebase (evitar duplicados)
-                    const localIds = allSessions.map(s => s.id);
-                    const newSessions = firebaseSessions.filter(s => !localIds.includes(s.id));
-                    
-                    if (newSessions.length > 0) {
-                        allSessions = [...allSessions, ...newSessions];
-                        localStorage.setItem('allSessions', JSON.stringify(allSessions));
-                    }
-                } catch (error) {
-                    console.log('Using local data only');
-                }
-            }
-            
-            // Cargar sesión actual
             const currentStored = localStorage.getItem('currentSession');
             if (currentStored) {
                 currentSession = JSON.parse(currentStored);
             }
         }
 
-        async function saveConfig() {
+        function saveConfig() {
             config = {
                 horaInicioNocturno: document.getElementById('horaInicioNocturno').value,
                 horaFinNocturno: document.getElementById('horaFinNocturno').value,
@@ -1425,12 +1626,6 @@
             };
             
             localStorage.setItem('config', JSON.stringify(config));
-            
-            // Guardar en Firebase también
-            if (isOnline && userKey) {
-                await saveToFirebase(config, 'config');
-            }
-            
             alert('Configuración guardada correctamente');
         }
 
@@ -1466,19 +1661,6 @@
                 };
             }
         }
-
-        // Inicialización
-        document.addEventListener('DOMContentLoaded', function() {
-            // Verificar si ya tiene clave guardada
-            const savedKey = localStorage.getItem('userKey');
-            if (savedKey) {
-                userKey = savedKey;
-                document.getElementById('userKeyModal').style.display = 'none';
-                document.getElementById('mainContainer').style.display = 'block';
-                initApp();
-            }
-            // Si no tiene clave, se muestra el modal automáticamente
-        });
 
         // Funciones de resumen
         function updateSummary() {
@@ -1620,30 +1802,62 @@
             const tbody = document.getElementById('registroBody');
             tbody.innerHTML = '';
             
-            // Usar datos filtrados si existen, sino todos los datos
-            const sessionsToShow = filteredSessions.length > 0 || document.getElementById('filtroTipo')?.value !== 'todos' 
-                ? filteredSessions 
-                : allSessions;
+            const filtroTipo = document.getElementById('filtroTipo').value;
+            const fechaInicio = document.getElementById('fechaInicio').value;
+            const fechaFin = document.getElementById('fechaFin').value;
             
             // Ordenar por fecha descendente
-            const sortedSessions = [...sessionsToShow].sort((a, b) => {
+            const sortedSessions = [...allSessions].sort((a, b) => {
                 const dateA = new Date(a.fecha.split('/').reverse().join('-'));
                 const dateB = new Date(b.fecha.split('/').reverse().join('-'));
                 return dateB - dateA;
             });
             
-            if (sortedSessions.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="10" style="text-align: center; padding: 40px; color: #666; font-style: italic;">
-                            📭 No hay registros que coincidan con el filtro seleccionado
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
+            // Filtrar sesiones
+            const filteredSessions = sortedSessions.filter(session => {
+                // Filtro por fecha
+                if (fechaInicio || fechaFin) {
+                    const sessionDate = new Date(session.fecha.split('/').reverse().join('-'));
+                    
+                    if (fechaInicio) {
+                        const startDate = new Date(fechaInicio);
+                        if (sessionDate < startDate) return false;
+                    }
+                    
+                    if (fechaFin) {
+                        const endDate = new Date(fechaFin);
+                        if (sessionDate > endDate) return false;
+                    }
+                }
+                
+                // Filtro por tipo
+                switch(filtroTipo) {
+                    case 'todos':
+                        return true;
+                    case 'L-V':
+                        return session.dia === 'L-V' && !session.esFestivo;
+                    case 'sabado-manana':
+                        return session.dia === 'sabado-manana';
+                    case 'sabado-tarde':
+                        return session.dia === 'sabado-tarde';
+                    case 'S-D-F':
+                        return session.dia === 'S-D-F' && !session.esFestivo;
+                    case 'festivo':
+                        return session.esFestivo;
+                    case 'nacional':
+                        return session.tipoServicio === 'nacional';
+                    case 'internacional':
+                        return session.tipoServicio === 'internacional';
+                    case 'taller':
+                        return session.ubicacion === 'taller';
+                    case 'cliente':
+                        return session.ubicacion === 'cliente';
+                    default:
+                        return true;
+                }
+            });
             
-            sortedSessions.forEach((session, index) => {
+            filteredSessions.forEach((session, index) => {
                 // Fila principal
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -1692,11 +1906,11 @@
                                     <span class="detail-value">${session.dia}</span>
                                 </div>
                                 <div class="detail-item">
-                                    <span class="detail-label">Comida:</span>
+                                    <span class="detail-label">¿Ha Comido?:</span>
                                     <span class="detail-value">${session.seHaComido === 'si' ? '✅ Sí' : '❌ No'}</span>
                                 </div>
                                 <div class="detail-item">
-                                    <span class="detail-label">Cena:</span>
+                                    <span class="detail-label">¿Ha Cenado?:</span>
                                     <span class="detail-value">${session.seHaCenado === 'si' ? '✅ Sí' : '❌ No'}</span>
                                 </div>
                                 <div class="detail-item">
@@ -1713,6 +1927,35 @@
                 `;
                 tbody.appendChild(detailRow);
             });
+            
+            // Mostrar mensaje si no hay resultados
+            if (filteredSessions.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="10" style="text-align: center; padding: 20px; color: #666; font-style: italic;">
+                        No hay registros que coincidan con los filtros seleccionados
+                    </td>
+                `;
+                tbody.appendChild(row);
+            }
+            
+            // Mostrar resumen de filtros aplicados
+            updateFilterSummary(filteredSessions.length);
+        }
+
+        function limpiarFiltros() {
+            document.getElementById('fechaInicio').value = '';
+            document.getElementById('fechaFin').value = '';
+            document.getElementById('filtroTipo').value = 'todos';
+            updateRegistroTable();
+        }
+
+        function updateFilterSummary(count) {
+            // Opcional: mostrar contador de registros filtrados
+            const totalRegistros = allSessions.length;
+            if (count !== totalRegistros) {
+                console.log(`Mostrando ${count} de ${totalRegistros} registros`);
+            }
         }
 
         function toggleDetails(index) {
@@ -1725,107 +1968,6 @@
             } else {
                 detailRow.style.display = 'none';
                 expandBtn.textContent = '▶️';
-            }
-        }
-
-        // Variable para almacenar datos filtrados
-        let filteredSessions = [];
-
-        // Funciones de filtrado
-        function applyFilters() {
-            const filtroTipo = document.getElementById('filtroTipo').value;
-            const fechaDesde = document.getElementById('fechaDesde').value;
-            const fechaHasta = document.getElementById('fechaHasta').value;
-            
-            // Mostrar/ocultar rango personalizado
-            const rangoPersonalizado = document.getElementById('rangoPersonalizado');
-            if (filtroTipo === 'personalizado') {
-                rangoPersonalizado.style.display = 'flex';
-            } else {
-                rangoPersonalizado.style.display = 'none';
-            }
-            
-            // Filtrar datos
-            filteredSessions = allSessions.filter(session => {
-                const sessionDate = new Date(session.fecha.split('/').reverse().join('-'));
-                const today = new Date();
-                
-                switch (filtroTipo) {
-                    case 'todos':
-                        return true;
-                        
-                    case 'ultimo-mes':
-                        const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-                        const endLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-                        return sessionDate >= lastMonth && sessionDate <= endLastMonth;
-                        
-                    case 'mes-actual':
-                        const startCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-                        return sessionDate >= startCurrentMonth;
-                        
-                    case 'ultimos-7':
-                        const last7Days = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-                        return sessionDate >= last7Days;
-                        
-                    case 'ultimos-30':
-                        const last30Days = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
-                        return sessionDate >= last30Days;
-                        
-                    case 'L-V':
-                        return session.dia === 'L-V' && !session.esFestivo;
-                        
-                    case 'S-D-F':
-                        return session.dia === 'S-D-F' || session.dia === 'sabado-manana' || session.dia === 'sabado-tarde';
-                        
-                    case 'festivos':
-                        return session.esFestivo;
-                        
-                    case 'nacional':
-                        return session.tipoServicio === 'nacional';
-                        
-                    case 'internacional':
-                        return session.tipoServicio === 'internacional';
-                        
-                    case 'taller':
-                        return session.ubicacion === 'taller';
-                        
-                    case 'cliente':
-                        return session.ubicacion === 'cliente';
-                        
-                    case 'personalizado':
-                        if (!fechaDesde || !fechaHasta) return true;
-                        const desde = new Date(fechaDesde);
-                        const hasta = new Date(fechaHasta);
-                        return sessionDate >= desde && sessionDate <= hasta;
-                        
-                    default:
-                        return true;
-                }
-            });
-            
-            updateRegistroTable();
-            updateContadorResultados();
-        }
-
-        function resetFilters() {
-            document.getElementById('filtroTipo').value = 'todos';
-            document.getElementById('fechaDesde').value = '';
-            document.getElementById('fechaHasta').value = '';
-            document.getElementById('rangoPersonalizado').style.display = 'none';
-            filteredSessions = [...allSessions];
-            updateRegistroTable();
-            updateContadorResultados();
-        }
-
-        function updateContadorResultados() {
-            const contador = document.getElementById('contadorResultados');
-            const total = allSessions.length;
-            const filtrados = filteredSessions.length;
-            
-            if (filtrados === total) {
-                contador.textContent = `${total} registro${total !== 1 ? 's' : ''}`;
-            } else {
-                contador.textContent = `${filtrados} de ${total} registro${total !== 1 ? 's' : ''}`;
             }
         }
 
@@ -1876,17 +2018,17 @@
                             <input type="time" id="editFinJornada" value="${session.finJornada}" required>
                         </div>
                         <div class="form-group" id="editComidaGroup" style="display: ${session.tipoServicio === 'nacional' ? 'block' : 'none'}">
-                            <label>¿Comida?</label>
+                            <label>¿Se ha comido?</label>
                             <select id="editSeHaComido">
-                                <option value="no" ${session.seHaComido === 'no' ? 'selected' : ''}>No</option>
                                 <option value="si" ${session.seHaComido === 'si' ? 'selected' : ''}>Sí</option>
+                                <option value="no" ${session.seHaComido === 'no' ? 'selected' : ''}>No</option>
                             </select>
                         </div>
                         <div class="form-group" id="editCenaGroup" style="display: ${session.tipoServicio === 'nacional' ? 'block' : 'none'}">
-                            <label>¿Cena?</label>
+                            <label>¿Se ha cenado?</label>
                             <select id="editSeHaCenado">
-                                <option value="no" ${session.seHaCenado === 'no' ? 'selected' : ''}>No</option>
                                 <option value="si" ${session.seHaCenado === 'si' ? 'selected' : ''}>Sí</option>
+                                <option value="no" ${session.seHaCenado === 'no' ? 'selected' : ''}>No</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -1899,8 +2041,8 @@
                         <div class="form-group" id="editPernoctaGroup" style="display: ${session.tipoServicio === 'nacional' ? 'block' : 'none'}">
                             <label>¿Hay pernocta?</label>
                             <select id="editHayPernocta">
-                                <option value="no" ${session.hayPernocta === 'no' ? 'selected' : ''}>No</option>
                                 <option value="si" ${session.hayPernocta === 'si' ? 'selected' : ''}>Sí</option>
+                                <option value="no" ${session.hayPernocta === 'no' ? 'selected' : ''}>No</option>
                             </select>
                         </div>
                         <div class="modal-buttons">
