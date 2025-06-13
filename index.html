@@ -1,1 +1,2077 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Fichaje</title>
+    
+    <!-- Firebase -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, where } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        
+        // TODO: Reemplazar con tu configuración de Firebase
+        const firebaseConfig = {
+            // Aquí irá tu configuración cuando crees el proyecto Firebase
+            apiKey: "TU_API_KEY",
+            authDomain: "TU_PROJECT_ID.firebaseapp.com",
+            projectId: "TU_PROJECT_ID",
+            storageBucket: "TU_PROJECT_ID.appspot.com",
+            messagingSenderId: "TU_MESSAGING_SENDER_ID",
+            appId: "TU_APP_ID"
+        };
+        
+        window.firebaseApp = initializeApp(firebaseConfig);
+        window.db = getFirestore(window.firebaseApp);
+        window.firebaseImports = { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, where };
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            background: white;
+            border-bottom-color: #007bff;
+            color: #007bff;
+        }
+
+        .tab:hover {
+            background: #e9ecef;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            min-height: 70vh;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .status-card {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .current-time {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .status {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .fichar-btn {
+            padding: 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .fichar-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-entrada {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .btn-salida-comer {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+        }
+
+        .btn-vuelta-comer {
+            background: linear-gradient(135deg, #17a2b8, #007bff);
+        }
+
+        .btn-fin-jornada {
+            background: linear-gradient(135deg, #dc3545, #bd2130);
+        }
+
+        .fichar-btn:not(:disabled):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal h3 {
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .summary-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .summary-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+            text-align: center;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .summary-item .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+
+        .summary-item .label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .summary-item.highlight {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+        }
+
+        .summary-item.highlight .value {
+            color: white;
+            font-size: 28px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .summary-item.highlight .label {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            margin: 2px;
+        }
+
+        .btn-edit {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .expandable-row {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+
+        .expand-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px;
+            border-radius: 3px;
+            transition: background 0.3s ease;
+        }
+
+        .expand-btn:hover {
+            background: #e9ecef;
+        }
+
+        .detail-row {
+            display: none;
+        }
+
+        .detail-content {
+            padding: 15px;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid #e9ecef;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            color: #555;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .user-key-modal {
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-key-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .user-key-content h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .user-key-content p {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .user-key-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .user-key-input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .online-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 1000;
+        }
+
+        .online-indicator.online {
+            background: #28a745;
+            color: white;
+        }
+
+        .online-indicator.offline {
+            background: #dc3545;
+            color: white;
+        }
+
+        .config-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid #e9ecef;
+        }
+
+        .config-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .import-export {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .buttons-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Indicador de conexión -->
+    <div class="online-indicator" id="onlineIndicator">🔴 Offline</div>
+
+    <!-- Modal de clave personal -->
+    <div class="user-key-modal" id="userKeyModal">
+        <div class="user-key-content">
+            <h2>🔑 Acceso Personal</h2>
+            <p>Introduce tu clave personal para acceder a tus datos. Puede ser tu nombre, DNI, o cualquier texto que recuerdes.</p>
+            <input type="text" class="user-key-input" id="userKeyInput" placeholder="Tu clave personal" maxlength="50">
+            <button class="btn btn-primary" onclick="setUserKey()">🚀 Acceder</button>
+            <p style="font-size: 12px; color: #999; margin-top: 15px;">
+                💡 Usa la misma clave en todos tus dispositivos para sincronizar datos
+            </p>
+        </div>
+    </div>
+
+    <div class="container" id="mainContainer" style="display: none;">
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('fichaje')">Fichaje</button>
+            <button class="tab" onclick="showTab('registro')">Registro</button>
+            <button class="tab" onclick="showTab('configuracion')">Configuración</button>
+        </div>
+
+        <!-- Pestaña de Fichaje -->
+        <div id="fichaje" class="tab-content active">
+            <div class="status-card">
+                <div class="current-time" id="currentTime"></div>
+                <div class="status" id="currentStatus">Listo para fichar entrada</div>
+            </div>
+
+            <div class="buttons-grid">
+                <button class="fichar-btn btn-entrada" id="btnEntrada" onclick="openModal('entrada')">
+                    🟢 FICHAJE DE ENTRADA
+                </button>
+                <button class="fichar-btn btn-salida-comer" id="btnSalidaComer" onclick="openModal('salidaComer')" disabled>
+                    🍽️ SALIDA PARA COMER
+                </button>
+                <button class="fichar-btn btn-vuelta-comer" id="btnVueltaComer" onclick="openModal('vueltaComer')" disabled>
+                    🔙 VUELTA DE COMER
+                </button>
+                <button class="fichar-btn btn-fin-jornada" id="btnFinJornada" onclick="openModal('finJornada')" disabled>
+                    🌙 FIN DE JORNADA
+                </button>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-title">Resumen del Mes Actual</div>
+                <div class="summary-grid" id="summaryGrid">
+                    <!-- Se llena dinámicamente -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Pestaña de Registro -->
+        <div id="registro" class="tab-content">
+            <div class="import-export">
+                <button class="btn btn-primary" onclick="exportData()">📤 Exportar Datos</button>
+                <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">📥 Importar Datos</button>
+                <input type="file" id="importFile" class="file-input" accept=".json" onchange="importData(event)">
+            </div>
+
+            <div class="filter-section" style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 10px; border: 2px solid #e9ecef;">
+                <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                    <label style="font-weight: 600; color: #333;">🔍 Filtrar por:</label>
+                    <select id="filtroTipo" onchange="applyFilters()" style="padding: 8px 12px; border: 2px solid #e9ecef; border-radius: 5px; font-size: 14px;">
+                        <option value="todos">Todos los días</option>
+                        <option value="ultimo-mes">Último mes</option>
+                        <option value="mes-actual">Mes actual</option>
+                        <option value="ultimos-7">Últimos 7 días</option>
+                        <option value="ultimos-30">Últimos 30 días</option>
+                        <option value="L-V">Solo L-V (Laborables)</option>
+                        <option value="S-D-F">Solo S-D-F (Fines de semana)</option>
+                        <option value="festivos">Solo Festivos</option>
+                        <option value="nacional">Solo Nacional</option>
+                        <option value="internacional">Solo Internacional</option>
+                        <option value="taller">Solo Taller</option>
+                        <option value="cliente">Solo Cliente</option>
+                        <option value="personalizado">Rango personalizado</option>
+                    </select>
+                    
+                    <div id="rangoPersonalizado" style="display: none; gap: 10px; align-items: center;">
+                        <label style="font-size: 14px; color: #666;">Desde:</label>
+                        <input type="date" id="fechaDesde" onchange="applyFilters()" style="padding: 6px; border: 2px solid #e9ecef; border-radius: 5px;">
+                        <label style="font-size: 14px; color: #666;">Hasta:</label>
+                        <input type="date" id="fechaHasta" onchange="applyFilters()" style="padding: 6px; border: 2px solid #e9ecef; border-radius: 5px;">
+                    </div>
+                    
+                    <button onclick="resetFilters()" class="btn btn-secondary" style="padding: 8px 16px; font-size: 14px;">🔄 Limpiar</button>
+                    
+                    <span id="contadorResultados" style="margin-left: auto; font-weight: 500; color: #666; font-size: 14px;"></span>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table id="registroTable">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Ubicación</th>
+                            <th>Entrada</th>
+                            <th>Fin Jornada</th>
+                            <th>Horas Total</th>
+                            <th>Horas Extra</th>
+                            <th>Importe</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="registroBody">
+                        <!-- Se llena dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pestaña de Configuración -->
+        <div id="configuracion" class="tab-content">
+            <div class="config-section">
+                <div class="config-title">⏰ Horario Nocturno</div>
+                <div class="config-grid">
+                    <div class="form-group">
+                        <label>Hora Inicio</label>
+                        <input type="time" id="horaInicioNocturno" value="22:00">
+                    </div>
+                    <div class="form-group">
+                        <label>Hora Fin</label>
+                        <input type="time" id="horaFinNocturno" value="06:00">
+                    </div>
+                </div>
+            </div>
+
+            <div class="config-section">
+                <div class="config-title">🇪🇸 Precios Nacional</div>
+                <div class="config-grid">
+                    <div class="form-group">
+                        <label>Comida (€)</label>
+                        <input type="number" id="precioComida" value="13" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Cena (€)</label>
+                        <input type="number" id="precioCena" value="15" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Pernocta L-V (€)</label>
+                        <input type="number" id="pernoctaLV" value="13" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Pernocta S-D-F (€)</label>
+                        <input type="number" id="pernoctaSDF" value="17" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Sin Pernocta L-V (€)</label>
+                        <input type="number" id="sinPernoctaLV" value="7" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Sin Pernocta S-D-F (€)</label>
+                        <input type="number" id="sinPernoctaSDF" value="10" step="0.01">
+                    </div>
+                </div>
+            </div>
+
+            <div class="config-section">
+                <div class="config-title">🌍 Precios Internacional</div>
+                <div class="config-grid">
+                    <div class="form-group">
+                        <label>Dieta L-V (€)</label>
+                        <input type="number" id="dietaInternacionalLV" value="26" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Dieta S-D-F (€)</label>
+                        <input type="number" id="dietaInternacionalSDF" value="30" step="0.01">
+                    </div>
+                </div>
+            </div>
+
+            <div class="config-section">
+                <div class="config-title">⏱️ Horas Extra</div>
+                <div class="config-grid">
+                    <div class="form-group">
+                        <label>Extra Taller (€/h)</label>
+                        <input type="number" id="extraTaller" value="22.23" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Extra Cliente (€/h)</label>
+                        <input type="number" id="extraCliente" value="23.82" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Extra Sábado ≥13:00, Dom, Fest (€/h)</label>
+                        <input type="number" id="extraEspecial" value="27.79" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Extra Internacional (€/h)</label>
+                        <input type="number" id="extraInternacional" value="22.23" step="0.01">
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-primary" onclick="saveConfig()">💾 Guardar Configuración</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modales -->
+    <div id="modalEntrada" class="modal">
+        <div class="modal-content">
+            <h3>🟢 Fichaje de Entrada</h3>
+            <form id="formEntrada">
+                <div class="form-group">
+                    <label>Tipo de Servicio</label>
+                    <select id="tipoServicio" onchange="toggleUbicacion()">
+                        <option value="nacional">Nacional</option>
+                        <option value="internacional">Internacional</option>
+                    </select>
+                </div>
+                <div class="form-group" id="ubicacionGroup">
+                    <label>Ubicación</label>
+                    <select id="ubicacion">
+                        <option value="taller">Taller</option>
+                        <option value="cliente">Cliente</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>¿Es día festivo?</label>
+                    <select id="esFestivo">
+                        <option value="no">No</option>
+                        <option value="si">Sí</option>
+                    </select>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Fichar Entrada</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modalSalidaComer" class="modal">
+        <div class="modal-content">
+            <h3>🍽️ Salida para Comer</h3>
+            <form id="formSalidaComer">
+                <div class="form-group" id="comidaGroup">
+                    <label>¿Comida?</label>
+                    <select id="seHaComido">
+                        <option value="no">No</option>
+                        <option value="si">Sí</option>
+                    </select>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Fichar Salida</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modalVueltaComer" class="modal">
+        <div class="modal-content">
+            <h3>🔙 Vuelta de Comer</h3>
+            <p>¿Confirmar vuelta de la comida?</p>
+            <div class="modal-buttons">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="ficharVueltaComer()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalFinJornada" class="modal">
+        <div class="modal-content">
+            <h3>🌙 Fin de Jornada</h3>
+            <form id="formFinJornada">
+                <div class="form-group" id="cenaGroup">
+                    <label>¿Cena?</label>
+                    <select id="seHaCenado">
+                        <option value="no">No</option>
+                        <option value="si">Sí</option>
+                    </select>
+                </div>
+                <div class="form-group" id="pernoctaGroup">
+                    <label>¿Hay pernocta?</label>
+                    <select id="hayPernocta">
+                        <option value="no">No</option>
+                        <option value="si">Sí</option>
+                    </select>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Finalizar Jornada</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let currentSession = null;
+        let allSessions = [];
+        let config = {};
+        let userKey = null;
+        let isOnline = false;
+
+        // Funciones de Firebase
+        async function initFirebase() {
+            try {
+                if (window.db) {
+                    isOnline = true;
+                    updateOnlineIndicator();
+                    return true;
+                }
+            } catch (error) {
+                console.log('Firebase offline, usando localStorage');
+                isOnline = false;
+                updateOnlineIndicator();
+                return false;
+            }
+        }
+
+        function updateOnlineIndicator() {
+            const indicator = document.getElementById('onlineIndicator');
+            if (isOnline) {
+                indicator.textContent = '🟢 Online';
+                indicator.className = 'online-indicator online';
+            } else {
+                indicator.textContent = '🔴 Offline';
+                indicator.className = 'online-indicator offline';
+            }
+        }
+
+        async function saveToFirebase(data, collection) {
+            if (!isOnline || !userKey) return false;
+            try {
+                const { addDoc, collection: fbCollection } = window.firebaseImports;
+                await addDoc(fbCollection(window.db, collection), {
+                    ...data,
+                    userKey: userKey,
+                    timestamp: new Date()
+                });
+                return true;
+            } catch (error) {
+                console.error('Error saving to Firebase:', error);
+                return false;
+            }
+        }
+
+        async function loadFromFirebase(collection) {
+            if (!isOnline || !userKey) return [];
+            try {
+                const { getDocs, query, where, collection: fbCollection } = window.firebaseImports;
+                const q = query(fbCollection(window.db, collection), where("userKey", "==", userKey));
+                const querySnapshot = await getDocs(q);
+                return querySnapshot.docs.map(doc => ({ firebaseId: doc.id, ...doc.data() }));
+            } catch (error) {
+                console.error('Error loading from Firebase:', error);
+                return [];
+            }
+        }
+
+        function setUserKey() {
+            const input = document.getElementById('userKeyInput');
+            const key = input.value.trim();
+            
+            if (!key) {
+                alert('Por favor, introduce una clave personal');
+                return;
+            }
+            
+            userKey = key;
+            localStorage.setItem('userKey', userKey);
+            document.getElementById('userKeyModal').style.display = 'none';
+            document.getElementById('mainContainer').style.display = 'block';
+            
+            // Inicializar aplicación
+            initApp();
+        }
+
+        async function initApp() {
+            await initFirebase();
+            loadConfig();
+            await loadSessions();
+            updateClock();
+            updateButtonsState();
+            updateSummary();
+            filteredSessions = [...allSessions];
+            updateRegistroTable();
+            updateContadorResultados();
+            setInterval(updateClock, 1000);
+        }
+
+        // Funciones de tiempo
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString('es-ES');
+        }
+
+        function formatTime(date) {
+            return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function formatDate(date) {
+            return date.toLocaleDateString('es-ES');
+        }
+
+        // Función para convertir horas decimales a formato h m
+        function formatHours(hours) {
+            const totalMinutes = Math.round(hours * 60);
+            const h = Math.floor(totalMinutes / 60);
+            const m = totalMinutes % 60;
+            return `${h}h ${m}m`;
+        }
+
+        // Gestión de pestañas
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+            
+            if (tabName === 'registro') {
+                updateRegistroTable();
+            }
+        }
+
+        // Gestión de modales
+        function openModal(tipo) {
+            const modal = document.getElementById('modal' + tipo.charAt(0).toUpperCase() + tipo.slice(1));
+            modal.style.display = 'block';
+            
+            // Configurar visibilidad de campos según el tipo de servicio actual
+            if (tipo === 'salidaComer' && currentSession && currentSession.tipoServicio === 'internacional') {
+                document.getElementById('comidaGroup').style.display = 'none';
+            }
+            
+            if (tipo === 'finJornada' && currentSession) {
+                if (currentSession.tipoServicio === 'internacional') {
+                    document.getElementById('cenaGroup').style.display = 'none';
+                    document.getElementById('pernoctaGroup').style.display = 'none';
+                } else if (currentSession.ubicacion === 'taller') {
+                    // Si es taller, ocultar pregunta de pernocta
+                    document.getElementById('pernoctaGroup').style.display = 'none';
+                } else {
+                    // Si es cliente, mostrar pregunta de pernocta
+                    document.getElementById('pernoctaGroup').style.display = 'block';
+                }
+            }
+        }
+
+        function closeModal() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+        }
+
+        function toggleUbicacion() {
+            const tipoServicio = document.getElementById('tipoServicio').value;
+            const ubicacionGroup = document.getElementById('ubicacionGroup');
+            ubicacionGroup.style.display = tipoServicio === 'nacional' ? 'block' : 'none';
+        }
+
+        // Funciones de fichaje
+        function updateButtonsState() {
+            const btnEntrada = document.getElementById('btnEntrada');
+            const btnSalidaComer = document.getElementById('btnSalidaComer');
+            const btnVueltaComer = document.getElementById('btnVueltaComer');
+            const btnFinJornada = document.getElementById('btnFinJornada');
+            const status = document.getElementById('currentStatus');
+
+            if (!currentSession) {
+                btnEntrada.disabled = false;
+                btnSalidaComer.disabled = true;
+                btnVueltaComer.disabled = true;
+                btnFinJornada.disabled = true;
+                status.textContent = "Listo para fichar entrada";
+            } else {
+                btnEntrada.disabled = true;
+                
+                if (!currentSession.salidaComer) {
+                    btnSalidaComer.disabled = false;
+                    btnVueltaComer.disabled = true;
+                    btnFinJornada.disabled = true;
+                    status.textContent = "Trabajando - Siguiente: Salida para comer";
+                } else if (!currentSession.vueltaComer) {
+                    btnSalidaComer.disabled = true;
+                    btnVueltaComer.disabled = false;
+                    btnFinJornada.disabled = true;
+                    status.textContent = "En pausa para comer - Siguiente: Vuelta de comer";
+                } else if (!currentSession.finJornada) {
+                    btnSalidaComer.disabled = true;
+                    btnVueltaComer.disabled = true;
+                    btnFinJornada.disabled = false;
+                    status.textContent = "Trabajando - Siguiente: Fin de jornada";
+                }
+            }
+        }
+
+        // Event listeners para formularios
+        document.getElementById('formEntrada').addEventListener('submit', function(e) {
+            e.preventDefault();
+            ficharEntrada();
+        });
+
+        document.getElementById('formSalidaComer').addEventListener('submit', function(e) {
+            e.preventDefault();
+            ficharSalidaComer();
+        });
+
+        document.getElementById('formFinJornada').addEventListener('submit', function(e) {
+            e.preventDefault();
+            ficharFinJornada();
+        });
+
+        function ficharEntrada() {
+            const now = new Date();
+            const tipoServicio = document.getElementById('tipoServicio').value;
+            const ubicacion = tipoServicio === 'nacional' ? document.getElementById('ubicacion').value : null;
+            const esFestivo = document.getElementById('esFestivo').value === 'si';
+            
+            currentSession = {
+                id: Date.now(),
+                fecha: formatDate(now),
+                tipoServicio: tipoServicio,
+                ubicacion: ubicacion,
+                esFestivo: esFestivo,
+                entrada: formatTime(now),
+                salidaComer: null,
+                vueltaComer: null,
+                finJornada: null,
+                seHaComido: null,
+                seHaCenado: null,
+                hayPernocta: null,
+                dia: getDayType(now, esFestivo),
+                horasTrabajadas: 0,
+                horasExtra: 0,
+                horasNocturnas: 0,
+                importeTotal: 0
+            };
+            
+            saveCurrentSession();
+            updateButtonsState();
+            closeModal();
+        }
+
+        function ficharSalidaComer() {
+            const now = new Date();
+            const seHaComido = currentSession.tipoServicio === 'nacional' ? document.getElementById('seHaComido').value : 'no';
+            
+            currentSession.salidaComer = formatTime(now);
+            currentSession.seHaComido = seHaComido;
+            
+            saveCurrentSession();
+            updateButtonsState();
+            closeModal();
+        }
+
+        function ficharVueltaComer() {
+            const now = new Date();
+            currentSession.vueltaComer = formatTime(now);
+            
+            saveCurrentSession();
+            updateButtonsState();
+            closeModal();
+        }
+
+        function ficharFinJornada() {
+            const now = new Date();
+            const seHaCenado = currentSession.tipoServicio === 'nacional' ? document.getElementById('seHaCenado').value : 'no';
+            
+            // Solo preguntar por pernocta si es nacional Y cliente
+            let hayPernocta = 'no';
+            if (currentSession.tipoServicio === 'nacional' && currentSession.ubicacion === 'cliente') {
+                hayPernocta = document.getElementById('hayPernocta').value;
+            }
+            
+            currentSession.finJornada = formatTime(now);
+            currentSession.seHaCenado = seHaCenado;
+            currentSession.hayPernocta = hayPernocta;
+            
+            // Calcular horas trabajadas y extras
+            calculateHours();
+            calculateAmount();
+            
+            // Guardar sesión completa
+            allSessions.push(currentSession);
+            currentSession = null;
+            
+            saveSessions();
+            updateButtonsState();
+            updateSummary();
+            closeModal();
+        }
+
+        function getDayType(date, esFestivo = false) {
+            const day = date.getDay();
+            const hour = date.getHours();
+            
+            // Si es festivo, siempre es S-D-F independientemente del día de la semana
+            if (esFestivo) return 'S-D-F';
+            
+            if (day >= 1 && day <= 5) return 'L-V';
+            if (day === 6) return hour < 13 ? 'sabado-manana' : 'sabado-tarde';
+            return 'S-D-F';
+        }
+
+        function calculateHours() {
+            const entrada = parseTime(currentSession.entrada);
+            let salidaComer = null;
+            let vueltaComer = null;
+            let finJornada = null;
+            
+            // Calcular tiempos relativos a la entrada para manejar cruce de medianoche
+            if (currentSession.salidaComer) {
+                salidaComer = parseTimeForCalculation(currentSession.salidaComer, entrada);
+            }
+            if (currentSession.vueltaComer) {
+                vueltaComer = parseTimeForCalculation(currentSession.vueltaComer, salidaComer || entrada);
+            }
+            finJornada = parseTimeForCalculation(currentSession.finJornada, vueltaComer || salidaComer || entrada);
+            
+            let horasTrabajadas = 0;
+            let horasNocturnas = 0;
+            
+            // Calcular horas de la mañana (hasta salida a comer)
+            if (salidaComer) {
+                const horasManana = (salidaComer - entrada) / (1000 * 60 * 60);
+                horasTrabajadas += horasManana;
+                horasNocturnas += calculateNightHours(entrada, salidaComer);
+            }
+            
+            // Calcular horas de la tarde (desde vuelta de comer hasta fin)
+            if (vueltaComer) {
+                const horasTarde = (finJornada - vueltaComer) / (1000 * 60 * 60);
+                horasTrabajadas += horasTarde;
+                horasNocturnas += calculateNightHours(vueltaComer, finJornada);
+            } else if (!salidaComer) {
+                // Jornada sin pausa para comer (continua)
+                const horasTotal = (finJornada - entrada) / (1000 * 60 * 60);
+                horasTrabajadas += horasTotal;
+                horasNocturnas += calculateNightHours(entrada, finJornada);
+            }
+            
+            currentSession.horasTrabajadas = Math.round(horasTrabajadas * 100) / 100;
+            currentSession.horasNocturnas = Math.round(horasNocturnas * 100) / 100;
+            
+            // Calcular horas extra según las reglas
+            calculateExtraHours();
+        }
+
+        function parseTime(timeStr) {
+            const today = new Date();
+            const [hours, minutes] = timeStr.split(':');
+            return new Date(today.getFullYear(), today.getMonth(), today.getDate(), parseInt(hours), parseInt(minutes));
+        }
+
+        function parseTimeForCalculation(timeStr, referenceTime) {
+            const [hours, minutes] = timeStr.split(':');
+            const parsedTime = new Date(referenceTime.getFullYear(), referenceTime.getMonth(), referenceTime.getDate(), parseInt(hours), parseInt(minutes));
+            
+            // Si la hora es menor que la hora de referencia, asumimos que es del día siguiente
+            if (parsedTime < referenceTime) {
+                parsedTime.setDate(parsedTime.getDate() + 1);
+            }
+            
+            return parsedTime;
+        }
+
+        function calculateNightHours(start, end) {
+            const [nightStartHour, nightStartMin] = (config.horaInicioNocturno || '22:00').split(':').map(Number);
+            const [nightEndHour, nightEndMin] = (config.horaFinNocturno || '06:00').split(':').map(Number);
+            
+            let nightHours = 0;
+            let current = new Date(start);
+            const endTime = new Date(end);
+            
+            while (current < endTime) {
+                const currentHour = current.getHours();
+                const currentMin = current.getMinutes();
+                const currentTimeInMin = currentHour * 60 + currentMin;
+                
+                const nightStartInMin = nightStartHour * 60 + nightStartMin;
+                const nightEndInMin = nightEndHour * 60 + nightEndMin;
+                
+                let isNight = false;
+                
+                if (nightStartInMin > nightEndInMin) {
+                    // Horario nocturno cruza medianoche (ej: 22:00 - 06:00)
+                    isNight = currentTimeInMin >= nightStartInMin || currentTimeInMin < nightEndInMin;
+                } else {
+                    // Horario nocturno no cruza medianoche
+                    isNight = currentTimeInMin >= nightStartInMin && currentTimeInMin < nightEndInMin;
+                }
+                
+                if (isNight) {
+                    nightHours += 1/60; // 1 minuto
+                }
+                current.setMinutes(current.getMinutes() + 1);
+            }
+            
+            return nightHours;
+        }
+
+        function calculateExtraHours() {
+            const dia = currentSession.dia;
+            const horasTrabajadas = currentSession.horasTrabajadas;
+            let horasExtra = 0;
+            
+            if (currentSession.tipoServicio === 'nacional') {
+                if (dia === 'L-V') {
+                    horasExtra = Math.max(0, horasTrabajadas - 8.25); // 8h 15min
+                } else {
+                    horasExtra = horasTrabajadas; // Sábados, domingos y festivos
+                }
+            } else { // Internacional
+                if (dia === 'L-V') {
+                    horasExtra = Math.max(0, horasTrabajadas - 8.25);
+                } else {
+                    horasExtra = horasTrabajadas;
+                }
+            }
+            
+            currentSession.horasExtra = Math.round(horasExtra * 100) / 100;
+        }
+
+        function calculateAmount() {
+            let total = 0;
+            
+            if (currentSession.tipoServicio === 'nacional') {
+                // Complementos de comida y cena
+                if (currentSession.seHaComido === 'si') {
+                    total += parseFloat(config.precioComida || 13);
+                }
+                if (currentSession.seHaCenado === 'si') {
+                    total += parseFloat(config.precioCena || 15);
+                }
+                
+                // Complementos de pernocta - SOLO para ubicación CLIENTE
+                if (currentSession.ubicacion === 'cliente') {
+                    if (currentSession.hayPernocta === 'si') {
+                        if (currentSession.dia === 'L-V') {
+                            total += parseFloat(config.pernoctaLV || 13);
+                        } else {
+                            total += parseFloat(config.pernoctaSDF || 17);
+                        }
+                    } else {
+                        if (currentSession.dia === 'L-V') {
+                            total += parseFloat(config.sinPernoctaLV || 7);
+                        } else {
+                            total += parseFloat(config.sinPernoctaSDF || 10);
+                        }
+                    }
+                }
+                
+                // Horas extra - Separar normales de nocturnas/festivas
+                if (currentSession.horasExtra > 0) {
+                    let tarifaExtraNormal;
+                    let tarifaExtraEspecial;
+                    
+                    if (currentSession.dia === 'sabado-tarde' || currentSession.dia === 'S-D-F') {
+                        // Sábado tarde, domingo o festivo - todas las horas son especiales
+                        tarifaExtraEspecial = parseFloat(config.extraEspecial || 27.79);
+                        total += currentSession.horasExtra * tarifaExtraEspecial;
+                    } else {
+                        // Día L-V - separar horas extra normales de nocturnas
+                        if (currentSession.ubicacion === 'taller') {
+                            tarifaExtraNormal = parseFloat(config.extraTaller || 22.23);
+                        } else {
+                            tarifaExtraNormal = parseFloat(config.extraCliente || 23.82);
+                        }
+                        
+                        // Calcular cuántas de las horas extra son nocturnas
+                        const horasExtraNocturnas = Math.min(currentSession.horasNocturnas, currentSession.horasExtra);
+                        const horasExtraNormales = currentSession.horasExtra - horasExtraNocturnas;
+                        
+                        // Aplicar tarifas
+                        total += horasExtraNormales * tarifaExtraNormal;
+                        
+                        // Las horas nocturnas tienen tarifa especial
+                        tarifaExtraEspecial = parseFloat(config.extraEspecial || 27.79);
+                        total += horasExtraNocturnas * tarifaExtraEspecial;
+                        
+                        // Guardar el desglose para el resumen
+                        currentSession.horasExtraNormales = horasExtraNormales;
+                        currentSession.horasExtraNocturnas = horasExtraNocturnas;
+                        currentSession.importeExtraNormales = horasExtraNormales * tarifaExtraNormal;
+                        currentSession.importeExtraNocturnas = horasExtraNocturnas * tarifaExtraEspecial;
+                    }
+                }
+            } else { // Internacional
+                // Dieta automática
+                if (currentSession.dia === 'L-V') {
+                    total += parseFloat(config.dietaInternacionalLV || 26);
+                } else {
+                    total += parseFloat(config.dietaInternacionalSDF || 30);
+                }
+                
+                // Horas extra internacionales
+                if (currentSession.horasExtra > 0) {
+                    let tarifaExtra;
+                    if (currentSession.dia === 'sabado-tarde' || currentSession.dia === 'S-D-F') {
+                        tarifaExtra = parseFloat(config.extraEspecial || 27.79);
+                    } else {
+                        tarifaExtra = parseFloat(config.extraInternacional || 22.23);
+                    }
+                    total += currentSession.horasExtra * tarifaExtra;
+                }
+            }
+            
+            currentSession.importeTotal = Math.round(total * 100) / 100;
+        }
+
+        // Funciones de almacenamiento híbrido (Firebase + localStorage)
+        function saveCurrentSession() {
+            localStorage.setItem('currentSession', JSON.stringify(currentSession));
+        }
+
+        async function saveSessions() {
+            // Guardar localmente siempre
+            localStorage.setItem('allSessions', JSON.stringify(allSessions));
+            localStorage.removeItem('currentSession');
+            
+            // Intentar guardar en Firebase
+            if (isOnline && userKey) {
+                try {
+                    // Guardar la sesión más reciente en Firebase
+                    const latestSession = allSessions[allSessions.length - 1];
+                    if (latestSession && !latestSession.firebaseId) {
+                        await saveToFirebase(latestSession, 'sessions');
+                    }
+                } catch (error) {
+                    console.log('Error saving to Firebase, data saved locally');
+                }
+            }
+        }
+
+        async function loadSessions() {
+            // Cargar desde localStorage primero
+            const stored = localStorage.getItem('allSessions');
+            if (stored) {
+                allSessions = JSON.parse(stored);
+            }
+            
+            // Intentar sincronizar con Firebase
+            if (isOnline && userKey) {
+                try {
+                    const firebaseSessions = await loadFromFirebase('sessions');
+                    
+                    // Combinar datos locales y de Firebase (evitar duplicados)
+                    const localIds = allSessions.map(s => s.id);
+                    const newSessions = firebaseSessions.filter(s => !localIds.includes(s.id));
+                    
+                    if (newSessions.length > 0) {
+                        allSessions = [...allSessions, ...newSessions];
+                        localStorage.setItem('allSessions', JSON.stringify(allSessions));
+                    }
+                } catch (error) {
+                    console.log('Using local data only');
+                }
+            }
+            
+            // Cargar sesión actual
+            const currentStored = localStorage.getItem('currentSession');
+            if (currentStored) {
+                currentSession = JSON.parse(currentStored);
+            }
+        }
+
+        async function saveConfig() {
+            config = {
+                horaInicioNocturno: document.getElementById('horaInicioNocturno').value,
+                horaFinNocturno: document.getElementById('horaFinNocturno').value,
+                precioComida: document.getElementById('precioComida').value,
+                precioCena: document.getElementById('precioCena').value,
+                pernoctaLV: document.getElementById('pernoctaLV').value,
+                pernoctaSDF: document.getElementById('pernoctaSDF').value,
+                sinPernoctaLV: document.getElementById('sinPernoctaLV').value,
+                sinPernoctaSDF: document.getElementById('sinPernoctaSDF').value,
+                dietaInternacionalLV: document.getElementById('dietaInternacionalLV').value,
+                dietaInternacionalSDF: document.getElementById('dietaInternacionalSDF').value,
+                extraTaller: document.getElementById('extraTaller').value,
+                extraCliente: document.getElementById('extraCliente').value,
+                extraEspecial: document.getElementById('extraEspecial').value,
+                extraInternacional: document.getElementById('extraInternacional').value
+            };
+            
+            localStorage.setItem('config', JSON.stringify(config));
+            
+            // Guardar en Firebase también
+            if (isOnline && userKey) {
+                await saveToFirebase(config, 'config');
+            }
+            
+            alert('Configuración guardada correctamente');
+        }
+
+        function loadConfig() {
+            const stored = localStorage.getItem('config');
+            if (stored) {
+                config = JSON.parse(stored);
+                
+                // Cargar valores en los campos
+                Object.keys(config).forEach(key => {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        element.value = config[key];
+                    }
+                });
+            } else {
+                // Configuración por defecto
+                config = {
+                    horaInicioNocturno: '22:00',
+                    horaFinNocturno: '06:00',
+                    precioComida: '13',
+                    precioCena: '15',
+                    pernoctaLV: '13',
+                    pernoctaSDF: '17',
+                    sinPernoctaLV: '7',
+                    sinPernoctaSDF: '10',
+                    dietaInternacionalLV: '26',
+                    dietaInternacionalSDF: '30',
+                    extraTaller: '22.23',
+                    extraCliente: '23.82',
+                    extraEspecial: '27.79',
+                    extraInternacional: '22.23'
+                };
+            }
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar si ya tiene clave guardada
+            const savedKey = localStorage.getItem('userKey');
+            if (savedKey) {
+                userKey = savedKey;
+                document.getElementById('userKeyModal').style.display = 'none';
+                document.getElementById('mainContainer').style.display = 'block';
+                initApp();
+            }
+            // Si no tiene clave, se muestra el modal automáticamente
+        });
+
+        // Funciones de resumen
+        function updateSummary() {
+            const currentMonth = new Date().getMonth();
+            const currentYear = new Date().getFullYear();
+            
+            const monthSessions = allSessions.filter(session => {
+                const sessionDate = new Date(session.fecha.split('/').reverse().join('-'));
+                return sessionDate.getMonth() === currentMonth && sessionDate.getFullYear() === currentYear;
+            });
+            
+            const totalDias = monthSessions.length;
+            const totalHoras = monthSessions.reduce((sum, session) => sum + session.horasTrabajadas, 0);
+            const totalExtras = monthSessions.reduce((sum, session) => sum + session.horasExtra, 0);
+            const totalImporte = monthSessions.reduce((sum, session) => sum + session.importeTotal, 0);
+            
+            // Calcular desglose de importes
+            let totalComplementos = 0;
+            let totalHorasExtrasNormales = 0;
+            let totalHorasExtrasEspeciales = 0;
+            let importeExtrasNormales = 0;
+            let importeExtrasEspeciales = 0;
+            
+            monthSessions.forEach(session => {
+                if (session.tipoServicio === 'nacional') {
+                    // Complementos
+                    if (session.seHaComido === 'si') {
+                        totalComplementos += parseFloat(config.precioComida || 13);
+                    }
+                    if (session.seHaCenado === 'si') {
+                        totalComplementos += parseFloat(config.precioCena || 15);
+                    }
+                    
+                    // Pernocta solo para cliente
+                    if (session.ubicacion === 'cliente') {
+                        if (session.hayPernocta === 'si') {
+                            if (session.dia === 'L-V') {
+                                totalComplementos += parseFloat(config.pernoctaLV || 13);
+                            } else {
+                                totalComplementos += parseFloat(config.pernoctaSDF || 17);
+                            }
+                        } else {
+                            if (session.dia === 'L-V') {
+                                totalComplementos += parseFloat(config.sinPernoctaLV || 7);
+                            } else {
+                                totalComplementos += parseFloat(config.sinPernoctaSDF || 10);
+                            }
+                        }
+                    }
+                    
+                    // Horas extra
+                    if (session.horasExtra > 0) {
+                        if (session.dia === 'sabado-tarde' || session.dia === 'S-D-F') {
+                            // Todas las horas son especiales
+                            totalHorasExtrasEspeciales += session.horasExtra;
+                            importeExtrasEspeciales += session.horasExtra * parseFloat(config.extraEspecial || 27.79);
+                        } else {
+                            // Separar normales de nocturnas
+                            const horasExtraNocturnas = Math.min(session.horasNocturnas, session.horasExtra);
+                            const horasExtraNormales = session.horasExtra - horasExtraNocturnas;
+                            
+                            totalHorasExtrasNormales += horasExtraNormales;
+                            totalHorasExtrasEspeciales += horasExtraNocturnas;
+                            
+                            let tarifaNormal;
+                            if (session.ubicacion === 'taller') {
+                                tarifaNormal = parseFloat(config.extraTaller || 22.23);
+                            } else {
+                                tarifaNormal = parseFloat(config.extraCliente || 23.82);
+                            }
+                            
+                            importeExtrasNormales += horasExtraNormales * tarifaNormal;
+                            importeExtrasEspeciales += horasExtraNocturnas * parseFloat(config.extraEspecial || 27.79);
+                        }
+                    }
+                } else { // Internacional
+                    // Dieta automática
+                    if (session.dia === 'L-V') {
+                        totalComplementos += parseFloat(config.dietaInternacionalLV || 26);
+                    } else {
+                        totalComplementos += parseFloat(config.dietaInternacionalSDF || 30);
+                    }
+                    
+                    // Horas extra internacionales
+                    if (session.horasExtra > 0) {
+                        if (session.dia === 'sabado-tarde' || session.dia === 'S-D-F') {
+                            totalHorasExtrasEspeciales += session.horasExtra;
+                            importeExtrasEspeciales += session.horasExtra * parseFloat(config.extraEspecial || 27.79);
+                        } else {
+                            totalHorasExtrasNormales += session.horasExtra;
+                            importeExtrasNormales += session.horasExtra * parseFloat(config.extraInternacional || 22.23);
+                        }
+                    }
+                }
+            });
+            
+            document.getElementById('summaryGrid').innerHTML = `
+                <div class="summary-item highlight">
+                    <div class="value">${totalDias}</div>
+                    <div class="label">Días Trabajados</div>
+                </div>
+                <div class="summary-item highlight">
+                    <div class="value">${formatHours(totalHoras)}</div>
+                    <div class="label">Horas Totales</div>
+                </div>
+                <div class="summary-item highlight">
+                    <div class="value">${formatHours(totalExtras)}</div>
+                    <div class="label">Horas Extra</div>
+                </div>
+                <div class="summary-item">
+                    <div class="value">${formatHours(totalHorasExtrasNormales)}</div>
+                    <div class="label">H. Extra Normales</div>
+                </div>
+                <div class="summary-item">
+                    <div class="value">${formatHours(totalHorasExtrasEspeciales)}</div>
+                    <div class="label">H. Extra Nocturnas/Festivas</div>
+                </div>
+                <div class="summary-item">
+                    <div class="value">${importeExtrasNormales.toFixed(2)}€</div>
+                    <div class="label">€ Extra Normales</div>
+                </div>
+                <div class="summary-item">
+                    <div class="value">${importeExtrasEspeciales.toFixed(2)}€</div>
+                    <div class="label">€ Extra Nocturnas/Festivas</div>
+                </div>
+                <div class="summary-item">
+                    <div class="value">${totalComplementos.toFixed(2)}€</div>
+                    <div class="label">Complementos</div>
+                </div>
+                <div class="summary-item highlight">
+                    <div class="value">${totalImporte.toFixed(2)}€</div>
+                    <div class="label">Importe Total</div>
+                </div>
+            `;
+        }
+
+        // Funciones de tabla de registro
+        function updateRegistroTable() {
+            const tbody = document.getElementById('registroBody');
+            tbody.innerHTML = '';
+            
+            // Usar datos filtrados si existen, sino todos los datos
+            const sessionsToShow = filteredSessions.length > 0 || document.getElementById('filtroTipo')?.value !== 'todos' 
+                ? filteredSessions 
+                : allSessions;
+            
+            // Ordenar por fecha descendente
+            const sortedSessions = [...sessionsToShow].sort((a, b) => {
+                const dateA = new Date(a.fecha.split('/').reverse().join('-'));
+                const dateB = new Date(b.fecha.split('/').reverse().join('-'));
+                return dateB - dateA;
+            });
+            
+            if (sortedSessions.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="10" style="text-align: center; padding: 40px; color: #666; font-style: italic;">
+                            📭 No hay registros que coincidan con el filtro seleccionado
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            sortedSessions.forEach((session, index) => {
+                // Fila principal
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <button class="expand-btn" onclick="toggleDetails(${index})" id="expandBtn${index}">
+                            ▶️
+                        </button>
+                    </td>
+                    <td>${session.fecha}</td>
+                    <td>${session.esFestivo ? '🎉 Festivo' : (session.tipoServicio.charAt(0).toUpperCase() + session.tipoServicio.slice(1))}</td>
+                    <td>${session.ubicacion || '-'}</td>
+                    <td>${session.entrada}</td>
+                    <td>${session.finJornada}</td>
+                    <td>${formatHours(session.horasTrabajadas)}</td>
+                    <td>${formatHours(session.horasExtra)}</td>
+                    <td>${session.importeTotal.toFixed(2)}€</td>
+                    <td>
+                        <button class="action-btn btn-edit" onclick="editSession(${session.id})">✏️</button>
+                        <button class="action-btn btn-delete" onclick="deleteSession(${session.id})">🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+                
+                // Fila de detalles
+                const detailRow = document.createElement('tr');
+                detailRow.className = 'detail-row';
+                detailRow.id = `detailRow${index}`;
+                detailRow.innerHTML = `
+                    <td colspan="10">
+                        <div class="detail-content">
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <span class="detail-label">Salida Comer:</span>
+                                    <span class="detail-value">${session.salidaComer || '-'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Vuelta Comer:</span>
+                                    <span class="detail-value">${session.vueltaComer || '-'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Horas Nocturnas:</span>
+                                    <span class="detail-value">${formatHours(session.horasNocturnas)}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Día Tipo:</span>
+                                    <span class="detail-value">${session.dia}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Comida:</span>
+                                    <span class="detail-value">${session.seHaComido === 'si' ? '✅ Sí' : '❌ No'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Cena:</span>
+                                    <span class="detail-value">${session.seHaCenado === 'si' ? '✅ Sí' : '❌ No'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">¿Hay Pernocta?:</span>
+                                    <span class="detail-value">${session.hayPernocta === 'si' ? '✅ Sí' : (session.ubicacion === 'cliente' ? '❌ No' : 'N/A Taller')}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">¿Es Festivo?:</span>
+                                    <span class="detail-value">${session.esFestivo ? '🎉 Sí' : '📅 No'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(detailRow);
+            });
+        }
+
+        function toggleDetails(index) {
+            const detailRow = document.getElementById(`detailRow${index}`);
+            const expandBtn = document.getElementById(`expandBtn${index}`);
+            
+            if (detailRow.style.display === 'none' || detailRow.style.display === '') {
+                detailRow.style.display = 'table-row';
+                expandBtn.textContent = '🔽';
+            } else {
+                detailRow.style.display = 'none';
+                expandBtn.textContent = '▶️';
+            }
+        }
+
+        // Variable para almacenar datos filtrados
+        let filteredSessions = [];
+
+        // Funciones de filtrado
+        function applyFilters() {
+            const filtroTipo = document.getElementById('filtroTipo').value;
+            const fechaDesde = document.getElementById('fechaDesde').value;
+            const fechaHasta = document.getElementById('fechaHasta').value;
+            
+            // Mostrar/ocultar rango personalizado
+            const rangoPersonalizado = document.getElementById('rangoPersonalizado');
+            if (filtroTipo === 'personalizado') {
+                rangoPersonalizado.style.display = 'flex';
+            } else {
+                rangoPersonalizado.style.display = 'none';
+            }
+            
+            // Filtrar datos
+            filteredSessions = allSessions.filter(session => {
+                const sessionDate = new Date(session.fecha.split('/').reverse().join('-'));
+                const today = new Date();
+                
+                switch (filtroTipo) {
+                    case 'todos':
+                        return true;
+                        
+                    case 'ultimo-mes':
+                        const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                        const endLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                        return sessionDate >= lastMonth && sessionDate <= endLastMonth;
+                        
+                    case 'mes-actual':
+                        const startCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                        return sessionDate >= startCurrentMonth;
+                        
+                    case 'ultimos-7':
+                        const last7Days = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+                        return sessionDate >= last7Days;
+                        
+                    case 'ultimos-30':
+                        const last30Days = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+                        return sessionDate >= last30Days;
+                        
+                    case 'L-V':
+                        return session.dia === 'L-V' && !session.esFestivo;
+                        
+                    case 'S-D-F':
+                        return session.dia === 'S-D-F' || session.dia === 'sabado-manana' || session.dia === 'sabado-tarde';
+                        
+                    case 'festivos':
+                        return session.esFestivo;
+                        
+                    case 'nacional':
+                        return session.tipoServicio === 'nacional';
+                        
+                    case 'internacional':
+                        return session.tipoServicio === 'internacional';
+                        
+                    case 'taller':
+                        return session.ubicacion === 'taller';
+                        
+                    case 'cliente':
+                        return session.ubicacion === 'cliente';
+                        
+                    case 'personalizado':
+                        if (!fechaDesde || !fechaHasta) return true;
+                        const desde = new Date(fechaDesde);
+                        const hasta = new Date(fechaHasta);
+                        return sessionDate >= desde && sessionDate <= hasta;
+                        
+                    default:
+                        return true;
+                }
+            });
+            
+            updateRegistroTable();
+            updateContadorResultados();
+        }
+
+        function resetFilters() {
+            document.getElementById('filtroTipo').value = 'todos';
+            document.getElementById('fechaDesde').value = '';
+            document.getElementById('fechaHasta').value = '';
+            document.getElementById('rangoPersonalizado').style.display = 'none';
+            filteredSessions = [...allSessions];
+            updateRegistroTable();
+            updateContadorResultados();
+        }
+
+        function updateContadorResultados() {
+            const contador = document.getElementById('contadorResultados');
+            const total = allSessions.length;
+            const filtrados = filteredSessions.length;
+            
+            if (filtrados === total) {
+                contador.textContent = `${total} registro${total !== 1 ? 's' : ''}`;
+            } else {
+                contador.textContent = `${filtrados} de ${total} registro${total !== 1 ? 's' : ''}`;
+            }
+        }
+
+        function editSession(id) {
+            const session = allSessions.find(s => s.id === id);
+            if (!session) return;
+            
+            // Crear modal de edición dinámicamente
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <h3>✏️ Editar Fichaje</h3>
+                    <form id="formEdit">
+                        <div class="form-group">
+                            <label>Fecha</label>
+                            <input type="date" id="editFecha" value="${session.fecha.split('/').reverse().join('-')}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de Servicio</label>
+                            <select id="editTipoServicio" onchange="toggleEditUbicacion()">
+                                <option value="nacional" ${session.tipoServicio === 'nacional' ? 'selected' : ''}>Nacional</option>
+                                <option value="internacional" ${session.tipoServicio === 'internacional' ? 'selected' : ''}>Internacional</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="editUbicacionGroup" style="display: ${session.tipoServicio === 'nacional' ? 'block' : 'none'}">
+                            <label>Ubicación</label>
+                            <select id="editUbicacion">
+                                <option value="taller" ${session.ubicacion === 'taller' ? 'selected' : ''}>Taller</option>
+                                <option value="cliente" ${session.ubicacion === 'cliente' ? 'selected' : ''}>Cliente</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Entrada</label>
+                            <input type="time" id="editEntrada" value="${session.entrada}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Salida Comer</label>
+                            <input type="time" id="editSalidaComer" value="${session.salidaComer || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Vuelta Comer</label>
+                            <input type="time" id="editVueltaComer" value="${session.vueltaComer || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Fin Jornada</label>
+                            <input type="time" id="editFinJornada" value="${session.finJornada}" required>
+                        </div>
+                        <div class="form-group" id="editComidaGroup" style="display: ${session.tipoServicio === 'nacional' ? 'block' : 'none'}">
+                            <label>¿Comida?</label>
+                            <select id="editSeHaComido">
+                                <option value="no" ${session.seHaComido === 'no' ? 'selected' : ''}>No</option>
+                                <option value="si" ${session.seHaComido === 'si' ? 'selected' : ''}>Sí</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="editCenaGroup" style="display: ${session.tipoServicio === 'nacional' ? 'block' : 'none'}">
+                            <label>¿Cena?</label>
+                            <select id="editSeHaCenado">
+                                <option value="no" ${session.seHaCenado === 'no' ? 'selected' : ''}>No</option>
+                                <option value="si" ${session.seHaCenado === 'si' ? 'selected' : ''}>Sí</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>¿Es día festivo?</label>
+                            <select id="editEsFestivo">
+                                <option value="no" ${!session.esFestivo ? 'selected' : ''}>No</option>
+                                <option value="si" ${session.esFestivo ? 'selected' : ''}>Sí</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="editPernoctaGroup" style="display: ${session.tipoServicio === 'nacional' ? 'block' : 'none'}">
+                            <label>¿Hay pernocta?</label>
+                            <select id="editHayPernocta">
+                                <option value="no" ${session.hayPernocta === 'no' ? 'selected' : ''}>No</option>
+                                <option value="si" ${session.hayPernocta === 'si' ? 'selected' : ''}>Sí</option>
+                            </select>
+                        </div>
+                        <div class="modal-buttons">
+                            <button type="button" class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Función para toggle de ubicación en edición
+            window.toggleEditUbicacion = function() {
+                const tipoServicio = document.getElementById('editTipoServicio').value;
+                const groups = ['editUbicacionGroup', 'editComidaGroup', 'editCenaGroup', 'editPernoctaGroup'];
+                groups.forEach(groupId => {
+                    const group = document.getElementById(groupId);
+                    if (group) {
+                        group.style.display = tipoServicio === 'nacional' ? 'block' : 'none';
+                    }
+                });
+            };
+            
+            document.getElementById('formEdit').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Actualizar datos de la sesión
+                const fecha = document.getElementById('editFecha').value;
+                session.fecha = fecha.split('-').reverse().join('/');
+                session.tipoServicio = document.getElementById('editTipoServicio').value;
+                session.ubicacion = session.tipoServicio === 'nacional' ? document.getElementById('editUbicacion').value : null;
+                session.esFestivo = document.getElementById('editEsFestivo').value === 'si';
+                session.entrada = document.getElementById('editEntrada').value;
+                session.salidaComer = document.getElementById('editSalidaComer').value || null;
+                session.vueltaComer = document.getElementById('editVueltaComer').value || null;
+                session.finJornada = document.getElementById('editFinJornada').value;
+                
+                if (session.tipoServicio === 'nacional') {
+                    session.seHaComido = document.getElementById('editSeHaComido').value;
+                    session.seHaCenado = document.getElementById('editSeHaCenado').value;
+                    session.hayPernocta = document.getElementById('editHayPernocta').value;
+                }
+                
+                // Recalcular día, horas e importe
+                const sessionDate = new Date(fecha);
+                session.dia = getDayType(sessionDate, session.esFestivo);
+                
+                // Simular cálculos para la sesión editada usando las nuevas funciones
+                const tempCurrentSession = currentSession;
+                currentSession = session;
+                
+                // Recalcular horas usando la nueva lógica
+                const entrada = parseTime(session.entrada);
+                let salidaComer = null;
+                let vueltaComer = null;
+                let finJornada = null;
+                
+                if (session.salidaComer) {
+                    salidaComer = parseTimeForCalculation(session.salidaComer, entrada);
+                }
+                if (session.vueltaComer) {
+                    vueltaComer = parseTimeForCalculation(session.vueltaComer, salidaComer || entrada);
+                }
+                finJornada = parseTimeForCalculation(session.finJornada, vueltaComer || salidaComer || entrada);
+                
+                let horasTrabajadas = 0;
+                let horasNocturnas = 0;
+                
+                if (salidaComer) {
+                    const horasManana = (salidaComer - entrada) / (1000 * 60 * 60);
+                    horasTrabajadas += horasManana;
+                    horasNocturnas += calculateNightHours(entrada, salidaComer);
+                }
+                
+                if (vueltaComer) {
+                    const horasTarde = (finJornada - vueltaComer) / (1000 * 60 * 60);
+                    horasTrabajadas += horasTarde;
+                    horasNocturnas += calculateNightHours(vueltaComer, finJornada);
+                } else if (!salidaComer) {
+                    const horasTotal = (finJornada - entrada) / (1000 * 60 * 60);
+                    horasTrabajadas += horasTotal;
+                    horasNocturnas += calculateNightHours(entrada, finJornada);
+                }
+                
+                session.horasTrabajadas = Math.round(horasTrabajadas * 100) / 100;
+                session.horasNocturnas = Math.round(horasNocturnas * 100) / 100;
+                
+                calculateExtraHours();
+                calculateAmount();
+                currentSession = tempCurrentSession;
+                
+                saveSessions();
+                updateRegistroTable();
+                updateSummary();
+                modal.remove();
+            });
+        }
+
+        function deleteSession(id) {
+            if (confirm('¿Estás seguro de que quieres eliminar este fichaje?')) {
+                allSessions = allSessions.filter(s => s.id !== id);
+                saveSessions();
+                updateRegistroTable();
+                updateSummary();
+            }
+        }
+
+        // Funciones de importación/exportación
+        function exportData() {
+            const data = {
+                sessions: allSessions,
+                config: config,
+                currentSession: currentSession,
+                exportDate: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `fichajes_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    if (confirm('¿Estás seguro de que quieres importar estos datos? Esto sobrescribirá todos los datos actuales.')) {
+                        allSessions = data.sessions || [];
+                        config = data.config || config;
+                        currentSession = data.currentSession || null;
+                        
+                        // Guardar datos importados
+                        saveSessions();
+                        saveConfig();
+                        if (currentSession) saveCurrentSession();
+                        
+                        // Actualizar interfaz
+                        loadConfig();
+                        updateRegistroTable();
+                        updateSummary();
+                        updateButtonsState();
+                        
+                        alert('Datos importados correctamente');
+                    }
+                } catch (error) {
+                    alert('Error al importar el archivo. Asegúrate de que sea un archivo válido.');
+                }
+            };
+            reader.readAsText(file);
+            
+            // Limpiar el input
+            event.target.value = '';
+        }
+
+        // Cerrar modales al hacer clic fuera
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
