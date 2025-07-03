@@ -1170,34 +1170,51 @@
     </div>
 
     <div id="modalSalidaComer" class="modal">
-        <div class="modal-content">
-            <h3>🍽️ Salida para Comer</h3>
-            <form id="formSalidaComer">
-                <div class="form-group" id="comidaGroup">
-                    <label>¿Comida fuera?</label>
-                    <select id="seHaComido">
-                        <option value="no">No</option>
-                        <option value="si">Sí</option>
-                    </select>
-                </div>
-                <div class="modal-buttons">
-                    <button type="submit" class="btn btn-primary">Fichar Salida</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="modalVueltaComer" class="modal">
-        <div class="modal-content">
-            <h3>🔙 Vuelta de Comer</h3>
-            <p>¿Confirmar vuelta de la comida?</p>
+    <div class="modal-content">
+        <h3>🍽️ Salida para Comer</h3>
+        <form id="formSalidaComer">
+            <div class="form-group" id="comidaGroup">
+                <label>¿Comida fuera?</label>
+                <select id="seHaComido">
+                    <option value="no">No</option>
+                    <option value="si">Sí</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Tipo de Salida para Comer</label>
+                <select id="tipoSalidaComer">
+                    <option value="puntual">Puntual (sin redondeo)</option>
+                    <option value="temprano">Temprano (redondeo hacia arriba)</option>
+                    <option value="tarde">Tarde (redondeo hacia abajo)</option>
+                </select>
+            </div>
             <div class="modal-buttons">
-                <button type="button" class="btn btn-primary" onclick="ficharVueltaComer()">Confirmar</button>
+                <button type="submit" class="btn btn-primary">Fichar Salida</button>
                 <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
             </div>
-        </div>
+        </form>
     </div>
+</div>
+
+    <div id="modalVueltaComer" class="modal">
+    <div class="modal-content">
+        <h3>🔙 Vuelta de Comer</h3>
+        <form id="formVueltaComer">
+            <div class="form-group">
+                <label>Tipo de Vuelta de Comer</label>
+                <select id="tipoVueltaComer">
+                    <option value="puntual">Puntual (sin redondeo)</option>
+                    <option value="temprano">Temprano (redondeo hacia arriba)</option>
+                    <option value="tarde">Tarde (redondeo hacia abajo)</option>
+                </select>
+            </div>
+            <div class="modal-buttons">
+                <button type="submit" class="btn btn-primary">Confirmar</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
 
     <div id="modalFinJornada" class="modal">
         <div class="modal-content">
@@ -1561,6 +1578,10 @@
             e.preventDefault();
             ficharFinJornada();
         });
+        document.getElementById('formVueltaComer').addEventListener('submit', function(e) {
+    e.preventDefault();
+    ficharVueltaComer();
+});
 
         function ficharEntrada() {
             const now = new Date();
@@ -1603,25 +1624,44 @@
         }
 
         function ficharSalidaComer() {
-            const now = new Date();
-            const seHaComido = currentSession.tipoServicio === 'nacional' ? document.getElementById('seHaComido').value : 'no';
-            
-            currentSession.salidaComer = formatTime(now);
-            currentSession.seHaComido = seHaComido;
-            
-            saveCurrentSession();
-            updateButtonsState();
-            closeModal();
-        }
+    const now = new Date();
+    const seHaComido = currentSession.tipoServicio === 'nacional' ? document.getElementById('seHaComido').value : 'no';
+    const tipoSalidaComer = document.getElementById('tipoSalidaComer').value;
+    
+    // Calcular la hora de salida con redondeo si es necesario
+    let horaSalida = now;
+    if (tipoSalidaComer !== 'puntual') {
+        horaSalida = redondearHoraPorCuartos(now, tipoSalidaComer);
+    }
+    
+    currentSession.salidaComer = formatTime(horaSalida);
+    currentSession.salidaComerOriginal = formatTime(now);
+    currentSession.tipoSalidaComer = tipoSalidaComer;
+    currentSession.seHaComido = seHaComido;
+    
+    saveCurrentSession();
+    updateButtonsState();
+    closeModal();
+}
 
         function ficharVueltaComer() {
-            const now = new Date();
-            currentSession.vueltaComer = formatTime(now);
-            
-            saveCurrentSession();
-            updateButtonsState();
-            closeModal();
-        }
+    const now = new Date();
+    const tipoVueltaComer = document.getElementById('tipoVueltaComer').value;
+    
+    // Calcular la hora de vuelta con redondeo si es necesario
+    let horaVuelta = now;
+    if (tipoVueltaComer !== 'puntual') {
+        horaVuelta = redondearHoraPorCuartos(now, tipoVueltaComer);
+    }
+    
+    currentSession.vueltaComer = formatTime(horaVuelta);
+    currentSession.vueltaComerOriginal = formatTime(now);
+    currentSession.tipoVueltaComer = tipoVueltaComer;
+    
+    saveCurrentSession();
+    updateButtonsState();
+    closeModal();
+}
 
         async function ficharFinJornada() {
             const now = new Date();
@@ -2774,15 +2814,30 @@
                                 <div class="detail-item">
                                     <span class="detail-label">Tipo Entrada:</span>
                                     <span class="detail-value">${session.tipoEntrada ? (session.tipoEntrada.charAt(0).toUpperCase() + session.tipoEntrada.slice(1)) : 'Puntual'}</span>
-                                </div>
                                 <div class="detail-item">
-                                    <span class="detail-label">Salida Comer:</span>
-                                    <span class="detail-value">${session.salidaComer || '-'}</span>
-                                </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">Vuelta Comer:</span>
-                                    <span class="detail-value">${session.vueltaComer || '-'}</span>
-                                </div>
+    <span class="detail-label">Salida Comer:</span>
+    <span class="detail-value">${session.salidaComer || '-'}</span>
+</div>
+<div class="detail-item">
+    <span class="detail-label">Salida Comer Original:</span>
+    <span class="detail-value">${session.salidaComerOriginal || session.salidaComer || '-'}</span>
+</div>
+<div class="detail-item">
+    <span class="detail-label">Tipo Salida Comer:</span>
+    <span class="detail-value">${session.tipoSalidaComer ? (session.tipoSalidaComer.charAt(0).toUpperCase() + session.tipoSalidaComer.slice(1)) : 'Puntual'}</span>
+</div>
+<div class="detail-item">
+    <span class="detail-label">Vuelta Comer:</span>
+    <span class="detail-value">${session.vueltaComer || '-'}</span>
+</div>
+<div class="detail-item">
+    <span class="detail-label">Vuelta Comer Original:</span>
+    <span class="detail-value">${session.vueltaComerOriginal || session.vueltaComer || '-'}</span>
+</div>
+<div class="detail-item">
+    <span class="detail-label">Tipo Vuelta Comer:</span>
+    <span class="detail-value">${session.tipoVueltaComer ? (session.tipoVueltaComer.charAt(0).toUpperCase() + session.tipoVueltaComer.slice(1)) : 'Puntual'}</span>
+</div>
                                 <div class="detail-item">
                                     <span class="detail-label">Fin Jornada:</span>
                                     <span class="detail-value">${session.finJornada}</span>
@@ -2902,13 +2957,29 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Salida Comer</label>
-                            <input type="time" id="editSalidaComer" value="${session.salidaComer || ''}">
-                        </div>
-                        <div class="form-group">
-                            <label>Vuelta Comer</label>
-                            <input type="time" id="editVueltaComer" value="${session.vueltaComer || ''}">
-                        </div>
+    <label>Salida Comer</label>
+    <input type="time" id="editSalidaComer" value="${session.salidaComer || ''}">
+</div>
+<div class="form-group">
+    <label>Tipo Salida Comer</label>
+    <select id="editTipoSalidaComer">
+        <option value="temprano" ${session.tipoSalidaComer === 'temprano' ? 'selected' : ''}>Temprano</option>
+        <option value="tarde" ${session.tipoSalidaComer === 'tarde' ? 'selected' : ''}>Tarde</option>
+        <option value="puntual" ${(session.tipoSalidaComer || 'puntual') === 'puntual' ? 'selected' : ''}>Puntual</option>
+    </select>
+</div>
+<div class="form-group">
+    <label>Vuelta Comer</label>
+    <input type="time" id="editVueltaComer" value="${session.vueltaComer || ''}">
+</div>
+<div class="form-group">
+    <label>Tipo Vuelta Comer</label>
+    <select id="editTipoVueltaComer">
+        <option value="temprano" ${session.tipoVueltaComer === 'temprano' ? 'selected' : ''}>Temprano</option>
+        <option value="tarde" ${session.tipoVueltaComer === 'tarde' ? 'selected' : ''}>Tarde</option>
+        <option value="puntual" ${(session.tipoVueltaComer || 'puntual') === 'puntual' ? 'selected' : ''}>Puntual</option>
+    </select>
+</div>
                         <div class="form-group">
                             <label>Fin Jornada</label>
                             <input type="time" id="editFinJornada" value="${session.finJornada}" required>
@@ -2998,7 +3069,9 @@
                 session.entrada = document.getElementById('editEntrada').value;
                 session.tipoEntrada = document.getElementById('editTipoEntrada').value;
                 session.salidaComer = document.getElementById('editSalidaComer').value || null;
-                session.vueltaComer = document.getElementById('editVueltaComer').value || null;
+session.tipoSalidaComer = document.getElementById('editTipoSalidaComer').value;
+session.vueltaComer = document.getElementById('editVueltaComer').value || null;
+session.tipoVueltaComer = document.getElementById('editTipoVueltaComer').value;
                 session.finJornada = document.getElementById('editFinJornada').value;
                 
                 if (session.tipoServicio === 'nacional') {
