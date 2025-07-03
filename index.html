@@ -3432,44 +3432,62 @@ session.tipoVueltaComer = document.getElementById('editTipoVueltaComer').value;
             URL.revokeObjectURL(url);
         }
 
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+        async function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
             
-            const reader = new FileReader();
-            reader.onload = function(e) {
+            if (confirm('¿Estás seguro de que quieres importar estos datos? Esto sobrescribirá todos los datos actuales.')) {
+                // Mostrar loading
+                document.getElementById('loadingOverlay').style.display = 'flex';
+                
                 try {
-                    const data = JSON.parse(e.target.result);
-                    
-                    if (confirm('¿Estás seguro de que quieres importar estos datos? Esto sobrescribirá todos los datos actuales.')) {
-                        allSessions = data.sessions || [];
-                        config = data.config || config;
-                        currentSession = data.currentSession || null;
-                        
-                        // Guardar datos importados
-                        saveSessions();
-                        saveConfig();
-                        if (currentSession) saveCurrentSession();
-                        
-                        // Actualizar interfaz
-                        loadConfig();
-                        updateRegistroTable();
-                        updateSummary();
-                        updateEvolutionChart();
-                        updateButtonsState();
-                        
-                        alert('Datos importados correctamente');
+                    // Importar configuración si existe
+                    if (data.config) {
+                        config = data.config;
+                        await saveConfigToFirebase();
+                        loadConfigToUI();
                     }
+                    
+                    // Importar sesión actual si existe
+                    if (data.currentSession) {
+                        currentSession = data.currentSession;
+                        await saveCurrentSessionToFirebase();
+                    }
+                    
+                    // Importar todas las sesiones a Firebase
+                    if (data.sessions && Array.isArray(data.sessions)) {
+                        for (const session of data.sessions) {
+                            await saveSessionToFirebase(session);
+                        }
+                    }
+                    
+                    // Actualizar interfaz
+                    updateButtonsState();
+                    
+                    alert('Datos importados correctamente');
                 } catch (error) {
-                    alert('Error al importar el archivo. Asegúrate de que sea un archivo válido.');
+                    console.error('Error importing to Firebase:', error);
+                    alert('Error al guardar los datos importados en Firebase');
+                } finally {
+                    // Ocultar loading
+                    document.getElementById('loadingOverlay').style.display = 'none';
                 }
-            };
-            reader.readAsText(file);
-            
-            // Limpiar el input
-            event.target.value = '';
+            }
+        } catch (error) {
+            console.error('Error parsing import file:', error);
+            alert('Error al importar el archivo. Asegúrate de que sea un archivo válido.');
         }
-
+    };
+    reader.readAsText(file);
+    
+    // Limpiar el input
+    event.target.value = '';
+}
         // Cerrar modales al hacer clic fuera
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
