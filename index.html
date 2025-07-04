@@ -1129,45 +1129,59 @@
 
     <!-- Modales -->
     <div id="modalEntrada" class="modal">
-        <div class="modal-content">
-            <h3>🟢 Fichaje de Entrada</h3>
-            <form id="formEntrada">
-                <div class="form-group">
-                    <label>Tipo de Servicio</label>
-                    <select id="tipoServicio" onchange="toggleUbicacion()">
-                        <option value="nacional">Nacional</option>
-                        <option value="internacional">Internacional</option>
-                    </select>
-                </div>
-                <div class="form-group" id="ubicacionGroup">
-                    <label>Ubicación</label>
-                    <select id="ubicacion">
-                        <option value="taller">Taller</option>
-                        <option value="cliente">Cliente</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>¿Es día festivo?</label>
-                    <select id="esFestivo">
-                        <option value="no">No</option>
-                        <option value="si">Sí</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Tipo de Entrada</label>
-                    <select id="tipoEntrada">
-                        <option value="temprano">Temprano (redondeo hacia arriba)</option>
-                        <option value="tarde">Tarde (redondeo hacia abajo)</option>
-                        <option value="puntual">Puntual (sin redondeo)</option>
-                    </select>
-                </div>
-                <div class="modal-buttons">
-                    <button type="submit" class="btn btn-primary">Fichar Entrada</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
-                </div>
-            </form>
-        </div>
+    <div class="modal-content">
+        <h3>🟢 Fichaje de Entrada</h3>
+        <form id="formEntrada">
+            <div class="form-group">
+                <label>Tipo de Servicio</label>
+                <select id="tipoServicio" onchange="toggleUbicacion()">
+                    <option value="nacional">Nacional</option>
+                    <option value="internacional">Internacional</option>
+                </select>
+            </div>
+            <div class="form-group" id="ubicacionGroup">
+                <label>Ubicación</label>
+                <select id="ubicacion">
+                    <option value="taller">Taller</option>
+                    <option value="cliente">Cliente</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>¿Es día festivo?</label>
+                <select id="esFestivo">
+                    <option value="no">No</option>
+                    <option value="si">Sí</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>¿Vas a fichar la hora de comida?</label>
+                <select id="ficharComida" onchange="toggleComidaFuera()">
+                    <option value="si">Sí (fichaje normal)</option>
+                    <option value="no">No (sin pausa para comer)</option>
+                </select>
+            </div>
+            <div class="form-group" id="comidaFueraGroup" style="display: none;">
+                <label>¿Vas a comer fuera?</label>
+                <select id="comeFuera">
+                    <option value="no">No</option>
+                    <option value="si">Sí</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Tipo de Entrada</label>
+                <select id="tipoEntrada">
+                    <option value="temprano">Temprano (redondeo hacia arriba)</option>
+                    <option value="tarde">Tarde (redondeo hacia abajo)</option>
+                    <option value="puntual">Puntual (sin redondeo)</option>
+                </select>
+            </div>
+            <div class="modal-buttons">
+                <button type="submit" class="btn btn-primary">Fichar Entrada</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+            </div>
+        </form>
     </div>
+</div>
 
     <div id="modalSalidaComer" class="modal">
     <div class="modal-content">
@@ -1480,14 +1494,14 @@
             
             // Configurar visibilidad de campos según el tipo de servicio actual
             if (tipo === 'salidaComer') {
-                // Resetear visibilidad por defecto
-                document.getElementById('comidaGroup').style.display = 'block';
-                
-                // Ocultar solo si es internacional
-                if (currentSession && currentSession.tipoServicio === 'internacional') {
-                    document.getElementById('comidaGroup').style.display = 'none';
-                }
-            }
+    // Resetear visibilidad por defecto
+    document.getElementById('comidaGroup').style.display = 'block';
+    
+    // Ocultar si es internacional o si ya se respondió en la entrada
+    if (currentSession && (currentSession.tipoServicio === 'internacional' || currentSession.ficharComida === 'no')) {
+        document.getElementById('comidaGroup').style.display = 'none';
+    }
+}
             
             if (tipo === 'finJornada') {
                 // Resetear visibilidad por defecto
@@ -1519,49 +1533,68 @@
         }
 
         function toggleUbicacion() {
-            const tipoServicio = document.getElementById('tipoServicio').value;
-            const ubicacionGroup = document.getElementById('ubicacionGroup');
-            ubicacionGroup.style.display = tipoServicio === 'nacional' ? 'block' : 'none';
+    const tipoServicio = document.getElementById('tipoServicio').value;
+    const ubicacionGroup = document.getElementById('ubicacionGroup');
+    ubicacionGroup.style.display = tipoServicio === 'nacional' ? 'block' : 'none';
+    
+    // También actualizar la visibilidad de comida fuera
+    toggleComidaFuera();
+}
+        function toggleComidaFuera() {
+        const ficharComida = document.getElementById('ficharComida').value;
+        const comidaFueraGroup = document.getElementById('comidaFueraGroup');
+    const tipoServicio = document.getElementById('tipoServicio').value;
+    
+        // Solo mostrar la pregunta de comer fuera si NO va a fichar comida Y es servicio nacional
+        if (ficharComida === 'no' && tipoServicio === 'nacional') {
+        comidaFueraGroup.style.display = 'block';
+        } else {
+        comidaFueraGroup.style.display = 'none';
         }
-
+    }
         // Funciones de fichaje
         function updateButtonsState() {
-            const btnEntrada = document.getElementById('btnEntrada');
-            const btnSalidaComer = document.getElementById('btnSalidaComer');
-            const btnVueltaComer = document.getElementById('btnVueltaComer');
-            const btnFinJornada = document.getElementById('btnFinJornada');
-            const status = document.getElementById('currentStatus');
+    const btnEntrada = document.getElementById('btnEntrada');
+    const btnSalidaComer = document.getElementById('btnSalidaComer');
+    const btnVueltaComer = document.getElementById('btnVueltaComer');
+    const btnFinJornada = document.getElementById('btnFinJornada');
+    const status = document.getElementById('currentStatus');
 
-            // Ocultar todos los botones primero
-            btnEntrada.style.display = 'none';
-            btnSalidaComer.style.display = 'none';
-            btnVueltaComer.style.display = 'none';
-            btnFinJornada.style.display = 'none';
+    // Ocultar todos los botones primero
+    btnEntrada.style.display = 'none';
+    btnSalidaComer.style.display = 'none';
+    btnVueltaComer.style.display = 'none';
+    btnFinJornada.style.display = 'none';
 
-            if (!currentSession) {
-                // Solo mostrar botón de entrada
-                btnEntrada.style.display = 'flex';
-                btnEntrada.disabled = false;
-                status.textContent = "Listo para fichar entrada";
-            } else {
-                if (!currentSession.salidaComer) {
-                    // Mostrar solo botón de salida para comer
-                    btnSalidaComer.style.display = 'flex';
-                    btnSalidaComer.disabled = false;
-                    status.textContent = "Trabajando - Siguiente: Salida para comer";
-                } else if (!currentSession.vueltaComer) {
-                    // Mostrar solo botón de vuelta de comer
-                    btnVueltaComer.style.display = 'flex';
-                    btnVueltaComer.disabled = false;
-                    status.textContent = "En pausa para comer - Siguiente: Vuelta de comer";
-                } else if (!currentSession.finJornada) {
-                    // Mostrar solo botón de fin de jornada
-                    btnFinJornada.style.display = 'flex';
-                    btnFinJornada.disabled = false;
-                    status.textContent = "Trabajando - Siguiente: Fin de jornada";
-                }
+    if (!currentSession) {
+        // Solo mostrar botón de entrada
+        btnEntrada.style.display = 'flex';
+        btnEntrada.disabled = false;
+        status.textContent = "Listo para fichar entrada";
+    } else {
+        // Si no va a fichar comida, saltar directamente a fin de jornada
+        if (currentSession.ficharComida === 'no') {
+            btnFinJornada.style.display = 'flex';
+            btnFinJornada.disabled = false;
+            status.textContent = "Trabajando - Siguiente: Fin de jornada (sin pausa para comer)";
+        } else {
+            // Flujo normal con pausa para comer
+            if (!currentSession.salidaComer) {
+                btnSalidaComer.style.display = 'flex';
+                btnSalidaComer.disabled = false;
+                status.textContent = "Trabajando - Siguiente: Salida para comer";
+            } else if (!currentSession.vueltaComer) {
+                btnVueltaComer.style.display = 'flex';
+                btnVueltaComer.disabled = false;
+                status.textContent = "En pausa para comer - Siguiente: Vuelta de comer";
+            } else if (!currentSession.finJornada) {
+                btnFinJornada.style.display = 'flex';
+                btnFinJornada.disabled = false;
+                status.textContent = "Trabajando - Siguiente: Fin de jornada";
             }
         }
+    }
+}
 
         // Event listeners para formularios
         document.getElementById('formEntrada').addEventListener('submit', function(e) {
@@ -1584,44 +1617,47 @@
 });
 
         function ficharEntrada() {
-            const now = new Date();
-            const tipoServicio = document.getElementById('tipoServicio').value;
-            const ubicacion = tipoServicio === 'nacional' ? document.getElementById('ubicacion').value : null;
-            const esFestivo = document.getElementById('esFestivo').value === 'si';
-            const tipoEntrada = document.getElementById('tipoEntrada').value;
-            
-            // Calcular la hora de entrada con redondeo si es necesario
-            let horaEntrada = now;
-            if (tipoEntrada !== 'puntual') {
-                horaEntrada = redondearHoraPorCuartos(now, tipoEntrada);
-            }
-            
-            currentSession = {
-                id: Date.now(),
-                fecha: formatDate(now),
-                tipoServicio: tipoServicio,
-                ubicacion: ubicacion,
-                esFestivo: esFestivo,
-                entrada: formatTime(horaEntrada),
-                entradaOriginal: formatTime(now), // Guardamos la hora original
-                tipoEntrada: tipoEntrada,
-                salidaComer: null,
-                vueltaComer: null,
-                finJornada: null,
-                seHaComido: null,
-                seHaCenado: null,
-                hayPernocta: null,
-                dia: getDayType(now, esFestivo),
-                horasTrabajadas: 0,
-                horasExtra: 0,
-                horasNocturnas: 0,
-                importeTotal: 0
-            };
-            
-            saveCurrentSession();
-            updateButtonsState();
-            closeModal();
-        }
+    const now = new Date();
+    const tipoServicio = document.getElementById('tipoServicio').value;
+    const ubicacion = tipoServicio === 'nacional' ? document.getElementById('ubicacion').value : null;
+    const esFestivo = document.getElementById('esFestivo').value === 'si';
+    const tipoEntrada = document.getElementById('tipoEntrada').value;
+    const ficharComida = document.getElementById('ficharComida').value;
+    const comeFuera = document.getElementById('comeFuera').value;
+    
+    // Calcular la hora de entrada con redondeo si es necesario
+    let horaEntrada = now;
+    if (tipoEntrada !== 'puntual') {
+        horaEntrada = redondearHoraPorCuartos(now, tipoEntrada);
+    }
+    
+    currentSession = {
+        id: Date.now(),
+        fecha: formatDate(now),
+        tipoServicio: tipoServicio,
+        ubicacion: ubicacion,
+        esFestivo: esFestivo,
+        entrada: formatTime(horaEntrada),
+        entradaOriginal: formatTime(now),
+        tipoEntrada: tipoEntrada,
+        ficharComida: ficharComida, // Nuevo campo
+        salidaComer: null,
+        vueltaComer: null,
+        finJornada: null,
+        seHaComido: ficharComida === 'no' && tipoServicio === 'nacional' ? comeFuera : null,
+        seHaCenado: null,
+        hayPernocta: null,
+        dia: getDayType(now, esFestivo),
+        horasTrabajadas: 0,
+        horasExtra: 0,
+        horasNocturnas: 0,
+        importeTotal: 0
+    };
+    
+    saveCurrentSession();
+    updateButtonsState();
+    closeModal();
+}
 
         function ficharSalidaComer() {
     const now = new Date();
