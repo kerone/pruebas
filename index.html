@@ -931,19 +931,16 @@
             </div>
 
             <div class="buttons-grid">
-                <button class="fichar-btn btn-entrada" id="btnEntrada" onclick="openModal('entrada')">
-                    🟢 FICHAJE DE ENTRADA
-                </button>
-                <button class="fichar-btn btn-salida-comer" id="btnSalidaComer" onclick="openModal('salidaComer')" disabled>
-                    🍽️ SALIDA PARA COMER
-                </button>
-                <button class="fichar-btn btn-vuelta-comer" id="btnVueltaComer" onclick="openModal('vueltaComer')" disabled>
-                    🔙 VUELTA DE COMER
-                </button>
-                <button class="fichar-btn btn-fin-jornada" id="btnFinJornada" onclick="openModal('finJornada')" disabled>
-                    🌙 FIN DE JORNADA
-                </button>
-            </div>
+    <button class="fichar-btn btn-entrada" id="btnEntrada" onclick="openModal('entrada')">
+        🟢 FICHAJE DE ENTRADA
+    </button>
+    <button class="fichar-btn btn-parada" id="btnParada" onclick="openModal('parada')" disabled>
+        ⏸️ HACER PARADA
+    </button>
+    <button class="fichar-btn btn-reanudar" id="btnReanudar" onclick="openModal('reanudar')" disabled>
+        ▶️ REANUDAR TRABAJO
+    </button>
+</div>
 
             <div class="summary-card">
                 <div class="summary-title">
@@ -1264,6 +1261,86 @@
             </form>
         </div>
     </div>
+    <!-- Modal de Parada -->
+<div id="modalParada" class="modal">
+    <div class="modal-content">
+        <h3>⏸️ Hacer Parada</h3>
+        <form id="formParada">
+            <div class="form-group">
+                <label>¿Es el fin de jornada?</label>
+                <select id="esFinJornada" onchange="toggleFinJornadaOptions()">
+                    <option value="no">No, es una pausa temporal</option>
+                    <option value="si">Sí, termino mi jornada</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Motivo de la parada</label>
+                <input type="text" id="motivoParada" placeholder="Ej: Almuerzo, Comida, Gestión personal..." value="Pausa">
+            </div>
+            <div class="form-group">
+                <label>Tipo de Parada</label>
+                <select id="tipoParada">
+                    <option value="puntual">Puntual (sin redondeo)</option>
+                    <option value="temprano">Temprano (redondeo hacia arriba)</option>
+                    <option value="tarde">Tarde (redondeo hacia abajo)</option>
+                </select>
+            </div>
+            
+            <!-- Opciones de fin de jornada (ocultas por defecto) -->
+            <div id="opcionesFinJornada" style="display: none;">
+                <hr style="margin: 20px 0;">
+                <h4>Opciones de Fin de Jornada</h4>
+                <div class="form-group" id="paradaComidaGroup">
+                    <label>¿Has comido fuera?</label>
+                    <select id="paradaSeHaComido">
+                        <option value="no">No</option>
+                        <option value="si">Sí</option>
+                    </select>
+                </div>
+                <div class="form-group" id="paradaCenaGroup">
+                    <label>¿Has cenado fuera?</label>
+                    <select id="paradaSeHaCenado">
+                        <option value="no">No</option>
+                        <option value="si">Sí</option>
+                    </select>
+                </div>
+                <div class="form-group" id="paradaPernoctaGroup">
+                    <label>¿Hay pernocta?</label>
+                    <select id="paradaHayPernocta">
+                        <option value="no">No</option>
+                        <option value="si">Sí</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button type="submit" class="btn btn-primary" id="btnConfirmarParada">Confirmar Parada</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal de Reanudar -->
+<div id="modalReanudar" class="modal">
+    <div class="modal-content">
+        <h3>▶️ Reanudar Trabajo</h3>
+        <form id="formReanudar">
+            <div class="form-group">
+                <label>Tipo de Reanudación</label>
+                <select id="tipoReanudacion">
+                    <option value="puntual">Puntual (sin redondeo)</option>
+                    <option value="temprano">Temprano (redondeo hacia arriba)</option>
+                    <option value="tarde">Tarde (redondeo hacia abajo)</option>
+                </select>
+            </div>
+            <div class="modal-buttons">
+                <button type="submit" class="btn btn-primary">Reanudar</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
 
     <script>
         // Variables globales
@@ -1489,42 +1566,52 @@
 
         // Gestión de modales
         function openModal(tipo) {
-            const modal = document.getElementById('modal' + tipo.charAt(0).toUpperCase() + tipo.slice(1));
-            modal.style.display = 'block';
-            
-            // Configurar visibilidad de campos según el tipo de servicio actual
-            if (tipo === 'salidaComer') {
-    // Resetear visibilidad por defecto
-    document.getElementById('comidaGroup').style.display = 'block';
+    const modal = document.getElementById('modal' + tipo.charAt(0).toUpperCase() + tipo.slice(1));
+    modal.style.display = 'block';
     
-    // Ocultar si es internacional o si ya se respondió en la entrada
-    if (currentSession && (currentSession.tipoServicio === 'internacional' || currentSession.ficharComida === 'no')) {
-        document.getElementById('comidaGroup').style.display = 'none';
+    // AÑADIR ESTE NUEVO CASO PARA PARADA
+    if (tipo === 'parada') {
+        // Resetear el formulario
+        document.getElementById('esFinJornada').value = 'no';
+        document.getElementById('motivoParada').value = 'Pausa';
+        document.getElementById('opcionesFinJornada').style.display = 'none';
+        document.getElementById('btnConfirmarParada').textContent = 'Confirmar Parada';
     }
-}
-            
-            if (tipo === 'finJornada') {
-                // Resetear visibilidad por defecto
+    
+    // MANTENER TODO EL CÓDIGO EXISTENTE DEBAJO
+    // Configurar visibilidad de campos según el tipo de servicio actual
+    if (tipo === 'salidaComer') {
+        // Resetear visibilidad por defecto
+        document.getElementById('comidaGroup').style.display = 'block';
+        
+        // Ocultar solo si es internacional
+        if (currentSession && currentSession.tipoServicio === 'internacional') {
+            document.getElementById('comidaGroup').style.display = 'none';
+        }
+    }
+    
+    if (tipo === 'finJornada') {
+        // Resetear visibilidad por defecto
+        document.getElementById('cenaGroup').style.display = 'block';
+        document.getElementById('pernoctaGroup').style.display = 'block';
+        
+        if (currentSession) {
+            if (currentSession.tipoServicio === 'internacional') {
+                // Para internacional: no preguntar por cena (dieta incluye todo), pero SÍ preguntar por pernocta
+                document.getElementById('cenaGroup').style.display = 'none';
+                document.getElementById('pernoctaGroup').style.display = 'block';
+            } else if (currentSession.ubicacion === 'taller') {
+                // Si es taller nacional, mostrar cena pero NO pernocta
+                document.getElementById('cenaGroup').style.display = 'block';
+                document.getElementById('pernoctaGroup').style.display = 'none';
+            } else {
+                // Si es cliente nacional, mostrar ambas preguntas
                 document.getElementById('cenaGroup').style.display = 'block';
                 document.getElementById('pernoctaGroup').style.display = 'block';
-                
-                if (currentSession) {
-                    if (currentSession.tipoServicio === 'internacional') {
-                        // Para internacional: no preguntar por cena (dieta incluye todo), pero SÍ preguntar por pernocta
-                        document.getElementById('cenaGroup').style.display = 'none';
-                        document.getElementById('pernoctaGroup').style.display = 'block';
-                    } else if (currentSession.ubicacion === 'taller') {
-                        // Si es taller nacional, mostrar cena pero NO pernocta
-                        document.getElementById('cenaGroup').style.display = 'block';
-                        document.getElementById('pernoctaGroup').style.display = 'none';
-                    } else {
-                        // Si es cliente nacional, mostrar ambas preguntas
-                        document.getElementById('cenaGroup').style.display = 'block';
-                        document.getElementById('pernoctaGroup').style.display = 'block';
-                    }
-                }
             }
         }
+    }
+}
 
         function closeModal() {
             document.querySelectorAll('.modal').forEach(modal => {
@@ -1616,14 +1703,12 @@
     ficharVueltaComer();
 });
 
-        function ficharEntrada() {
+       function ficharEntrada() {
     const now = new Date();
     const tipoServicio = document.getElementById('tipoServicio').value;
     const ubicacion = tipoServicio === 'nacional' ? document.getElementById('ubicacion').value : null;
     const esFestivo = document.getElementById('esFestivo').value === 'si';
     const tipoEntrada = document.getElementById('tipoEntrada').value;
-    const ficharComida = document.getElementById('ficharComida').value;
-    const comeFuera = document.getElementById('comeFuera').value;
     
     // Calcular la hora de entrada con redondeo si es necesario
     let horaEntrada = now;
@@ -1640,25 +1725,26 @@
         entrada: formatTime(horaEntrada),
         entradaOriginal: formatTime(now),
         tipoEntrada: tipoEntrada,
-        ficharComida: ficharComida, // Nuevo campo
-        salidaComer: null,
-        vueltaComer: null,
+        paradas: [], // Array para almacenar todas las paradas
+        enPausa: false, // Estado actual
         finJornada: null,
-        seHaComido: ficharComida === 'no' && tipoServicio === 'nacional' ? comeFuera : null,
+        seHaComido: null,
         seHaCenado: null,
         hayPernocta: null,
         dia: getDayType(now, esFestivo),
         horasTrabajadas: 0,
         horasExtra: 0,
         horasNocturnas: 0,
-        importeTotal: 0
+        importeTotal: 0,
+        // Mantener compatibilidad con el sistema anterior
+        salidaComer: null,
+        vueltaComer: null
     };
     
     saveCurrentSession();
     updateButtonsState();
     closeModal();
 }
-
         function ficharSalidaComer() {
     const now = new Date();
     const seHaComido = currentSession.tipoServicio === 'nacional' ? document.getElementById('seHaComido').value : 'no';
@@ -1801,123 +1887,317 @@
         }
 
         function calculateHours() {
-            const entrada = parseTime(currentSession.entrada);
-            let salidaComer = null;
-            let vueltaComer = null;
-            let finJornada = null;
-            
-            // Calcular tiempos relativos a la entrada para manejar cruce de medianoche
-            if (currentSession.salidaComer) {
-                salidaComer = parseTimeForCalculation(currentSession.salidaComer, entrada);
-            }
-            if (currentSession.vueltaComer) {
-                vueltaComer = parseTimeForCalculation(currentSession.vueltaComer, salidaComer || entrada);
-            }
-            finJornada = parseTimeForCalculation(currentSession.finJornada, vueltaComer || salidaComer || entrada);
-            
-            let horasTrabajadas = 0;
-            let horasNocturnas = 0;
-            
-            // Calcular horas de la mañana (hasta salida a comer)
-            if (salidaComer) {
-                const horasManana = (salidaComer - entrada) / (1000 * 60 * 60);
-                horasTrabajadas += horasManana;
-                horasNocturnas += calculateNightHours(entrada, salidaComer);
-            }
-            
-            // Calcular horas de la tarde (desde vuelta de comer hasta fin)
-            if (vueltaComer) {
-                const horasTarde = (finJornada - vueltaComer) / (1000 * 60 * 60);
-                horasTrabajadas += horasTarde;
-                horasNocturnas += calculateNightHours(vueltaComer, finJornada);
-            } else if (!salidaComer) {
-                // Jornada sin pausa para comer (continua)
-                const horasTotal = (finJornada - entrada) / (1000 * 60 * 60);
-                horasTrabajadas += horasTotal;
-                horasNocturnas += calculateNightHours(entrada, finJornada);
-            }
-            
-            currentSession.horasTrabajadas = Math.round(horasTrabajadas * 100) / 100;
-            currentSession.horasNocturnas = Math.round(horasNocturnas * 100) / 100;
-            
-            // Calcular horas extra según las reglas
-            calculateExtraHours();
-        }
+    // Si hay paradas, usar el nuevo método de cálculo
+    if (currentSession.paradas && currentSession.paradas.length > 0) {
+        calculateHoursWithPausas();
+        return;
+    }
+    
+    const entrada = parseTime(currentSession.entrada);
+    let salidaComer = null;
+    let vueltaComer = null;
+    let finJornada = null;
+    
+    // Calcular tiempos relativos a la entrada para manejar cruce de medianoche
+    if (currentSession.salidaComer) {
+        salidaComer = parseTimeForCalculation(currentSession.salidaComer, entrada);
+    }
+    if (currentSession.vueltaComer) {
+        vueltaComer = parseTimeForCalculation(currentSession.vueltaComer, salidaComer || entrada);
+    }
+    finJornada = parseTimeForCalculation(currentSession.finJornada, vueltaComer || salidaComer || entrada);
+    
+    let horasTrabajadas = 0;
+    let horasNocturnas = 0;
+    
+    // Calcular horas de la mañana (hasta salida a comer)
+    if (salidaComer) {
+        const horasManana = (salidaComer - entrada) / (1000 * 60 * 60);
+        horasTrabajadas += horasManana;
+        horasNocturnas += calculateNightHours(entrada, salidaComer);
+    }
+    
+    // Calcular horas de la tarde (desde vuelta de comer hasta fin)
+    if (vueltaComer) {
+        const horasTarde = (finJornada - vueltaComer) / (1000 * 60 * 60);
+        horasTrabajadas += horasTarde;
+        horasNocturnas += calculateNightHours(vueltaComer, finJornada);
+    } else if (!salidaComer) {
+        // Jornada sin pausa para comer (continua)
+        const horasTotal = (finJornada - entrada) / (1000 * 60 * 60);
+        horasTrabajadas += horasTotal;
+        horasNocturnas += calculateNightHours(entrada, finJornada);
+    }
+    
+    currentSession.horasTrabajadas = Math.round(horasTrabajadas * 100) / 100;
+    currentSession.horasNocturnas = Math.round(horasNocturnas * 100) / 100;
+    
+    // Calcular horas extra según las reglas
+    calculateExtraHours();
+}
 
-        function parseTime(timeStr) {
-            const today = new Date();
-            const [hours, minutes] = timeStr.split(':');
-            return new Date(today.getFullYear(), today.getMonth(), today.getDate(), parseInt(hours), parseInt(minutes));
-        }
+function parseTime(timeStr) {
+    const today = new Date();
+    const [hours, minutes] = timeStr.split(':');
+    return new Date(today.getFullYear(), today.getMonth(), today.getDate(), parseInt(hours), parseInt(minutes));
+}
 
-        function parseTimeForCalculation(timeStr, referenceTime) {
-            const [hours, minutes] = timeStr.split(':');
-            const parsedTime = new Date(referenceTime.getFullYear(), referenceTime.getMonth(), referenceTime.getDate(), parseInt(hours), parseInt(minutes));
+function parseTimeForCalculation(timeStr, referenceTime) {
+    const [hours, minutes] = timeStr.split(':');
+    const parsedTime = new Date(referenceTime.getFullYear(), referenceTime.getMonth(), referenceTime.getDate(), parseInt(hours), parseInt(minutes));
+    
+    // Si la hora es menor que la hora de referencia, asumimos que es del día siguiente
+    if (parsedTime < referenceTime) {
+        parsedTime.setDate(parsedTime.getDate() + 1);
+    }
+    
+    return parsedTime;
+}
+
+function calculateNightHours(start, end) {
+    const [nightStartHour, nightStartMin] = (config.horaInicioNocturno || '22:00').split(':').map(Number);
+    const [nightEndHour, nightEndMin] = (config.horaFinNocturno || '06:00').split(':').map(Number);
+    
+    let nightHours = 0;
+    let current = new Date(start);
+    const endTime = new Date(end);
+    
+    while (current < endTime) {
+        const currentHour = current.getHours();
+        const currentMin = current.getMinutes();
+        const currentTimeInMin = currentHour * 60 + currentMin;
+        
+        const nightStartInMin = nightStartHour * 60 + nightStartMin;
+        const nightEndInMin = nightEndHour * 60 + nightEndMin;
+        
+        let isNight = false;
+        
+        if (nightStartInMin > nightEndInMin) {
+            // Horario nocturno cruza medianoche (ej: 22:00 - 06:00)
+            isNight = currentTimeInMin >= nightStartInMin || currentTimeInMin < nightEndInMin;
+        } else {
+            // Horario nocturno no cruza medianoche
+            isNight = currentTimeInMin >= nightStartInMin && currentTimeInMin < nightEndInMin;
+        }
+        
+        if (isNight) {
+            nightHours += 1/60; // 1 minuto
+        }
+        current.setMinutes(current.getMinutes() + 1);
+    }
+    
+    return nightHours;
+}
+
+function calculateExtraHours() {
+    const dia = currentSession.dia;
+    const horasTrabajadas = currentSession.horasTrabajadas;
+    let horasExtra = 0;
+    
+    if (currentSession.tipoServicio === 'nacional') {
+        if (dia === 'L-V') {
+            horasExtra = Math.max(0, horasTrabajadas - 8.25); // 8h 15min
+        } else {
+            horasExtra = horasTrabajadas; // Sábados, domingos y festivos
+        }
+    } else { // Internacional
+        if (dia === 'L-V') {
+            horasExtra = Math.max(0, horasTrabajadas - 8.25);
+        } else {
+            horasExtra = horasTrabajadas;
+        }
+    }
+    
+    currentSession.horasExtra = Math.round(horasExtra * 100) / 100;
+}
+
+// NUEVAS FUNCIONES AÑADIDAS
+
+// Nueva función para toggle de opciones de fin de jornada
+function toggleFinJornadaOptions() {
+    const esFinJornada = document.getElementById('esFinJornada').value;
+    const opcionesDiv = document.getElementById('opcionesFinJornada');
+    const btnConfirmar = document.getElementById('btnConfirmarParada');
+    
+    if (esFinJornada === 'si') {
+        opcionesDiv.style.display = 'block';
+        btnConfirmar.textContent = 'Finalizar Jornada';
+        
+        // Configurar visibilidad según tipo de servicio
+        if (currentSession) {
+            const comidaGroup = document.getElementById('paradaComidaGroup');
+            const cenaGroup = document.getElementById('paradaCenaGroup');
+            const pernoctaGroup = document.getElementById('paradaPernoctaGroup');
             
-            // Si la hora es menor que la hora de referencia, asumimos que es del día siguiente
-            if (parsedTime < referenceTime) {
-                parsedTime.setDate(parsedTime.getDate() + 1);
+            if (currentSession.tipoServicio === 'internacional') {
+                comidaGroup.style.display = 'none';
+                cenaGroup.style.display = 'none';
+                pernoctaGroup.style.display = 'block';
+            } else if (currentSession.ubicacion === 'taller') {
+                comidaGroup.style.display = 'block';
+                cenaGroup.style.display = 'block';
+                pernoctaGroup.style.display = 'none';
+            } else {
+                comidaGroup.style.display = 'block';
+                cenaGroup.style.display = 'block';
+                pernoctaGroup.style.display = 'block';
             }
-            
-            return parsedTime;
         }
+    } else {
+        opcionesDiv.style.display = 'none';
+        btnConfirmar.textContent = 'Confirmar Parada';
+    }
+}
 
-        function calculateNightHours(start, end) {
-            const [nightStartHour, nightStartMin] = (config.horaInicioNocturno || '22:00').split(':').map(Number);
-            const [nightEndHour, nightEndMin] = (config.horaFinNocturno || '06:00').split(':').map(Number);
+function ficharParadaTemporal() {
+    const now = new Date();
+    const tipoParada = document.getElementById('tipoParada').value;
+    const motivo = document.getElementById('motivoParada').value || 'Pausa';
+    
+    let horaParada = now;
+    if (tipoParada !== 'puntual') {
+        horaParada = redondearHoraPorCuartos(now, tipoParada);
+    }
+    
+    // Añadir la parada al array
+    currentSession.paradas.push({
+        tipo: 'parada',
+        hora: formatTime(horaParada),
+        horaOriginal: formatTime(now),
+        tipoRedondeo: tipoParada,
+        motivo: motivo
+    });
+    
+    currentSession.enPausa = true;
+    
+    saveCurrentSession();
+    updateButtonsState();
+    closeModal();
+}
+
+function ficharReanudacion() {
+    const now = new Date();
+    const tipoReanudacion = document.getElementById('tipoReanudacion').value;
+    
+    let horaReanudacion = now;
+    if (tipoReanudacion !== 'puntual') {
+        horaReanudacion = redondearHoraPorCuartos(now, tipoReanudacion);
+    }
+    
+    // Añadir la reanudación al array
+    currentSession.paradas.push({
+        tipo: 'reanudacion',
+        hora: formatTime(horaReanudacion),
+        horaOriginal: formatTime(now),
+        tipoRedondeo: tipoReanudacion
+    });
+    
+    currentSession.enPausa = false;
+    
+    saveCurrentSession();
+    updateButtonsState();
+    closeModal();
+}
+
+async function ficharFinJornadaDesdeParada() {
+    const now = new Date();
+    const tipoParada = document.getElementById('tipoParada').value;
+    
+    let horaFin = now;
+    if (tipoParada !== 'puntual') {
+        horaFin = redondearHoraPorCuartos(now, tipoParada);
+    }
+    
+    // Guardar datos de fin de jornada
+    currentSession.finJornada = formatTime(horaFin);
+    currentSession.finJornadaOriginal = formatTime(now);
+    currentSession.tipoFinJornada = tipoParada;
+    
+    // Guardar respuestas sobre comidas y pernocta
+    if (currentSession.tipoServicio === 'nacional') {
+        currentSession.seHaComido = document.getElementById('paradaSeHaComido').value;
+        currentSession.seHaCenado = document.getElementById('paradaSeHaCenado').value;
+        if (currentSession.ubicacion === 'cliente') {
+            currentSession.hayPernocta = document.getElementById('paradaHayPernocta').value;
+        } else {
+            currentSession.hayPernocta = 'no';
+        }
+    } else {
+        currentSession.seHaComido = 'no';
+        currentSession.seHaCenado = 'no';
+        currentSession.hayPernocta = document.getElementById('paradaHayPernocta').value;
+    }
+    
+    // Calcular horas trabajadas y extras con el nuevo sistema
+    calculateHoursWithPausas();
+    calculateAmount();
+    
+    // Guardar sesión completa
+    await saveSessionToFirebase(currentSession);
+    currentSession = null;
+    
+    saveCurrentSession();
+    updateButtonsState();
+    updateSummary();
+    updateEvolutionChart();
+    closeModal();
+}
+
+function calculateHoursWithPausas() {
+    const entrada = parseTime(currentSession.entrada);
+    const finJornada = parseTime(currentSession.finJornada);
+    
+    let horasTrabajadas = 0;
+    let horasNocturnas = 0;
+    let ultimoInicio = entrada;
+    
+    // Si no hay paradas, calcular directamente
+    if (currentSession.paradas.length === 0) {
+        horasTrabajadas = (finJornada - entrada) / (1000 * 60 * 60);
+        horasNocturnas = calculateNightHours(entrada, finJornada);
+    } else {
+        // Procesar todas las paradas y reanudaciones
+        for (let i = 0; i < currentSession.paradas.length; i++) {
+            const evento = currentSession.paradas[i];
             
-            let nightHours = 0;
-            let current = new Date(start);
-            const endTime = new Date(end);
-            
-            while (current < endTime) {
-                const currentHour = current.getHours();
-                const currentMin = current.getMinutes();
-                const currentTimeInMin = currentHour * 60 + currentMin;
+            if (evento.tipo === 'parada') {
+                // Calcular tiempo trabajado hasta esta parada
+                const horaParada = parseTimeForCalculation(evento.hora, ultimoInicio);
+                const tiempoTrabajado = (horaParada - ultimoInicio) / (1000 * 60 * 60);
+                horasTrabajadas += tiempoTrabajado;
+                horasNocturnas += calculateNightHours(ultimoInicio, horaParada);
                 
-                const nightStartInMin = nightStartHour * 60 + nightStartMin;
-                const nightEndInMin = nightEndHour * 60 + nightEndMin;
+                // Buscar la siguiente reanudación
+                const siguienteReanudacion = currentSession.paradas.find((e, index) => 
+                    index > i && e.tipo === 'reanudacion'
+                );
                 
-                let isNight = false;
-                
-                if (nightStartInMin > nightEndInMin) {
-                    // Horario nocturno cruza medianoche (ej: 22:00 - 06:00)
-                    isNight = currentTimeInMin >= nightStartInMin || currentTimeInMin < nightEndInMin;
+                if (siguienteReanudacion) {
+                    const indiceReanudacion = currentSession.paradas.indexOf(siguienteReanudacion);
+                    ultimoInicio = parseTimeForCalculation(siguienteReanudacion.hora, horaParada);
+                    i = indiceReanudacion; // Saltar a la reanudación
                 } else {
-                    // Horario nocturno no cruza medianoche
-                    isNight = currentTimeInMin >= nightStartInMin && currentTimeInMin < nightEndInMin;
-                }
-                
-                if (isNight) {
-                    nightHours += 1/60; // 1 minuto
-                }
-                current.setMinutes(current.getMinutes() + 1);
-            }
-            
-            return nightHours;
-        }
-
-        function calculateExtraHours() {
-            const dia = currentSession.dia;
-            const horasTrabajadas = currentSession.horasTrabajadas;
-            let horasExtra = 0;
-            
-            if (currentSession.tipoServicio === 'nacional') {
-                if (dia === 'L-V') {
-                    horasExtra = Math.max(0, horasTrabajadas - 8.25); // 8h 15min
-                } else {
-                    horasExtra = horasTrabajadas; // Sábados, domingos y festivos
-                }
-            } else { // Internacional
-                if (dia === 'L-V') {
-                    horasExtra = Math.max(0, horasTrabajadas - 8.25);
-                } else {
-                    horasExtra = horasTrabajadas;
+                    // No hay más reanudaciones, el resto es tiempo de pausa
+                    ultimoInicio = finJornada; // Para evitar contar más tiempo
+                    break;
                 }
             }
-            
-            currentSession.horasExtra = Math.round(horasExtra * 100) / 100;
         }
+        
+        // Calcular tiempo desde la última reanudación (o entrada) hasta el fin
+        if (ultimoInicio < finJornada) {
+            const tiempoFinal = (finJornada - ultimoInicio) / (1000 * 60 * 60);
+            horasTrabajadas += tiempoFinal;
+            horasNocturnas += calculateNightHours(ultimoInicio, finJornada);
+        }
+    }
+    
+    currentSession.horasTrabajadas = Math.round(horasTrabajadas * 100) / 100;
+    currentSession.horasNocturnas = Math.round(horasNocturnas * 100) / 100;
+    
+    // Calcular horas extra
+    calculateExtraHours();
+}
 
         function calculateAmount() {
             let total = 0;
@@ -3110,6 +3390,23 @@ const filteredSessions = sortedSessions.filter(session => {
                     pernoctaGroup.style.display = this.value === 'cliente' ? 'block' : 'none';
                 }
             });
+            // Event listener para parada
+document.getElementById('formParada').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const esFinJornada = document.getElementById('esFinJornada').value === 'si';
+    
+    if (esFinJornada) {
+        ficharFinJornadaDesdeParada();
+    } else {
+        ficharParadaTemporal();
+    }
+});
+
+// Event listener para reanudar
+document.getElementById('formReanudar').addEventListener('submit', function(e) {
+    e.preventDefault();
+    ficharReanudacion();
+});
             
             document.getElementById('formEdit').addEventListener('submit', async function(e) {
                 e.preventDefault();
