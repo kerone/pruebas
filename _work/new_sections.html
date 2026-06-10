@@ -1,0 +1,262 @@
+  <!-- 13a · HERRAMIENTA A · EL PIVOTE -->
+  <section class="slide" data-label="Herramienta A · el pivote">
+    <div class="eyebrow anim" style="margin-bottom:20px">Áreas · Herramienta A · el problema</div>
+    <div style="flex:1;display:grid;grid-template-columns:1.05fr 0.95fr;gap:80px;align-items:center;min-height:0">
+      <div>
+        <h1 class="title anim2" style="font-size:66px;margin-bottom:36px;max-width:18ch">Cuando ya no se puede pedir más, la siguiente palanca es recorrer mejor.</h1>
+        <p class="lead anim3" style="font-size:34px;max-width:34ch">Volumen y tiempo tienen techo. Exigir más esfuerzo no es la respuesta.</p>
+      </div>
+      <div class="anim3" style="display:flex;flex-direction:column;gap:26px">
+        <div style="background:var(--casinegro);border-radius:14px;padding:42px 48px;box-shadow:0 24px 50px -30px rgba(15,29,24,.6)">
+          <div style="font-family:var(--fmono);font-size:22px;letter-spacing:.16em;color:var(--sage);text-transform:uppercase;margin-bottom:22px">El problema · dato histórico</div>
+          <div style="font-family:var(--fmono);font-size:108px;font-weight:600;color:#E0573B;line-height:1;margin-bottom:20px">&gt;10 km</div>
+          <div style="font-size:28px;line-height:1.4;color:var(--crema-txt)">Saltos entre pedidos consecutivos en las rutas del histórico.</div>
+          <div style="font-size:28px;line-height:1.4;color:#9DA8A0;margin-top:8px">Kilómetros que no aportan.</div>
+        </div>
+        <div class="note" style="font-size:26px">La siguiente palanca no es más esfuerzo: es <strong>eliminar los kilómetros inútiles</strong>. Para eso necesitamos ver el territorio como realmente se recorre.</div>
+      </div>
+    </div>
+    <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span></div>
+  </section>
+
+  <!-- 13b · HERRAMIENTA A · CÓMO FUNCIONA -->
+  <section class="slide" data-label="Herramienta A · cómo funciona">
+    <div class="eyebrow anim" style="margin-bottom:20px">Áreas · Herramienta A · el motor, explicado simple</div>
+    <div class="anim" style="display:flex;align-items:center;gap:30px;margin-bottom:44px">
+      <h1 class="title" style="margin:0">Cuatro pasos, datos reales.</h1>
+      <img class="wip-badge" src="45b16681-b67d-4979-a5b5-bb369c95d765" alt="WIP">
+    </div>
+    <div style="flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:30px;min-height:0">
+      <div class="card anim2" style="border-top-color:var(--acento);justify-content:flex-start">
+        <div style="font-family:var(--fmono);font-size:54px;font-weight:600;color:var(--acento);line-height:1;margin-bottom:12px">01</div>
+        <div class="eyebrow" style="font-size:22px;margin-bottom:20px;color:var(--secundario)">Entrada</div>
+        <div style="font-size:30px;font-weight:800;color:var(--casinegro);letter-spacing:-.01em;margin-bottom:14px;line-height:1.15">Rutas reales del histórico</div>
+        <div style="font-size:24px;line-height:1.45;color:var(--cuerpo)">Cada parada y cada km, con <strong style="color:var(--casinegro)">distancias reales por carretera (OSRM)</strong>, no en línea recta.</div>
+      </div>
+      <div class="card anim2" style="border-top-color:var(--alerta);justify-content:flex-start">
+        <div style="font-family:var(--fmono);font-size:54px;font-weight:600;color:var(--alerta);line-height:1;margin-bottom:12px">02</div>
+        <div class="eyebrow" style="font-size:22px;margin-bottom:20px;color:var(--secundario)">Detección</div>
+        <div style="font-size:30px;font-weight:800;color:var(--casinegro);letter-spacing:-.01em;margin-bottom:14px;line-height:1.15">Localiza los saltos</div>
+        <div style="font-size:24px;line-height:1.45;color:var(--cuerpo)">Marca todos los tramos de <strong style="color:var(--alerta)">más de 10 km</strong> entre paradas consecutivas de cada ruta.</div>
+      </div>
+      <div class="card anim3" style="border-top-color:var(--ambar);justify-content:flex-start">
+        <div style="font-family:var(--fmono);font-size:54px;font-weight:600;color:var(--ambar);line-height:1;margin-bottom:12px">03</div>
+        <div class="eyebrow" style="font-size:22px;margin-bottom:20px;color:var(--secundario)">Algoritmo</div>
+        <div style="font-size:30px;font-weight:800;color:var(--casinegro);letter-spacing:-.01em;margin-bottom:14px;line-height:1.15">Anti-saltos</div>
+        <div style="font-size:24px;line-height:1.45;color:var(--cuerpo)">Reagrupa los CPs en corredores: <strong style="color:var(--casinegro)">50&nbsp;% geografía · 30&nbsp;% afinidad · 20&nbsp;% penalización de saltos</strong>.</div>
+      </div>
+      <div class="card anim3" style="border-top-color:var(--acento2);justify-content:flex-start">
+        <div style="font-family:var(--fmono);font-size:54px;font-weight:600;color:var(--acento2);line-height:1;margin-bottom:12px">04</div>
+        <div class="eyebrow" style="font-size:22px;margin-bottom:20px;color:var(--secundario)">Salida</div>
+        <div style="font-size:30px;font-weight:800;color:var(--casinegro);letter-spacing:-.01em;margin-bottom:14px;line-height:1.15">Propuestas de corredores</div>
+        <div style="font-size:24px;line-height:1.45;color:var(--cuerpo)">Opciones de <strong style="color:var(--casinegro)">2, 3 o 4 corredores</strong>, con el ahorro de km y tiempo de cada una.</div>
+      </div>
+    </div>
+    <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span></div>
+  </section>
+
+  <!-- 13c · HERRAMIENTA A · BASELINE -->
+  <section class="slide" data-label="Herramienta A · baseline">
+    <div class="eyebrow anim" style="margin-bottom:20px">Áreas · Herramienta A · el punto de partida</div>
+    <h1 class="title anim" style="margin-bottom:36px">De dónde sale el km por pedido de hoy.</h1>
+    <div style="flex:1;min-height:0;display:grid;grid-template-columns:1.15fr 0.85fr;gap:64px;align-items:center">
+      <div class="shot real anim2" style="height:100%;max-height:560px;background:#FBFAF5;padding:18px">
+        <svg viewBox="0 0 900 640" style="width:100%;height:100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Una zona con 4 rutas del histórico y 4 saltos de 10 km">
+          <rect x="30" y="34" width="840" height="524" rx="26" fill="#F4F1EA" stroke="#CFC7B5" stroke-width="3" stroke-dasharray="16 12"></rect>
+          <text x="64" y="86" font-family="IBM Plex Mono,monospace" font-size="24" letter-spacing="3" fill="#6A7A72">ZONA ÚNICA · 4 RUTAS / DÍA</text>
+          <polyline points="96,170 184,136 268,176 336,146" fill="none" stroke="#1E4F3A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          <line x1="336" y1="146" x2="596" y2="158" stroke="#C1432E" stroke-width="5" stroke-dasharray="14 12"></line>
+          <polyline points="596,158 676,126 764,166" fill="none" stroke="#1E4F3A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          <text x="466" y="126" font-family="IBM Plex Mono,monospace" font-size="25" font-weight="600" fill="#C1432E" text-anchor="middle">10 km</text>
+          <polyline points="112,272 200,300 284,258 352,288" fill="none" stroke="#A82344" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          <line x1="352" y1="288" x2="612" y2="272" stroke="#C1432E" stroke-width="5" stroke-dasharray="14 12"></line>
+          <polyline points="612,272 700,300 788,262" fill="none" stroke="#A82344" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          <text x="482" y="246" font-family="IBM Plex Mono,monospace" font-size="25" font-weight="600" fill="#C1432E" text-anchor="middle">10 km</text>
+          <polyline points="100,392 188,358 272,398 344,366" fill="none" stroke="#D99320" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          <line x1="344" y1="366" x2="604" y2="390" stroke="#C1432E" stroke-width="5" stroke-dasharray="14 12"></line>
+          <polyline points="604,390 692,356 776,396" fill="none" stroke="#D99320" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          <text x="474" y="344" font-family="IBM Plex Mono,monospace" font-size="25" font-weight="600" fill="#C1432E" text-anchor="middle">10 km</text>
+          <polyline points="120,492 208,520 292,478 360,508" fill="none" stroke="#4A8B3D" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          <line x1="360" y1="508" x2="624" y2="500" stroke="#C1432E" stroke-width="5" stroke-dasharray="14 12"></line>
+          <polyline points="624,500 708,526 788,486" fill="none" stroke="#4A8B3D" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          <text x="492" y="472" font-family="IBM Plex Mono,monospace" font-size="25" font-weight="600" fill="#C1432E" text-anchor="middle">10 km</text>
+          <g fill="#1E4F3A"><circle cx="96" cy="170" r="9"></circle><circle cx="184" cy="136" r="9"></circle><circle cx="268" cy="176" r="9"></circle><circle cx="336" cy="146" r="9"></circle><circle cx="596" cy="158" r="9"></circle><circle cx="676" cy="126" r="9"></circle><circle cx="764" cy="166" r="9"></circle></g>
+          <g fill="#A82344"><circle cx="112" cy="272" r="9"></circle><circle cx="200" cy="300" r="9"></circle><circle cx="284" cy="258" r="9"></circle><circle cx="352" cy="288" r="9"></circle><circle cx="612" cy="272" r="9"></circle><circle cx="700" cy="300" r="9"></circle><circle cx="788" cy="262" r="9"></circle></g>
+          <g fill="#D99320"><circle cx="100" cy="392" r="9"></circle><circle cx="188" cy="358" r="9"></circle><circle cx="272" cy="398" r="9"></circle><circle cx="344" cy="366" r="9"></circle><circle cx="604" cy="390" r="9"></circle><circle cx="692" cy="356" r="9"></circle><circle cx="776" cy="396" r="9"></circle></g>
+          <g fill="#4A8B3D"><circle cx="120" cy="492" r="9"></circle><circle cx="208" cy="520" r="9"></circle><circle cx="292" cy="478" r="9"></circle><circle cx="360" cy="508" r="9"></circle><circle cx="624" cy="500" r="9"></circle><circle cx="708" cy="526" r="9"></circle><circle cx="788" cy="486" r="9"></circle></g>
+          <circle cx="74" cy="602" r="9" fill="#1E4F3A"></circle>
+          <text x="94" y="610" font-family="IBM Plex Mono,monospace" font-size="23" fill="#6A7A72">pedido</text>
+          <line x1="232" y1="602" x2="288" y2="602" stroke="#1E4F3A" stroke-width="5"></line>
+          <text x="304" y="610" font-family="IBM Plex Mono,monospace" font-size="23" fill="#6A7A72">tramo corto</text>
+          <line x1="500" y1="602" x2="556" y2="602" stroke="#C1432E" stroke-width="5" stroke-dasharray="14 12"></line>
+          <text x="572" y="610" font-family="IBM Plex Mono,monospace" font-size="23" fill="#C1432E">salto de 10 km</text>
+        </svg>
+      </div>
+      <div class="anim3" style="display:flex;flex-direction:column">
+        <div style="padding:22px 0;border-top:1.5px solid var(--regla);display:flex;justify-content:space-between;align-items:baseline;gap:24px">
+          <div style="font-size:26px;color:var(--cuerpo)">4 rutas × 20 pedidos</div>
+          <div style="font-family:var(--fmono);font-size:30px;font-weight:600;color:var(--casinegro);white-space:nowrap">80 pedidos</div>
+        </div>
+        <div style="padding:22px 0;border-top:1.5px solid var(--regla);display:flex;justify-content:space-between;align-items:baseline;gap:24px">
+          <div style="font-size:26px;color:var(--cuerpo)">Km reales del día (OSRM)</div>
+          <div style="font-family:var(--fmono);font-size:30px;font-weight:600;color:var(--casinegro);white-space:nowrap">200 km</div>
+        </div>
+        <div style="padding:22px 0;border-top:1.5px solid var(--regla);border-bottom:1.5px solid var(--regla);display:flex;justify-content:space-between;align-items:baseline;gap:24px">
+          <div style="font-size:26px;color:var(--cuerpo)">De ellos, en 4 saltos de 10 km</div>
+          <div style="font-family:var(--fmono);font-size:30px;font-weight:600;color:var(--alerta);white-space:nowrap">40 km</div>
+        </div>
+        <div style="margin-top:44px">
+          <div class="hero-label" style="margin-bottom:12px">Baseline · 200 km ÷ 80 pedidos</div>
+          <div class="hero-num" style="font-size:124px">2,5<span style="font-size:44px;font-weight:700;letter-spacing:0;color:var(--secundario)"> km / pedido</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="note anim3" style="margin-top:30px;flex:none">El baseline se mide sobre lo que <strong>realmente se condujo</strong>, con sus saltos dentro. Esa es la cifra a batir.</div>
+    <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span></div>
+  </section>
+
+  <!-- 13d · HERRAMIENTA A · ANTI-SALTOS -->
+  <section class="slide" data-label="Herramienta A · anti-saltos">
+    <div class="eyebrow anim" style="margin-bottom:20px">Áreas · Herramienta A · el algoritmo</div>
+    <h1 class="title anim" style="margin-bottom:40px;max-width:28ch">Anti-saltos: junta lo que se recorre junto, separa lo que obliga a saltar.</h1>
+    <div style="flex:1;display:grid;grid-template-columns:0.92fr 1.08fr;gap:60px;align-items:center;min-height:0">
+      <div class="numlist anim2">
+        <div class="row">
+          <div class="num" style="font-size:34px;color:var(--acento)">50&nbsp;%</div>
+          <div><div class="head">Geografía</div><div class="desc">Distancia real por carretera entre CPs (OSRM). Lo que está cerca tira a quedar junto.</div></div>
+        </div>
+        <div class="row">
+          <div class="num" style="font-size:34px;color:var(--ambar)">30&nbsp;%</div>
+          <div><div class="head">Afinidad</div><div class="desc">CPs que el histórico ya recorre seguidos tienden a quedarse en el mismo corredor.</div></div>
+        </div>
+        <div class="row">
+          <div class="num" style="font-size:34px;color:var(--alerta)">20&nbsp;%</div>
+          <div><div class="head">Penalización de saltos</div><div class="desc">Si dos CPs solo se conectan saltando más de 10 km, el algoritmo los separa.</div></div>
+        </div>
+      </div>
+      <div class="anim3" style="display:flex;flex-direction:column;gap:20px;height:100%;min-height:0;justify-content:center">
+        <div class="shot real" style="flex:1;min-height:0;max-height:480px;background:#FBFAF5;padding:14px">
+          <svg viewBox="0 0 860 560" style="width:100%;height:100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ejemplo: los CPs A y B quedan juntos; el CP C se separa porque solo se llega saltando">
+            <rect x="26" y="60" width="400" height="420" rx="24" fill="#E9F0E9" stroke="#2D7A55" stroke-width="3"></rect>
+            <rect x="560" y="60" width="274" height="420" rx="24" fill="#F4F1EA" stroke="#CFC7B5" stroke-width="3" stroke-dasharray="14 10"></rect>
+            <text x="56" y="112" font-family="IBM Plex Mono,monospace" font-size="22" letter-spacing="2" fill="#2D7A55">MISMO CORREDOR</text>
+            <text x="586" y="112" font-family="IBM Plex Mono,monospace" font-size="22" letter-spacing="2" fill="#6A7A72">OTRO CORREDOR</text>
+            <line x1="150" y1="300" x2="320" y2="240" stroke="#2D7A55" stroke-width="6"></line>
+            <line x1="320" y1="240" x2="697" y2="270" stroke="#C1432E" stroke-width="6" stroke-dasharray="16 12"></line>
+            <text x="218" y="238" font-family="IBM Plex Mono,monospace" font-size="26" font-weight="600" fill="#1E4F3A" text-anchor="middle">2 km</text>
+            <text x="505" y="222" font-family="IBM Plex Mono,monospace" font-size="26" font-weight="600" fill="#C1432E" text-anchor="middle">12 km</text>
+            <circle cx="150" cy="300" r="48" fill="#1E4F3A"></circle>
+            <circle cx="320" cy="240" r="48" fill="#2D7A55"></circle>
+            <circle cx="697" cy="270" r="48" fill="#C1432E"></circle>
+            <text x="150" y="314" font-family="Archivo,sans-serif" font-size="40" font-weight="800" fill="#F4F1EA" text-anchor="middle">A</text>
+            <text x="320" y="254" font-family="Archivo,sans-serif" font-size="40" font-weight="800" fill="#F4F1EA" text-anchor="middle">B</text>
+            <text x="697" y="284" font-family="Archivo,sans-serif" font-size="40" font-weight="800" fill="#F4F1EA" text-anchor="middle">C</text>
+            <text x="226" y="424" font-family="IBM Plex Mono,monospace" font-size="23" fill="#1E4F3A" text-anchor="middle">cerca + afines</text>
+            <text x="697" y="410" font-family="IBM Plex Mono,monospace" font-size="23" fill="#C1432E" text-anchor="middle"><tspan x="697" dy="0">solo se llega</tspan><tspan x="697" dy="32">saltando</tspan></text>
+          </svg>
+        </div>
+        <div style="font-size:24px;color:var(--secundario);line-height:1.45">Hoy una misma ruta visita A, B y C. El algoritmo deja <strong style="color:var(--casinegro)">A y B juntos</strong> y mueve <strong style="color:var(--alerta)">C a otro corredor</strong> con rutas que ya pasan por allí: el salto de 12 km desaparece.</div>
+      </div>
+    </div>
+    <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span></div>
+  </section>
+
+  <!-- 13e · HERRAMIENTA A · LA MEJORA -->
+  <section class="slide" data-label="Herramienta A · la mejora">
+    <div class="eyebrow anim" style="margin-bottom:18px">Áreas · Herramienta A · impacto</div>
+    <h1 class="title anim" style="margin-bottom:30px">Mismos pedidos, dos corredores: el km por pedido baja.</h1>
+    <div style="flex:1;min-height:0;display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch;margin-bottom:32px">
+      <div class="anim2" style="display:flex;flex-direction:column;height:100%;min-height:0">
+        <div style="font-family:var(--fmono);font-size:24px;letter-spacing:.1em;color:var(--secundario);text-transform:uppercase;margin-bottom:12px">Antes · 1 zona · <span style="color:var(--alerta)">4 saltos</span></div>
+        <div class="shot real" style="flex:1;min-height:0;background:#FBFAF5;padding:12px">
+          <svg viewBox="0 0 900 640" style="width:100%;height:100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Antes: una zona con 4 rutas y 4 saltos de 10 km">
+            <rect x="30" y="34" width="840" height="524" rx="26" fill="#F4F1EA" stroke="#CFC7B5" stroke-width="3" stroke-dasharray="16 12"></rect>
+            <text x="64" y="86" font-family="IBM Plex Mono,monospace" font-size="24" letter-spacing="3" fill="#6A7A72">ZONA ÚNICA · 4 RUTAS</text>
+            <polyline points="96,170 184,136 268,176 336,146" fill="none" stroke="#1E4F3A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <line x1="336" y1="146" x2="596" y2="158" stroke="#C1432E" stroke-width="5" stroke-dasharray="14 12"></line>
+            <polyline points="596,158 676,126 764,166" fill="none" stroke="#1E4F3A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <polyline points="112,272 200,300 284,258 352,288" fill="none" stroke="#A82344" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <line x1="352" y1="288" x2="612" y2="272" stroke="#C1432E" stroke-width="5" stroke-dasharray="14 12"></line>
+            <polyline points="612,272 700,300 788,262" fill="none" stroke="#A82344" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <polyline points="100,392 188,358 272,398 344,366" fill="none" stroke="#D99320" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <line x1="344" y1="366" x2="604" y2="390" stroke="#C1432E" stroke-width="5" stroke-dasharray="14 12"></line>
+            <polyline points="604,390 692,356 776,396" fill="none" stroke="#D99320" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <polyline points="120,492 208,520 292,478 360,508" fill="none" stroke="#4A8B3D" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <line x1="360" y1="508" x2="624" y2="500" stroke="#C1432E" stroke-width="5" stroke-dasharray="14 12"></line>
+            <polyline points="624,500 708,526 788,486" fill="none" stroke="#4A8B3D" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <g fill="#1E4F3A"><circle cx="96" cy="170" r="9"></circle><circle cx="184" cy="136" r="9"></circle><circle cx="268" cy="176" r="9"></circle><circle cx="336" cy="146" r="9"></circle><circle cx="596" cy="158" r="9"></circle><circle cx="676" cy="126" r="9"></circle><circle cx="764" cy="166" r="9"></circle></g>
+            <g fill="#A82344"><circle cx="112" cy="272" r="9"></circle><circle cx="200" cy="300" r="9"></circle><circle cx="284" cy="258" r="9"></circle><circle cx="352" cy="288" r="9"></circle><circle cx="612" cy="272" r="9"></circle><circle cx="700" cy="300" r="9"></circle><circle cx="788" cy="262" r="9"></circle></g>
+            <g fill="#D99320"><circle cx="100" cy="392" r="9"></circle><circle cx="188" cy="358" r="9"></circle><circle cx="272" cy="398" r="9"></circle><circle cx="344" cy="366" r="9"></circle><circle cx="604" cy="390" r="9"></circle><circle cx="692" cy="356" r="9"></circle><circle cx="776" cy="396" r="9"></circle></g>
+            <g fill="#4A8B3D"><circle cx="120" cy="492" r="9"></circle><circle cx="208" cy="520" r="9"></circle><circle cx="292" cy="478" r="9"></circle><circle cx="360" cy="508" r="9"></circle><circle cx="624" cy="500" r="9"></circle><circle cx="708" cy="526" r="9"></circle><circle cx="788" cy="486" r="9"></circle></g>
+            <text x="450" y="610" font-family="IBM Plex Mono,monospace" font-size="25" font-weight="600" fill="#C1432E" text-anchor="middle">4 saltos × 10 km = 40 km que no aportan</text>
+          </svg>
+        </div>
+      </div>
+      <div class="glyph anim2" style="font-size:64px;padding:0 28px;align-self:center">→</div>
+      <div class="anim3" style="display:flex;flex-direction:column;height:100%;min-height:0">
+        <div style="font-family:var(--fmono);font-size:24px;letter-spacing:.1em;color:var(--secundario);text-transform:uppercase;margin-bottom:12px">Después · 2 corredores · <span style="color:var(--acento)">0 saltos</span></div>
+        <div class="shot real" style="flex:1;min-height:0;background:#FBFAF5;padding:12px">
+          <svg viewBox="0 0 900 640" style="width:100%;height:100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Después: dos corredores con 2 rutas cada uno y cero saltos">
+            <rect x="30" y="34" width="402" height="524" rx="26" fill="#E9F0E9" stroke="#2D7A55" stroke-width="3"></rect>
+            <rect x="468" y="34" width="402" height="524" rx="26" fill="#E9F0E9" stroke="#2D7A55" stroke-width="3"></rect>
+            <text x="60" y="86" font-family="IBM Plex Mono,monospace" font-size="24" letter-spacing="3" fill="#2D7A55">CORREDOR 1</text>
+            <text x="498" y="86" font-family="IBM Plex Mono,monospace" font-size="24" letter-spacing="3" fill="#2D7A55">CORREDOR 2</text>
+            <polyline points="96,170 184,136 268,176 336,146 352,288 284,258 200,300 112,272" fill="none" stroke="#1E4F3A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <polyline points="100,392 188,358 272,398 344,366 360,508 292,478 208,520 120,492" fill="none" stroke="#D99320" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <polyline points="596,158 676,126 764,166 788,262 700,300 612,272" fill="none" stroke="#A82344" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <polyline points="604,390 692,356 776,396 788,486 708,526 624,500" fill="none" stroke="#4A8B3D" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <g fill="#1E4F3A"><circle cx="96" cy="170" r="9"></circle><circle cx="184" cy="136" r="9"></circle><circle cx="268" cy="176" r="9"></circle><circle cx="336" cy="146" r="9"></circle><circle cx="352" cy="288" r="9"></circle><circle cx="284" cy="258" r="9"></circle><circle cx="200" cy="300" r="9"></circle><circle cx="112" cy="272" r="9"></circle></g>
+            <g fill="#D99320"><circle cx="100" cy="392" r="9"></circle><circle cx="188" cy="358" r="9"></circle><circle cx="272" cy="398" r="9"></circle><circle cx="344" cy="366" r="9"></circle><circle cx="360" cy="508" r="9"></circle><circle cx="292" cy="478" r="9"></circle><circle cx="208" cy="520" r="9"></circle><circle cx="120" cy="492" r="9"></circle></g>
+            <g fill="#A82344"><circle cx="596" cy="158" r="9"></circle><circle cx="676" cy="126" r="9"></circle><circle cx="764" cy="166" r="9"></circle><circle cx="788" cy="262" r="9"></circle><circle cx="700" cy="300" r="9"></circle><circle cx="612" cy="272" r="9"></circle></g>
+            <g fill="#4A8B3D"><circle cx="604" cy="390" r="9"></circle><circle cx="692" cy="356" r="9"></circle><circle cx="776" cy="396" r="9"></circle><circle cx="788" cy="486" r="9"></circle><circle cx="708" cy="526" r="9"></circle><circle cx="624" cy="500" r="9"></circle></g>
+            <text x="450" y="610" font-family="IBM Plex Mono,monospace" font-size="25" font-weight="600" fill="#2D7A55" text-anchor="middle">los mismos 80 pedidos · 40 km menos</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div style="flex:none;height:150px;display:flex;align-items:center;justify-content:space-between;gap:48px">
+      <div style="display:flex;gap:56px;align-items:flex-end">
+        <div class="anim3">
+          <div style="font-size:54px;font-weight:800;color:var(--casinegro);letter-spacing:-.03em;line-height:1">200 → 160</div>
+          <div class="hero-label" style="margin-top:8px;font-size:24px">km / día</div>
+        </div>
+        <div class="anim3">
+          <div style="font-size:54px;font-weight:800;color:var(--casinegro);letter-spacing:-.03em;line-height:1">2,5 → 2,0</div>
+          <div class="hero-label" style="margin-top:8px;font-size:24px">km / pedido</div>
+        </div>
+        <div class="anim3">
+          <div style="font-size:76px;font-weight:900;color:var(--acento);letter-spacing:-.04em;line-height:.9">− 20 %</div>
+          <div class="hero-label" style="margin-top:8px;font-size:24px">de km por pedido</div>
+        </div>
+      </div>
+      <div style="font-size:24px;color:var(--secundario);line-height:1.4;max-width:38ch;text-align:right">El después se calcula igual que el baseline: km reales por carretera (OSRM) dentro de cada corredor ÷ los mismos 80 pedidos. <strong style="color:var(--casinegro)">160 ÷ 80 = 2,0 km por pedido.</strong></div>
+    </div>
+    <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span></div>
+  </section>
+
+  <!-- 13f · HERRAMIENTA A · LA SALIDA -->
+  <section class="slide" data-label="Herramienta A · la salida">
+    <div class="eyebrow anim" style="margin-bottom:18px">Áreas · Herramienta A · la salida</div>
+    <div class="anim" style="display:flex;align-items:center;gap:30px;margin-bottom:30px">
+      <h1 class="title" style="margin:0">Lo que devuelve: corredores listos para decidir.</h1>
+      <img class="wip-badge" src="45b16681-b67d-4979-a5b5-bb369c95d765" alt="WIP">
+    </div>
+    <div style="flex:1;min-height:0;display:grid;grid-template-columns:1.62fr 1fr;gap:56px;align-items:center">
+      <div class="shot real anim2" style="height:100%;max-height:640px"><img src="8f422bcf-30e4-400f-a669-1cd7d05b9dda" alt="Agrupador de corredores — la herramienta sobre rutas reales"></div>
+      <div class="anim3" style="display:flex;flex-direction:column">
+        <div style="padding:26px 0;border-top:1.5px solid var(--regla)">
+          <div class="eyebrow" style="font-size:24px;margin-bottom:12px">Propuestas</div>
+          <div style="font-size:30px;line-height:1.35;color:var(--casinegro);font-weight:700">Opciones de 2, 3 o 4 corredores sobre el mapa.</div>
+        </div>
+        <div style="padding:26px 0;border-top:1.5px solid var(--regla)">
+          <div class="eyebrow" style="font-size:24px;margin-bottom:12px">Comparación</div>
+          <div style="font-size:30px;line-height:1.35;color:var(--casinegro);font-weight:700">Cada opción, con su km por pedido frente al baseline.</div>
+        </div>
+        <div style="padding:26px 0;border-top:1.5px solid var(--regla);border-bottom:1.5px solid var(--regla)">
+          <div class="eyebrow" style="font-size:24px;margin-bottom:12px">Decisión</div>
+          <div style="font-size:30px;line-height:1.35;color:var(--casinegro);font-weight:700">La opción elegida se valida con la demanda (Herramienta B).</div>
+        </div>
+      </div>
+    </div>
+    <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span></div>
+  </section>

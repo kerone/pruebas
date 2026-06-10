@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operativa de Reparto · Colmenas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<style>/* vietnamese */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("cc8db893-4c67-4f3b-b41f-33f1cc5e1135") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("c374d37e-c3d1-4c61-9b62-6e6849ba0d7e") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("8f616961-da2a-4028-b0fb-5e824a8fce39") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("cc8db893-4c67-4f3b-b41f-33f1cc5e1135") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("c374d37e-c3d1-4c61-9b62-6e6849ba0d7e") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("8f616961-da2a-4028-b0fb-5e824a8fce39") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("cc8db893-4c67-4f3b-b41f-33f1cc5e1135") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("c374d37e-c3d1-4c61-9b62-6e6849ba0d7e") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("8f616961-da2a-4028-b0fb-5e824a8fce39") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 700;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("cc8db893-4c67-4f3b-b41f-33f1cc5e1135") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 700;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("c374d37e-c3d1-4c61-9b62-6e6849ba0d7e") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 700;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("8f616961-da2a-4028-b0fb-5e824a8fce39") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 800;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("cc8db893-4c67-4f3b-b41f-33f1cc5e1135") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 800;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("c374d37e-c3d1-4c61-9b62-6e6849ba0d7e") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 800;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("8f616961-da2a-4028-b0fb-5e824a8fce39") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 900;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("cc8db893-4c67-4f3b-b41f-33f1cc5e1135") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 900;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("c374d37e-c3d1-4c61-9b62-6e6849ba0d7e") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 900;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("8f616961-da2a-4028-b0fb-5e824a8fce39") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("ab040b4b-d2b3-41a3-9033-e4e0749b8f3e") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("11a77fd9-0027-4244-be07-d9e700f0f94e") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("1085bd42-1714-4a19-af3e-789ae990748d") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("ff1ffe7d-d0c4-449e-b278-53589879cdda") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("304995aa-34c9-41dd-884a-d859ec507700") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("caccc201-b533-4d81-bebf-15f3b341c8fa") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("e604eafd-90db-4d3d-9770-b7059925d3f4") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("0f83065c-1f91-4aa5-97f8-9684d6ba4af6") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("cdbc98f4-babf-42b9-879b-34417364d4ef") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("047ba5de-49bc-4242-a796-57eae00fe9fd") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("dfc8baee-46e4-47cc-9239-01a085196157") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("605639d1-0f85-406e-8c52-c5d8b2e30b85") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("afa94f6a-17ad-49de-910e-480905bf49d9") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("92166432-d363-4d30-b1de-b431c04da9d4") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("8c3e3577-72d3-44b8-9373-fd9ef22d804c") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+</style>
+
+<style>
+  deck-stage:not(:defined){visibility:hidden}
+
+  :root{
+    /* Palette — matched to original V2 deck */
+    --crema:#F4F1EA;
+    --bosque:#1E4F3A;
+    --casinegro:#0F1D18;
+    --eyebrow:#1E4F3A;
+    --acento:#2D7A55;
+    --acento2:#4A8B3D;
+    --alerta:#C1432E;
+    --ambar:#D99320;
+    --carmesi:#A82344;
+    --cuerpo:#2A3A33;
+    --secundario:#6A7A72;
+    --tan:#ECE7DC;
+    --regla:#CFC7B5;
+    --wip:#F4C20D;
+    --tinta:#1A1A1A;
+    /* dark-slide ink */
+    --crema-txt:#F4F1EA;
+    --sage:#8FBBA6;
+
+    /* Type scale (projection-appropriate) */
+    --type-divisor:104px;
+    --type-title:60px;
+    --type-subtitle:42px;
+    --type-body:32px;
+    --type-small:26px;
+    --type-eyebrow:24px;
+    --type-hero:132px;
+
+    /* Spacing */
+    --pad-top:92px;
+    --pad-bottom:104px;
+    --pad-x:112px;
+    --gap-title:40px;
+    --gap-item:26px;
+
+    --fhead:'Archivo',sans-serif;
+    --fmono:'IBM Plex Mono',monospace;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box}
+
+  .slide{
+    width:100%;height:100%;box-sizing:border-box;
+    padding:var(--pad-top) var(--pad-x) var(--pad-bottom);
+    display:flex;flex-direction:column;
+    font-family:var(--fhead);
+    background:var(--crema);
+    color:var(--cuerpo);
+    overflow:hidden;
+  }
+  .slide.dark{background:var(--bosque);color:var(--crema-txt)}
+
+  /* Eyebrow */
+  .eyebrow{
+    font-family:var(--fmono);
+    font-size:var(--type-eyebrow);
+    font-weight:500;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--eyebrow);
+  }
+  .dark .eyebrow{color:var(--sage)}
+
+  /* Titles */
+  h1.title{
+    font-family:var(--fhead);
+    font-weight:800;
+    font-size:var(--type-title);
+    line-height:1.04;
+    letter-spacing:-.018em;
+    color:var(--casinegro);
+    text-wrap:balance;
+  }
+  .dark h1.title{color:var(--crema-txt)}
+  .dark h1.divisor{color:var(--crema-txt)}
+  h1.divisor{
+    font-weight:900;
+    font-size:var(--type-divisor);
+    line-height:.98;
+    letter-spacing:-.03em;
+    color:var(--casinegro);
+    text-wrap:balance;
+  }
+
+  p.body{
+    font-size:var(--type-body);
+    line-height:1.45;
+    color:var(--cuerpo);
+    max-width:23ch;
+  }
+  .dark p.body{color:#D7E0D8}
+  p.lead{
+    font-size:var(--type-subtitle);
+    line-height:1.32;
+    max-width:24ch;
+    color:var(--cuerpo);
+    font-weight:400;
+  }
+  .dark p.lead{color:#D7E0D8}
+  em{font-style:italic}
+
+  /* Progress foot */
+  .progress{
+    position:absolute;
+    left:var(--pad-x);
+    bottom:54px;
+    display:flex;
+    gap:10px;
+    align-items:center;
+  }
+  .progress span{
+    display:block;width:46px;height:7px;border-radius:4px;
+    background:var(--regla);
+  }
+  .progress span.on{background:var(--bosque)}
+  .dark .progress span{background:rgba(244,241,234,.22)}
+  .dark .progress span.on{background:var(--crema-txt)}
+
+  /* WIP badge (original road-sign asset) */
+  .wip-badge{
+    width:96px;height:96px;flex:none;display:block;
+    filter:drop-shadow(0 4px 12px rgba(0,0,0,.16));
+  }
+
+  /* Image placeholder frame */
+  .shot{
+    background:#FBFAF5;
+    border:1.5px solid var(--regla);
+    border-radius:6px;
+    box-shadow:0 18px 40px -28px rgba(20,37,28,.45);
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;
+    position:relative;
+  }
+  .shot .shot-label{
+    font-family:var(--fmono);
+    font-size:var(--type-small);
+    color:var(--secundario);
+    text-transform:uppercase;
+    letter-spacing:.12em;
+    text-align:center;
+    line-height:1.5;
+    max-width:80%;
+  }
+  .shot::before{
+    content:"";position:absolute;inset:14px;
+    border:1.5px dashed var(--regla);border-radius:4px;
+    pointer-events:none;
+  }
+  .shot img{width:100%;height:100%;object-fit:contain;display:block}
+  .shot.real::before{display:none}
+
+  /* Numbered list 01/02/03 */
+  .numlist{display:flex;flex-direction:column}
+  .numlist .row{
+    display:grid;grid-template-columns:auto 1fr;column-gap:30px;
+    padding:30px 0;
+    border-top:1.5px solid var(--regla);
+  }
+  .numlist .row:last-child{border-bottom:1.5px solid var(--regla)}
+  .numlist .num{
+    font-family:var(--fmono);font-weight:500;
+    font-size:30px;color:var(--eyebrow);letter-spacing:.04em;
+    padding-top:4px;
+  }
+  .numlist .head{
+    font-family:var(--fhead);font-weight:700;
+    font-size:30px;color:var(--casinegro);margin-bottom:8px;
+    letter-spacing:-.01em;
+  }
+  .numlist .desc{font-size:var(--type-small);color:var(--secundario);line-height:1.4}
+
+  /* Hero stat */
+  .hero-num{
+    font-family:var(--fhead);font-weight:800;
+    font-size:var(--type-hero);line-height:.92;
+    letter-spacing:-.04em;color:var(--casinegro);
+  }
+  .hero-label{
+    font-family:var(--fmono);font-size:var(--type-small);
+    letter-spacing:.14em;text-transform:uppercase;color:var(--secundario);
+  }
+
+  /* Note box (tan with green rule) */
+  .note{
+    background:var(--tan);border-radius:8px;
+    padding:30px 34px;
+    border-left:6px solid var(--acento);
+    font-size:var(--type-small);line-height:1.5;color:var(--cuerpo);
+  }
+  .note strong{color:var(--casinegro)}
+
+  /* Cards with top rule */
+  .card{
+    background:#FBFAF5;border-radius:10px;
+    border-top:5px solid var(--acento);
+    padding:34px;display:flex;flex-direction:column;
+    box-shadow:0 18px 44px -32px rgba(20,37,28,.4);
+  }
+  .card.solid{background:var(--bosque);border-top-color:var(--sage);color:var(--crema-txt)}
+  .card.solid .card-head{color:var(--crema-txt)}
+  .card.solid .card-foot-label{color:var(--sage)}
+
+  .glyph{
+    font-family:var(--fhead);font-weight:700;
+    color:var(--eyebrow);line-height:1;
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  .anim,.anim2,.anim3{will-change:transform,opacity}
+  @media (prefers-reduced-motion:no-preference){
+    [data-deck-active] .anim{animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+    [data-deck-active] .anim2{animation:rise .6s .09s cubic-bezier(.2,.7,.2,1) both}
+    [data-deck-active] .anim3{animation:rise .6s .18s cubic-bezier(.2,.7,.2,1) both}
+  }
+  /* Transform-only entrance: if the animation is ever frozen (backgrounded
+     tab / capture), content stays fully visible — it never fades to nothing. */
+  @keyframes rise{from{transform:translateY(22px)}to{transform:none}}
+</style>
+</head>
+<body>
+<deck-stage width="1920" height="1080" data-om-id="ca2df415:8" style="--deck-rail-w: 188px;">
+
+  <!-- 1 · APERTURA -->
+  <section class="slide" data-label="Apertura" data-om-id="ca2df415:9" data-screen-label="01 Apertura" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="0">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;max-width:1180px" data-om-id="ca2df415:10">
+      <div class="eyebrow anim" style="margin-bottom:34px" data-om-id="ca2df415:11">Operativa de reparto · Colmenas</div>
+      <h1 class="title anim2" style="font-size:96px;margin-bottom:38px" data-om-id="ca2df415:12">Empezamos por el final.</h1>
+      <p class="lead anim3" style="max-width:30ch" data-om-id="ca2df415:13">Como en <em style="color:var(--carmesi)" data-om-id="ca2df415:14">American Beauty</em>: primero veremos el informe ya terminado. Luego rebobinamos para entender de dónde sale cada bloque, qué herramienta lo alimenta y qué decisiones lo construyen.</p>
+    </div>
+    <div class="anim3" style="position:absolute;right:var(--pad-x);bottom:120px;display:flex;align-items:center;gap:16px;opacity:.9" data-om-id="ca2df415:15">
+      <svg width="78" height="56" viewBox="0 0 78 56" fill="none" aria-hidden="true" data-om-id="ca2df415:16">
+        <path d="M36 6 L8 28 L36 50 Z" fill="var(--eyebrow)" data-om-id="ca2df415:17"></path>
+        <path d="M70 6 L42 28 L70 50 Z" fill="var(--eyebrow)" data-om-id="ca2df415:18"></path>
+      </svg>
+      <span style="font-family:var(--fmono);font-size:24px;letter-spacing:.18em;color:var(--eyebrow);text-transform:uppercase" data-om-id="ca2df415:19">Rebobinar</span>
+    </div>
+    <div class="progress" data-om-id="ca2df415:20"><span class="on" data-om-id="ca2df415:21"></span><span data-om-id="ca2df415:22"></span><span data-om-id="ca2df415:23"></span><span data-om-id="ca2df415:24"></span><span data-om-id="ca2df415:25"></span><span data-om-id="ca2df415:26"></span><span data-om-id="ca2df415:27"></span></div>
+  </section>
+
+  <!-- 2 · EL INFORME -->
+  <section class="slide" data-label="El informe" data-om-id="ca2df415:28" data-screen-label="02 El informe" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="1">
+    <div class="eyebrow anim" style="margin-bottom:20px" data-om-id="ca2df415:29">El informe</div>
+    <h1 class="title anim" style="max-width:20ch;margin-bottom:48px" data-om-id="ca2df415:30">Empecemos por el final: la foto que llega cada mes.</h1>
+    <div style="flex:1;display:grid;grid-template-columns:1fr 0.66fr;gap:64px;align-items:center;min-height:0" data-om-id="ca2df415:31">
+      <div class="shot real anim2" style="height:100%;max-height:520px" data-om-id="ca2df415:32"><img src="c79c4adf-4167-46c7-8288-0c8debcd817f" alt="Informe mensual .docx — Próximos cambios planificados" data-om-id="ca2df415:33"></div>
+      <div class="anim3" style="display:flex;flex-direction:column;gap:26px" data-om-id="ca2df415:34">
+        <div style="font-size:38px;line-height:1.3;color:var(--casinegro);font-weight:600" data-om-id="ca2df415:35">Es el entregable.</div>
+        <div style="font-size:38px;line-height:1.3;color:var(--cuerpo);font-weight:400" data-om-id="ca2df415:36">La foto final.</div>
+        <div style="font-size:38px;line-height:1.3;color:var(--acento);font-weight:700" data-om-id="ca2df415:37">Lo que ve Rutinario.</div>
+      </div>
+    </div>
+    <div class="progress" data-om-id="ca2df415:38"><span class="on" data-om-id="ca2df415:39"></span><span class="on" data-om-id="ca2df415:40"></span><span data-om-id="ca2df415:41"></span><span data-om-id="ca2df415:42"></span><span data-om-id="ca2df415:43"></span><span data-om-id="ca2df415:44"></span><span data-om-id="ca2df415:45"></span></div>
+  </section>
+
+  <!-- 3 · QUÉ TRASLADA -->
+  
+
+  <!-- 4 · REBOBINAMOS -->
+  <section class="slide" data-label="Rebobinamos" data-om-id="ca2df415:69" data-screen-label="04 Rebobinamos" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="3">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;max-width:1100px" data-om-id="ca2df415:70">
+      <div class="eyebrow anim" style="margin-bottom:34px;color:var(--carmesi)" data-om-id="ca2df415:71">Pero…</div>
+      <h1 class="title anim2" style="font-size:92px;margin-bottom:40px" data-om-id="ca2df415:72">¿Cómo hemos llegado hasta aquí?</h1>
+      <p class="lead anim3" data-om-id="ca2df415:73">Cada bloque del informe procede de una fuente distinta y de decisiones tomadas con herramientas específicas. Rebobinamos.</p>
+    </div>
+    <div class="progress" data-om-id="ca2df415:74"><span class="on" data-om-id="ca2df415:75"></span><span class="on" data-om-id="ca2df415:76"></span><span class="on" data-om-id="ca2df415:77"></span><span data-om-id="ca2df415:78"></span><span data-om-id="ca2df415:79"></span><span data-om-id="ca2df415:80"></span><span data-om-id="ca2df415:81"></span></div>
+  </section>
+
+  <!-- 5 · EL RECORRIDO DEL DATO -->
+  <section class="slide" data-label="Recorrido del dato" data-om-id="ca2df415:82" data-screen-label="05 Recorrido del dato" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="4">
+    <div class="eyebrow anim" style="margin-bottom:20px" data-om-id="ca2df415:83">El recorrido del dato</div>
+    <h1 class="title anim" style="margin-bottom:54px" data-om-id="ca2df415:84">Del dato a la palanca; de la palanca al papel.</h1>
+    <div style="flex:1;min-height:0;display:grid;grid-template-columns:1fr 72px 1fr 72px 1fr 72px 1fr;align-items:center;gap:0" data-om-id="ca2df415:85">
+      <div class="card anim2" data-om-id="ca2df415:86">
+        <div class="eyebrow" style="font-size:24px;letter-spacing:.08em;margin-bottom:14px" data-om-id="ca2df415:87">01 · Fuentes</div>
+        <div style="font-size:30px;font-weight:800;color:var(--casinegro);margin-bottom:12px" data-om-id="ca2df415:88">Datos crudos</div>
+        <div style="font-size:24px;line-height:1.42;color:var(--secundario)" data-om-id="ca2df415:89">Tablas operativas · coordenadas de entrega · demanda por CP</div>
+      </div>
+      <div class="glyph" style="font-size:44px" data-om-id="ca2df415:90">→</div>
+      <div class="card anim2" data-om-id="ca2df415:91">
+        <div class="eyebrow" style="font-size:24px;letter-spacing:.08em;margin-bottom:14px" data-om-id="ca2df415:92">02 · Herramientas</div>
+        <div style="font-size:30px;font-weight:800;color:var(--casinegro);margin-bottom:12px" data-om-id="ca2df415:93">Visualización</div>
+        <div style="font-size:24px;line-height:1.42;color:var(--secundario)" data-om-id="ca2df415:94">Metabase · visualizador de áreas · análisis de coordenadas</div>
+      </div>
+      <div class="glyph" style="font-size:44px" data-om-id="ca2df415:95">→</div>
+      <div class="card solid anim3" data-om-id="ca2df415:96">
+        <div class="eyebrow" style="font-size:24px;letter-spacing:.08em;margin-bottom:14px" data-om-id="ca2df415:97">03 · Decisiones</div>
+        <div class="card-head" style="font-size:30px;font-weight:800;margin-bottom:12px" data-om-id="ca2df415:98">Acciones</div>
+        <div style="font-size:24px;line-height:1.42;color:#D7E0D8" data-om-id="ca2df415:99">Subir o bajar productividad · configuración de áreas · disrupciones · ajuste POM</div>
+      </div>
+      <div class="glyph" style="font-size:44px" data-om-id="ca2df415:100">→</div>
+      <div class="card anim3" data-om-id="ca2df415:101">
+        <div class="eyebrow" style="font-size:24px;letter-spacing:.08em;margin-bottom:14px" data-om-id="ca2df415:102">04 · Informe</div>
+        <div style="font-size:30px;font-weight:800;color:var(--casinegro);margin-bottom:12px" data-om-id="ca2df415:103">Entregable</div>
+        <div style="font-size:24px;line-height:1.42;color:var(--secundario)" data-om-id="ca2df415:104">Pone al día a Rutinario sobre los movimientos y ajustes del mes</div>
+      </div>
+    </div>
+    <div class="progress" data-om-id="ca2df415:105"><span class="on" data-om-id="ca2df415:106"></span><span class="on" data-om-id="ca2df415:107"></span><span class="on" data-om-id="ca2df415:108"></span><span data-om-id="ca2df415:109"></span><span data-om-id="ca2df415:110"></span><span data-om-id="ca2df415:111"></span><span data-om-id="ca2df415:112"></span></div>
+  </section>
+
+  <!-- 6 · QUÉ ES UNA OPERATIVA -->
+  <section class="slide" data-label="Qué es una operativa" data-om-id="ca2df415:113" data-screen-label="06 Qué es una operativa" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="5">
+    <div class="eyebrow anim" style="margin-bottom:20px" data-om-id="ca2df415:114">Antes de seguir</div>
+    <h1 class="title anim" style="margin-bottom:64px" data-om-id="ca2df415:115">¿Qué es una operativa?</h1>
+    <div style="display:flex;align-items:flex-start;gap:36px;margin-bottom:54px" data-om-id="ca2df415:116">
+      <div class="card anim2" style="flex:1;border-top-color:var(--bosque)" data-om-id="ca2df415:117">
+        <div style="font-size:46px;font-weight:900;color:var(--casinegro);letter-spacing:-.01em;margin-bottom:14px" data-om-id="ca2df415:118">ÁREA</div>
+        <div style="font-size:24px;line-height:1.42;color:var(--secundario)" data-om-id="ca2df415:119">Agrupación de CPs (ej. Embajadores, Chamartín, Jerez)</div>
+      </div>
+      <div class="glyph anim2" style="font-size:60px;color:var(--secundario)" data-om-id="ca2df415:120">+</div>
+      <div class="card anim2" style="flex:1;border-top-color:var(--bosque)" data-om-id="ca2df415:121">
+        <div style="font-size:46px;font-weight:900;color:var(--casinegro);letter-spacing:-.01em;margin-bottom:14px" data-om-id="ca2df415:122">TURNO</div>
+        <div style="font-size:24px;line-height:1.42;color:var(--secundario)" data-om-id="ca2df415:123">Franja horaria (morning · afternoon · bridge)</div>
+      </div>
+      <div class="glyph anim2" style="font-size:60px;color:var(--secundario)" data-om-id="ca2df415:124">+</div>
+      <div class="card anim2" style="flex:1;border-top-color:var(--bosque)" data-om-id="ca2df415:125">
+        <div style="font-size:46px;font-weight:900;color:var(--casinegro);letter-spacing:-.01em;margin-bottom:14px" data-om-id="ca2df415:126">COLMENA</div>
+        <div style="font-size:24px;line-height:1.42;color:var(--secundario)" data-om-id="ca2df415:127">Centro de origen (VLC1, SVQ1, MAD1, BCN1…)</div>
+      </div>
+    </div>
+    <div class="note anim3" style="max-width:none;background:transparent;border-left:6px solid var(--bosque);padding-left:28px;font-size:30px" data-om-id="ca2df415:128">
+      Ejemplo: <strong data-om-id="ca2df415:129">MAD1 · Embajadores · morning.</strong> Otra distinta sería MAD1 · Embajadores · afternoon.
+    </div>
+    <div class="progress" data-om-id="ca2df415:130"><span class="on" data-om-id="ca2df415:131"></span><span class="on" data-om-id="ca2df415:132"></span><span class="on" data-om-id="ca2df415:133"></span><span data-om-id="ca2df415:134"></span><span data-om-id="ca2df415:135"></span><span data-om-id="ca2df415:136"></span><span data-om-id="ca2df415:137"></span></div>
+  </section>
+
+  <!-- 7 · DIVISOR PRODUCTIVIDAD -->
+  <section class="slide dark" data-label="Divisor · Productividad" data-om-id="ca2df415:138" data-screen-label="07 Divisor · Productividad" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="6">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center" data-om-id="ca2df415:139">
+      <div class="eyebrow anim" style="margin-bottom:30px" data-om-id="ca2df415:140">Bloque 1 · Productividad</div>
+      <h1 class="divisor anim2" style="margin-bottom:42px" data-om-id="ca2df415:141">Retrasos<br data-om-id="ca2df415:142">por colmena.</h1>
+      <p class="body anim3" style="max-width:40ch;font-size:36px" data-om-id="ca2df415:143">Detectar, profundizar, entender la causa. Sin esto, no hay ajuste de productividad que valga.</p>
+    </div>
+    <div style="position:absolute;right:var(--pad-x);top:var(--pad-top);font-family:var(--fmono);font-size:200px;font-weight:600;color:rgba(244,241,234,.10);line-height:1" data-om-id="ca2df415:144">01</div>
+    <div class="progress" data-om-id="ca2df415:145"><span class="on" data-om-id="ca2df415:146"></span><span class="on" data-om-id="ca2df415:147"></span><span class="on" data-om-id="ca2df415:148"></span><span class="on" data-om-id="ca2df415:149"></span><span data-om-id="ca2df415:150"></span><span data-om-id="ca2df415:151"></span><span data-om-id="ca2df415:152"></span></div>
+  </section>
+
+  <!-- 8 · RETRASOS VISTA GLOBAL -->
+  <section class="slide" data-label="Retrasos · vista global" data-om-id="ca2df415:153" data-screen-label="08 Retrasos · vista global" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="7">
+    <div class="eyebrow anim" style="margin-bottom:20px" data-om-id="ca2df415:154">Retrasos · vista global</div>
+    <h1 class="title anim" style="margin-bottom:48px" data-om-id="ca2df415:155">El dashboard de Metabase, de un vistazo.</h1>
+    <div style="flex:1;display:grid;grid-template-columns:1.1fr 0.9fr;gap:60px;align-items:center;min-height:0" data-om-id="ca2df415:156">
+      <div class="shot real anim2" style="height:100%;max-height:540px" data-om-id="ca2df415:157"><img src="4f19b4da-d5fb-4384-9620-7463544b3860" alt="Dashboard Metabase — Informe Operativa Reparto" data-om-id="ca2df415:158"></div>
+      <div class="numlist anim3" data-om-id="ca2df415:159">
+        <div class="row" data-om-id="ca2df415:160">
+          <div class="num" data-om-id="ca2df415:161">01</div>
+          <div data-om-id="ca2df415:162"><div class="head" data-om-id="ca2df415:163">Evolución semanal</div><div class="desc" data-om-id="ca2df415:164">Cada colmena frente a la línea de alerta del 3 %.</div></div>
+        </div>
+        <div class="row" data-om-id="ca2df415:165">
+          <div class="num" data-om-id="ca2df415:166">02</div>
+          <div data-om-id="ca2df415:167"><div class="head" data-om-id="ca2df415:168">% de retrasos del mes</div><div class="desc" data-om-id="ca2df415:169">Agregado del periodo, colmena a colmena.</div></div>
+        </div>
+        <div class="row" data-om-id="ca2df415:170">
+          <div class="num" data-om-id="ca2df415:171">03</div>
+          <div data-om-id="ca2df415:172"><div class="head" data-om-id="ca2df415:173">Comparativa histórica</div><div class="desc" data-om-id="ca2df415:174">Frente al mes anterior y al año anterior.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="progress" data-om-id="ca2df415:175"><span class="on" data-om-id="ca2df415:176"></span><span class="on" data-om-id="ca2df415:177"></span><span class="on" data-om-id="ca2df415:178"></span><span class="on" data-om-id="ca2df415:179"></span><span data-om-id="ca2df415:180"></span><span data-om-id="ca2df415:181"></span><span data-om-id="ca2df415:182"></span></div>
+  </section>
+
+  <!-- 9 · RETRASOS DETECCIÓN -->
+  <section class="slide" data-label="Retrasos · detección" data-om-id="ca2df415:183" data-screen-label="09 Retrasos · detección" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="8">
+    <div class="eyebrow anim" style="margin-bottom:20px" data-om-id="ca2df415:184">Retrasos · detección</div>
+    <h1 class="title anim" style="margin-bottom:44px" data-om-id="ca2df415:185">La regla que dispara la revisión.</h1>
+    <div style="flex:1;min-height:0;display:grid;grid-template-columns:1.12fr 0.88fr;gap:72px;align-items:center" data-om-id="ca2df415:186">
+      <div class="shot real anim2" style="height:100%;max-height:520px;background:#FFFFFF" data-om-id="ca2df415:187"><img src="b6ac5457-c28a-4194-8642-5ceb2d32de37" alt="Ilustración: detección de retrasos por encima del umbral" data-om-id="ca2df415:188"></div>
+      <div class="anim3" style="display:flex;flex-direction:column;gap:44px" data-om-id="ca2df415:189">
+        <div data-om-id="ca2df415:190">
+          <div class="hero-label" style="margin-bottom:12px" data-om-id="ca2df415:191">Retrasos</div>
+          <div class="hero-num" style="font-size:104px" data-om-id="ca2df415:192"><span style="color:var(--alerta)" data-om-id="ca2df415:193">&gt;3 %</span></div>
+          <div style="font-size:24px;color:var(--secundario);line-height:1.4;margin-top:12px;max-width:26ch" data-om-id="ca2df415:194">de pedidos llegando tarde frente al objetivo del 3 %.</div>
+        </div>
+        <div data-om-id="ca2df415:195">
+          <div class="hero-label" style="margin-bottom:12px" data-om-id="ca2df415:196">Ventana</div>
+          <div class="hero-num" style="font-size:104px" data-om-id="ca2df415:197"><span style="color:var(--acento)" data-om-id="ca2df415:198">4</span><span style="font-size:46px;font-weight:700;color:var(--casinegro);letter-spacing:0" data-om-id="ca2df415:199"> semanas</span></div>
+          <div style="font-size:24px;color:var(--secundario);line-height:1.4;margin-top:12px;max-width:26ch" data-om-id="ca2df415:200">completas y consecutivas. Cronicidad, no picos.</div>
+        </div>
+      </div>
+    </div>
+    <div class="note anim3" style="margin-top:36px;flex:none" data-om-id="ca2df415:201">Cruzar el umbral <strong data-om-id="ca2df415:202">no</strong> significa bajar productividad. Significa entrar en revisión y hacerse <strong data-om-id="ca2df415:203">una pregunta.</strong></div>
+    <div class="progress" data-om-id="ca2df415:204"><span class="on" data-om-id="ca2df415:205"></span><span class="on" data-om-id="ca2df415:206"></span><span class="on" data-om-id="ca2df415:207"></span><span class="on" data-om-id="ca2df415:208"></span><span data-om-id="ca2df415:209"></span><span data-om-id="ca2df415:210"></span><span data-om-id="ca2df415:211"></span></div>
+  </section>
+
+  <!-- 10 · CAUSA RAÍZ -->
+  <section class="slide" data-label="Retrasos · causa raíz" data-om-id="ca2df415:212" data-screen-label="10 Retrasos · causa raíz" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="9">
+    <div class="eyebrow anim" style="margin-bottom:20px" data-om-id="ca2df415:213">Retrasos · causa raíz</div>
+    <h1 class="title anim" style="max-width:30ch;margin-bottom:40px" data-om-id="ca2df415:214">No basta con detectar el retraso. Hay que entender de dónde viene.</h1>
+    <div style="font-size:32px;font-weight:700;color:var(--casinegro);margin-bottom:30px" data-om-id="ca2df415:215">¿El retraso viene de una salida tardía del centro?</div>
+    <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:40px;min-height:0" data-om-id="ca2df415:216">
+      <div class="card anim2" style="border-top-color:var(--secundario);justify-content:flex-start" data-om-id="ca2df415:217">
+        <div style="font-family:var(--fmono);font-size:24px;letter-spacing:.16em;color:var(--secundario);margin-bottom:18px" data-om-id="ca2df415:218">SÍ</div>
+        <div style="font-size:30px;font-weight:700;color:var(--casinegro);margin-bottom:14px;letter-spacing:-.01em" data-om-id="ca2df415:219">El problema está aguas arriba.</div>
+        <div style="font-size:var(--type-small);line-height:1.45;color:var(--cuerpo)" data-om-id="ca2df415:220">Preparación, carga, salida de muelle. <em data-om-id="ca2df415:221">No se toca la productividad de la operativa.</em></div>
+      </div>
+      <div class="card anim3" style="border-top-color:var(--acento);justify-content:flex-start" data-om-id="ca2df415:222">
+        <div style="font-family:var(--fmono);font-size:24px;letter-spacing:.16em;color:var(--acento);margin-bottom:18px" data-om-id="ca2df415:223">NO</div>
+        <div style="font-size:30px;font-weight:700;color:var(--casinegro);margin-bottom:14px;letter-spacing:-.01em" data-om-id="ca2df415:224">Sale en hora, vuelve en hora.</div>
+        <div style="font-size:var(--type-small);line-height:1.45;color:var(--cuerpo)" data-om-id="ca2df415:225">La operación cabe en su ventana y aun así llega tarde. Entramos a evaluar <strong data-om-id="ca2df415:226">si bajar productividad.</strong> Decisión validada con Rutinario.</div>
+      </div>
+    </div>
+    <p style="font-size:var(--type-small);color:var(--secundario);line-height:1.4;margin-top:30px;max-width:80ch" data-om-id="ca2df415:227">Este filtro evita penalizar operativas que en realidad funcionan bien pero arrancan tarde.</p>
+    <div class="progress" data-om-id="ca2df415:228"><span class="on" data-om-id="ca2df415:229"></span><span class="on" data-om-id="ca2df415:230"></span><span class="on" data-om-id="ca2df415:231"></span><span class="on" data-om-id="ca2df415:232"></span><span data-om-id="ca2df415:233"></span><span data-om-id="ca2df415:234"></span><span data-om-id="ca2df415:235"></span></div>
+  </section>
+
+  <!-- 11 · SUBIDAS -->
+  <section class="slide" data-label="La otra cara · subidas" data-om-id="ca2df415:236" data-screen-label="11 La otra cara · subidas" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="10">
+    <div class="eyebrow anim" style="margin-bottom:20px" data-om-id="ca2df415:237">La otra cara · subidas de productividad</div>
+    <h1 class="title anim" style="margin-bottom:60px" data-om-id="ca2df415:238">No todo es bajar. También se sube.</h1>
+    <img class="anim" src="f400e5c9-af38-4f89-804e-2c3f0a7d0e38" alt="" aria-hidden="true" style="position:absolute;right:var(--pad-x);top:var(--pad-top);width:150px;height:auto" data-om-id="ca2df415:239">
+    <div style="flex:1;display:grid;grid-template-columns:1fr 0.95fr;gap:72px;align-items:center;min-height:0" data-om-id="ca2df415:240">
+      <div class="anim2" data-om-id="ca2df415:241">
+        <div class="hero-label" style="margin-bottom:16px" data-om-id="ca2df415:242">Retrasos</div>
+        <div class="hero-num" style="font-size:148px" data-om-id="ca2df415:243"><span style="color:var(--acento)" data-om-id="ca2df415:244">&lt;1,5 %</span></div>
+        <div style="font-size:28px;color:var(--cuerpo);line-height:1.4;margin-top:22px;max-width:24ch" data-om-id="ca2df415:245">de retrasos de forma sostenida <strong style="color:var(--casinegro)" data-om-id="ca2df415:246">+ margen por volumen</strong></div>
+      </div>
+      <div class="anim3" data-om-id="ca2df415:247">
+        <div class="eyebrow" style="margin-bottom:26px;font-size:24px" data-om-id="ca2df415:248">Criterio de oficialización</div>
+        <div style="display:flex;gap:28px" data-om-id="ca2df415:249">
+          <div class="card" style="flex:1;border-top-color:var(--acento);align-items:flex-start" data-om-id="ca2df415:250">
+            <div style="font-size:72px;font-weight:800;color:var(--casinegro);letter-spacing:-.03em" data-om-id="ca2df415:251">≥ 0,5</div>
+            <div style="font-size:24px;color:var(--secundario);margin-top:8px" data-om-id="ca2df415:252">rutas / día</div>
+          </div>
+          <div class="card" style="flex:1;border-top-color:var(--acento);align-items:flex-start" data-om-id="ca2df415:253">
+            <div style="font-size:72px;font-weight:800;color:var(--casinegro);letter-spacing:-.03em" data-om-id="ca2df415:254">7,5</div>
+            <div style="font-size:24px;color:var(--secundario);margin-top:8px" data-om-id="ca2df415:255">cols / día</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="progress" data-om-id="ca2df415:256"><span class="on" data-om-id="ca2df415:257"></span><span class="on" data-om-id="ca2df415:258"></span><span class="on" data-om-id="ca2df415:259"></span><span class="on" data-om-id="ca2df415:260"></span><span data-om-id="ca2df415:261"></span><span data-om-id="ca2df415:262"></span><span data-om-id="ca2df415:263"></span></div>
+  </section>
+
+  <!-- 12 · DIVISOR ÁREAS -->
+  <section class="slide dark" data-label="Divisor · Áreas" data-om-id="ca2df415:264" data-screen-label="12 Divisor · Áreas" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="11">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center" data-om-id="ca2df415:265">
+      <div class="eyebrow anim" style="margin-bottom:30px" data-om-id="ca2df415:266">Bloque 2 · Áreas</div>
+      <h1 class="divisor anim2" style="margin-bottom:42px" data-om-id="ca2df415:267">Configuración<br data-om-id="ca2df415:268">de áreas.</h1>
+      <p class="body anim3" style="max-width:42ch;font-size:36px" data-om-id="ca2df415:269">Las áreas no se diseñan de forma arbitraria. Responden a dos variables: <strong style="color:var(--crema-txt)" data-om-id="ca2df415:270">demanda</strong> y <strong style="color:var(--crema-txt)" data-om-id="ca2df415:271">distancias.</strong> Aquí entran las dos herramientas que estoy desarrollando.</p>
+      <p class="body anim3" style="max-width:42ch;font-size:30px;color:var(--sage);font-weight:600;margin-top:26px" data-om-id="ca2df415:272">Configurar bien las áreas es una palanca de productividad en los dos sentidos: subirla donde hay margen, y bajar retrasos estructurales sin tener que bajarla.</p>
+    </div>
+    <div style="position:absolute;right:var(--pad-x);top:var(--pad-top);font-family:var(--fmono);font-size:200px;font-weight:600;color:rgba(244,241,234,.10);line-height:1" data-om-id="ca2df415:273">02</div>
+    <div class="progress" data-om-id="ca2df415:274"><span class="on" data-om-id="ca2df415:275"></span><span class="on" data-om-id="ca2df415:276"></span><span class="on" data-om-id="ca2df415:277"></span><span class="on" data-om-id="ca2df415:278"></span><span class="on" data-om-id="ca2df415:279"></span><span data-om-id="ca2df415:280"></span><span data-om-id="ca2df415:281"></span></div>
+  </section>
+
+  <!-- 13a · HERRAMIENTA A · EL PIVOTE -->
+  <section class="slide" data-label="Herramienta A · el pivote">
+    <div class="eyebrow anim" style="margin-bottom:20px">Áreas · Herramienta A · el problema</div>
+    <div style="flex:1;display:grid;grid-template-columns:1.05fr 0.95fr;gap:80px;align-items:center;min-height:0">
+      <div>
+        <h1 class="title anim2" style="font-size:66px;margin-bottom:36px;max-width:18ch">Cuando ya no se puede pedir más, la siguiente palanca es recorrer mejor.</h1>
+        <p class="lead anim3" style="font-size:34px;max-width:34ch">Volumen y tiempo tienen techo. Exigir más esfuerzo no es la respuesta.</p>
+      </div>
+      <div class="anim3" style="display:flex;flex-direction:column;gap:26px">
+        <div style="background:var(--casinegro);border-radius:14px;padding:42px 48px;box-shadow:0 24px 50px -30px rgba(15,29,24,.6)">
+          <div style="font-family:var(--fmono);font-size:22px;letter-spacing:.16em;color:var(--sage);text-transform:uppercase;margin-bottom:22px">El problema · dato histórico</div>
+          <div style="font-family:var(--fmono);font-size:108px;font-weight:600;color:#E0573B;line-height:1;margin-bottom:20px">&gt;10 km</div>
+          <div style="font-size:28px;line-height:1.4;color:var(--crema-txt)">Saltos entre pedidos consecutivos en las rutas del histórico.</div>
+          <div style="font-size:28px;line-height:1.4;color:#9DA8A0;margin-top:8px">Kilómetros que no aportan.</div>
+        </div>
+        <div class="note" style="font-size:26px">La siguiente palanca no es más esfuerzo: es <strong>eliminar los kilómetros inútiles</strong>. Para eso necesitamos ver el territorio como realmente se recorre.</div>
+      </div>
+    </div>
+    <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span></div>
+  </section>
+
+  <!-- 13b · HERRAMIENTA A · CÓMO FUNCIONA -->
+  <section class="slide" data-label="Herramienta A · cómo funciona">
+    <div class="eyebrow anim" style="margin-bottom:20px">Áreas · Herramienta A · el motor, explicado simple</div>
+    <div class="anim" style="display:flex;align-items:center;gap:30px;margin-bottom:44px">
+      <h1 class="title" style="margin:0">Cuatro pasos, datos reales.</h1>
+      <img class="wip-badge" src="45b16681-b67d-4979-a5b5-bb369c95d765" alt="WIP">
+    </div>
+    <div style="flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:30px;min-height:0">
+      <div class="card anim2" style="border-top-color:var(--acento);justify-content:flex-start">
+        <div style="font-family:var(--fmono);font-size:54px;font-weight:600;color:var(--acento);line-height:1;margin-bottom:12px">01</div>
+        <div class="eyebrow" style="font-size:22px;margin-bottom:20px;color:var(--secundario)">Entrada</div>
+        <div style="font-size:30px;font-weight:800;color:var(--casinegro);letter-spacing:-.01em;margin-bottom:14px;line-height:1.15">Rutas reales del histórico</div>
+        <div style="font-size:24px;line-height:1.45;color:var(--cuerpo)">Cada parada y cada km, con <strong style="color:var(--casinegro)">distancias reales por carretera (OSRM)</strong>, no en línea recta.</div>
+      </div>
+      <div class="card anim2" style="border-top-color:var(--alerta);justify-content:flex-start">
+        <div style="font-family:var(--fmono);font-size:54px;font-weight:600;color:var(--alerta);line-height:1;margin-bottom:12px">02</div>
+        <div class="eyebrow" style="font-size:22px;margin-bottom:20px;color:var(--secundario)">Detección</div>
+        <div style="font-size:30px;font-weight:800;color:var(--casinegro);letter-spacing:-.01em;margin-bottom:14px;line-height:1.15">Localiza los saltos</div>
+        <div style="font-size:24px;line-height:1.45;color:var(--cuerpo)">Marca todos los tramos de <strong style="color:var(--alerta)">más de 10 km</strong> entre paradas consecutivas de cada ruta.</div>
+      </div>
+      <div class="card anim3" style="border-top-color:var(--ambar);justify-content:flex-start">
+        <div style="font-family:var(--fmono);font-size:54px;font-weight:600;color:var(--ambar);line-height:1;margin-bottom:12px">03</div>
+        <div class="eyebrow" style="font-size:22px;margin-bottom:20px;color:var(--secundario)">Algoritmo</div>
+        <div style="font-size:30px;font-weight:800;color:var(--casinegro);letter-spacing:-.01em;margin-bottom:14px;line-height:1.15">Anti-saltos</div>
+        <div style="font-size:24px;line-height:1.45;color:var(--cuerpo)">Reagrupa los CPs en corredores: <strong style="color:var(--casinegro)">50&nbsp;% geografía · 30&nbsp;% afinidad · 20&nbsp;% penalización de saltos</strong>.</div>
+      </div>
+      <div class="card anim3" style="border-top-color:var(--acento2);justify-content:flex-start">
+        <div style="font-family:var(--fmono);font-size:54px;font-weight:600;color:var(--acento2);line-height:1;margin-bottom:12px">04</div>
+        <div class="eyebrow" style="font-size:22px;margin-bottom:20px;color:var(--secundario)">Salida</div>
+        <div style="font-size:30px;font-weight:800;color:var(--casinegro);letter-spacing:-.01em;margin-bottom:14px;line-height:1.15">Propuestas de corredores</div>
+        <div style="font-size:24px;line-height:1.45;color:var(--cuerpo)">Opciones de <strong style="color:var(--casinegro)">2, 3 o 4 corredores</strong>, con el ahorro de km y tiempo de cada una.</div>
+      </div>
+    </div>
+    <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span></div>
+  </section>
+
+  <!-- 13c · HERRAMIENTA A · BASELINE -->
+  <section class="slide" data-label="Herramienta A · baseline">
+    <div class="eyebrow anim" style="margin-bottom:20px">Áreas · Herramienta A · el punto de partida</div>
+    <h1 class="title anim" style="margin-bottom:36px">De dónde sale el km por pedido de hoy.</h1>
+    <div style="flex:1;min-height:0;display:grid;grid-template-columns:1.15fr 0.85fr;gap:64px;align-items:center">
+      <div class="shot real anim2" style="height:100%;max-height:560px;background:#FBFAF5;padding:18px">
+        <svg viewBox="0 0 900 640" style="width:100%;height:100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Una zona con 4 rutas del histórico y 4 saltos de 10 km">
+          <rect x="30" y="34" width="840" height="524" rx="26" fill="#F4F1EA" stroke="#CFC7B5" stroke-width="3" stroke-dasharray="16 12"></rect>
+          <text x="64" y="86" font-family="IBM Plex Mono,monospace" font-size="24" letter-spacing="3" fill="#6A7A72">ZONA ÚNICA · 4 RUTAS / DÍA</text>
+          <polyline points="96,170 184,136 268,176 336,146" fill="none" stroke="#1E4F3A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          <line x1="336" y1="146" x2="596" y2="158" stroke="#C1432E" stroke-width="5" stroke-dasharray="14 12"></line>
+          <polyline points="596,158 676,126 764,166" fill="none" stroke="#1E4F3A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          <text x="466" y="126" font-family="IBM Plex Mono,monospace" font-size="25" font-weight="600" fill="#C1432E" text-anchor="middle">10 km</text>
+          <polyline points="112,272 200,300 284,258 352,288" fill="none" stroke="#A82344" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          <line x1="352" y1="288" x2="612" y2="272" stroke="#C1432E" stroke-width="5" stroke-dasharray="14 12"></line>
+          <polyline points="612,272 700,300 788,262" fill="none" stroke="#A82344" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          <text x="482" y="246" font-family="IBM Plex Mono,monospace" font-size="25" font-weight="600" fill="#C1432E" text-anchor="middle">10 km</text>
+          <polyline points="100,392 188,358 272,398 344,366" fill="none" stroke="#D99320" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          <line x1="344" y1="366" x2="604" y2="390" stroke="#C1432E" stroke-width="5" stroke-dasharray="14 12"></line>
+          <polyline points="604,390 692,356 776,396" fill="none" stroke="#D99320" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          <text x="474" y="344" font-family="IBM Plex Mono,monospace" font-size="25" font-weight="600" fill="#C1432E" text-anchor="middle">10 km</text>
+          <polyline points="120,492 208,520 292,478 360,508" fill="none" stroke="#4A8B3D" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          <line x1="360" y1="508" x2="624" y2="500" stroke="#C1432E" stroke-width="5" stroke-dasharray="14 12"></line>
+          <polyline points="624,500 708,526 788,486" fill="none" stroke="#4A8B3D" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          <text x="492" y="472" font-family="IBM Plex Mono,monospace" font-size="25" font-weight="600" fill="#C1432E" text-anchor="middle">10 km</text>
+          <g fill="#1E4F3A"><circle cx="96" cy="170" r="9"></circle><circle cx="184" cy="136" r="9"></circle><circle cx="268" cy="176" r="9"></circle><circle cx="336" cy="146" r="9"></circle><circle cx="596" cy="158" r="9"></circle><circle cx="676" cy="126" r="9"></circle><circle cx="764" cy="166" r="9"></circle></g>
+          <g fill="#A82344"><circle cx="112" cy="272" r="9"></circle><circle cx="200" cy="300" r="9"></circle><circle cx="284" cy="258" r="9"></circle><circle cx="352" cy="288" r="9"></circle><circle cx="612" cy="272" r="9"></circle><circle cx="700" cy="300" r="9"></circle><circle cx="788" cy="262" r="9"></circle></g>
+          <g fill="#D99320"><circle cx="100" cy="392" r="9"></circle><circle cx="188" cy="358" r="9"></circle><circle cx="272" cy="398" r="9"></circle><circle cx="344" cy="366" r="9"></circle><circle cx="604" cy="390" r="9"></circle><circle cx="692" cy="356" r="9"></circle><circle cx="776" cy="396" r="9"></circle></g>
+          <g fill="#4A8B3D"><circle cx="120" cy="492" r="9"></circle><circle cx="208" cy="520" r="9"></circle><circle cx="292" cy="478" r="9"></circle><circle cx="360" cy="508" r="9"></circle><circle cx="624" cy="500" r="9"></circle><circle cx="708" cy="526" r="9"></circle><circle cx="788" cy="486" r="9"></circle></g>
+          <circle cx="74" cy="602" r="9" fill="#1E4F3A"></circle>
+          <text x="94" y="610" font-family="IBM Plex Mono,monospace" font-size="23" fill="#6A7A72">pedido</text>
+          <line x1="232" y1="602" x2="288" y2="602" stroke="#1E4F3A" stroke-width="5"></line>
+          <text x="304" y="610" font-family="IBM Plex Mono,monospace" font-size="23" fill="#6A7A72">tramo corto</text>
+          <line x1="500" y1="602" x2="556" y2="602" stroke="#C1432E" stroke-width="5" stroke-dasharray="14 12"></line>
+          <text x="572" y="610" font-family="IBM Plex Mono,monospace" font-size="23" fill="#C1432E">salto de 10 km</text>
+        </svg>
+      </div>
+      <div class="anim3" style="display:flex;flex-direction:column">
+        <div style="padding:22px 0;border-top:1.5px solid var(--regla);display:flex;justify-content:space-between;align-items:baseline;gap:24px">
+          <div style="font-size:26px;color:var(--cuerpo)">4 rutas × 20 pedidos</div>
+          <div style="font-family:var(--fmono);font-size:30px;font-weight:600;color:var(--casinegro);white-space:nowrap">80 pedidos</div>
+        </div>
+        <div style="padding:22px 0;border-top:1.5px solid var(--regla);display:flex;justify-content:space-between;align-items:baseline;gap:24px">
+          <div style="font-size:26px;color:var(--cuerpo)">Km reales del día (OSRM)</div>
+          <div style="font-family:var(--fmono);font-size:30px;font-weight:600;color:var(--casinegro);white-space:nowrap">200 km</div>
+        </div>
+        <div style="padding:22px 0;border-top:1.5px solid var(--regla);border-bottom:1.5px solid var(--regla);display:flex;justify-content:space-between;align-items:baseline;gap:24px">
+          <div style="font-size:26px;color:var(--cuerpo)">De ellos, en 4 saltos de 10 km</div>
+          <div style="font-family:var(--fmono);font-size:30px;font-weight:600;color:var(--alerta);white-space:nowrap">40 km</div>
+        </div>
+        <div style="margin-top:44px">
+          <div class="hero-label" style="margin-bottom:12px">Baseline · 200 km ÷ 80 pedidos</div>
+          <div class="hero-num" style="font-size:124px">2,5<span style="font-size:44px;font-weight:700;letter-spacing:0;color:var(--secundario)"> km / pedido</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="note anim3" style="margin-top:30px;flex:none">El baseline se mide sobre lo que <strong>realmente se condujo</strong>, con sus saltos dentro. Esa es la cifra a batir.</div>
+    <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span></div>
+  </section>
+
+  <!-- 13d · HERRAMIENTA A · ANTI-SALTOS -->
+  <section class="slide" data-label="Herramienta A · anti-saltos">
+    <div class="eyebrow anim" style="margin-bottom:20px">Áreas · Herramienta A · el algoritmo</div>
+    <h1 class="title anim" style="margin-bottom:40px;max-width:28ch">Anti-saltos: junta lo que se recorre junto, separa lo que obliga a saltar.</h1>
+    <div style="flex:1;display:grid;grid-template-columns:0.92fr 1.08fr;gap:60px;align-items:center;min-height:0">
+      <div class="numlist anim2">
+        <div class="row">
+          <div class="num" style="font-size:34px;color:var(--acento)">50&nbsp;%</div>
+          <div><div class="head">Geografía</div><div class="desc">Distancia real por carretera entre CPs (OSRM). Lo que está cerca tira a quedar junto.</div></div>
+        </div>
+        <div class="row">
+          <div class="num" style="font-size:34px;color:var(--ambar)">30&nbsp;%</div>
+          <div><div class="head">Afinidad</div><div class="desc">CPs que el histórico ya recorre seguidos tienden a quedarse en el mismo corredor.</div></div>
+        </div>
+        <div class="row">
+          <div class="num" style="font-size:34px;color:var(--alerta)">20&nbsp;%</div>
+          <div><div class="head">Penalización de saltos</div><div class="desc">Si dos CPs solo se conectan saltando más de 10 km, el algoritmo los separa.</div></div>
+        </div>
+      </div>
+      <div class="anim3" style="display:flex;flex-direction:column;gap:20px;height:100%;min-height:0;justify-content:center">
+        <div class="shot real" style="flex:1;min-height:0;max-height:480px;background:#FBFAF5;padding:14px">
+          <svg viewBox="0 0 860 560" style="width:100%;height:100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ejemplo: los CPs A y B quedan juntos; el CP C se separa porque solo se llega saltando">
+            <rect x="26" y="60" width="400" height="420" rx="24" fill="#E9F0E9" stroke="#2D7A55" stroke-width="3"></rect>
+            <rect x="560" y="60" width="274" height="420" rx="24" fill="#F4F1EA" stroke="#CFC7B5" stroke-width="3" stroke-dasharray="14 10"></rect>
+            <text x="56" y="112" font-family="IBM Plex Mono,monospace" font-size="22" letter-spacing="2" fill="#2D7A55">MISMO CORREDOR</text>
+            <text x="586" y="112" font-family="IBM Plex Mono,monospace" font-size="22" letter-spacing="2" fill="#6A7A72">OTRO CORREDOR</text>
+            <line x1="150" y1="300" x2="320" y2="240" stroke="#2D7A55" stroke-width="6"></line>
+            <line x1="320" y1="240" x2="697" y2="270" stroke="#C1432E" stroke-width="6" stroke-dasharray="16 12"></line>
+            <text x="218" y="238" font-family="IBM Plex Mono,monospace" font-size="26" font-weight="600" fill="#1E4F3A" text-anchor="middle">2 km</text>
+            <text x="505" y="222" font-family="IBM Plex Mono,monospace" font-size="26" font-weight="600" fill="#C1432E" text-anchor="middle">12 km</text>
+            <circle cx="150" cy="300" r="48" fill="#1E4F3A"></circle>
+            <circle cx="320" cy="240" r="48" fill="#2D7A55"></circle>
+            <circle cx="697" cy="270" r="48" fill="#C1432E"></circle>
+            <text x="150" y="314" font-family="Archivo,sans-serif" font-size="40" font-weight="800" fill="#F4F1EA" text-anchor="middle">A</text>
+            <text x="320" y="254" font-family="Archivo,sans-serif" font-size="40" font-weight="800" fill="#F4F1EA" text-anchor="middle">B</text>
+            <text x="697" y="284" font-family="Archivo,sans-serif" font-size="40" font-weight="800" fill="#F4F1EA" text-anchor="middle">C</text>
+            <text x="226" y="424" font-family="IBM Plex Mono,monospace" font-size="23" fill="#1E4F3A" text-anchor="middle">cerca + afines</text>
+            <text x="697" y="410" font-family="IBM Plex Mono,monospace" font-size="23" fill="#C1432E" text-anchor="middle"><tspan x="697" dy="0">solo se llega</tspan><tspan x="697" dy="32">saltando</tspan></text>
+          </svg>
+        </div>
+        <div style="font-size:24px;color:var(--secundario);line-height:1.45">Hoy una misma ruta visita A, B y C. El algoritmo deja <strong style="color:var(--casinegro)">A y B juntos</strong> y mueve <strong style="color:var(--alerta)">C a otro corredor</strong> con rutas que ya pasan por allí: el salto de 12 km desaparece.</div>
+      </div>
+    </div>
+    <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span></div>
+  </section>
+
+  <!-- 13e · HERRAMIENTA A · LA MEJORA -->
+  <section class="slide" data-label="Herramienta A · la mejora">
+    <div class="eyebrow anim" style="margin-bottom:18px">Áreas · Herramienta A · impacto</div>
+    <h1 class="title anim" style="margin-bottom:30px">Mismos pedidos, dos corredores: el km por pedido baja.</h1>
+    <div style="flex:1;min-height:0;display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch;margin-bottom:32px">
+      <div class="anim2" style="display:flex;flex-direction:column;height:100%;min-height:0">
+        <div style="font-family:var(--fmono);font-size:24px;letter-spacing:.1em;color:var(--secundario);text-transform:uppercase;margin-bottom:12px">Antes · 1 zona · <span style="color:var(--alerta)">4 saltos</span></div>
+        <div class="shot real" style="flex:1;min-height:0;background:#FBFAF5;padding:12px">
+          <svg viewBox="0 0 900 640" style="width:100%;height:100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Antes: una zona con 4 rutas y 4 saltos de 10 km">
+            <rect x="30" y="34" width="840" height="524" rx="26" fill="#F4F1EA" stroke="#CFC7B5" stroke-width="3" stroke-dasharray="16 12"></rect>
+            <text x="64" y="86" font-family="IBM Plex Mono,monospace" font-size="24" letter-spacing="3" fill="#6A7A72">ZONA ÚNICA · 4 RUTAS</text>
+            <polyline points="96,170 184,136 268,176 336,146" fill="none" stroke="#1E4F3A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <line x1="336" y1="146" x2="596" y2="158" stroke="#C1432E" stroke-width="5" stroke-dasharray="14 12"></line>
+            <polyline points="596,158 676,126 764,166" fill="none" stroke="#1E4F3A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <polyline points="112,272 200,300 284,258 352,288" fill="none" stroke="#A82344" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <line x1="352" y1="288" x2="612" y2="272" stroke="#C1432E" stroke-width="5" stroke-dasharray="14 12"></line>
+            <polyline points="612,272 700,300 788,262" fill="none" stroke="#A82344" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <polyline points="100,392 188,358 272,398 344,366" fill="none" stroke="#D99320" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <line x1="344" y1="366" x2="604" y2="390" stroke="#C1432E" stroke-width="5" stroke-dasharray="14 12"></line>
+            <polyline points="604,390 692,356 776,396" fill="none" stroke="#D99320" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <polyline points="120,492 208,520 292,478 360,508" fill="none" stroke="#4A8B3D" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <line x1="360" y1="508" x2="624" y2="500" stroke="#C1432E" stroke-width="5" stroke-dasharray="14 12"></line>
+            <polyline points="624,500 708,526 788,486" fill="none" stroke="#4A8B3D" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <g fill="#1E4F3A"><circle cx="96" cy="170" r="9"></circle><circle cx="184" cy="136" r="9"></circle><circle cx="268" cy="176" r="9"></circle><circle cx="336" cy="146" r="9"></circle><circle cx="596" cy="158" r="9"></circle><circle cx="676" cy="126" r="9"></circle><circle cx="764" cy="166" r="9"></circle></g>
+            <g fill="#A82344"><circle cx="112" cy="272" r="9"></circle><circle cx="200" cy="300" r="9"></circle><circle cx="284" cy="258" r="9"></circle><circle cx="352" cy="288" r="9"></circle><circle cx="612" cy="272" r="9"></circle><circle cx="700" cy="300" r="9"></circle><circle cx="788" cy="262" r="9"></circle></g>
+            <g fill="#D99320"><circle cx="100" cy="392" r="9"></circle><circle cx="188" cy="358" r="9"></circle><circle cx="272" cy="398" r="9"></circle><circle cx="344" cy="366" r="9"></circle><circle cx="604" cy="390" r="9"></circle><circle cx="692" cy="356" r="9"></circle><circle cx="776" cy="396" r="9"></circle></g>
+            <g fill="#4A8B3D"><circle cx="120" cy="492" r="9"></circle><circle cx="208" cy="520" r="9"></circle><circle cx="292" cy="478" r="9"></circle><circle cx="360" cy="508" r="9"></circle><circle cx="624" cy="500" r="9"></circle><circle cx="708" cy="526" r="9"></circle><circle cx="788" cy="486" r="9"></circle></g>
+            <text x="450" y="610" font-family="IBM Plex Mono,monospace" font-size="25" font-weight="600" fill="#C1432E" text-anchor="middle">4 saltos × 10 km = 40 km que no aportan</text>
+          </svg>
+        </div>
+      </div>
+      <div class="glyph anim2" style="font-size:64px;padding:0 28px;align-self:center">→</div>
+      <div class="anim3" style="display:flex;flex-direction:column;height:100%;min-height:0">
+        <div style="font-family:var(--fmono);font-size:24px;letter-spacing:.1em;color:var(--secundario);text-transform:uppercase;margin-bottom:12px">Después · 2 corredores · <span style="color:var(--acento)">0 saltos</span></div>
+        <div class="shot real" style="flex:1;min-height:0;background:#FBFAF5;padding:12px">
+          <svg viewBox="0 0 900 640" style="width:100%;height:100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Después: dos corredores con 2 rutas cada uno y cero saltos">
+            <rect x="30" y="34" width="402" height="524" rx="26" fill="#E9F0E9" stroke="#2D7A55" stroke-width="3"></rect>
+            <rect x="468" y="34" width="402" height="524" rx="26" fill="#E9F0E9" stroke="#2D7A55" stroke-width="3"></rect>
+            <text x="60" y="86" font-family="IBM Plex Mono,monospace" font-size="24" letter-spacing="3" fill="#2D7A55">CORREDOR 1</text>
+            <text x="498" y="86" font-family="IBM Plex Mono,monospace" font-size="24" letter-spacing="3" fill="#2D7A55">CORREDOR 2</text>
+            <polyline points="96,170 184,136 268,176 336,146 352,288 284,258 200,300 112,272" fill="none" stroke="#1E4F3A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <polyline points="100,392 188,358 272,398 344,366 360,508 292,478 208,520 120,492" fill="none" stroke="#D99320" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <polyline points="596,158 676,126 764,166 788,262 700,300 612,272" fill="none" stroke="#A82344" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <polyline points="604,390 692,356 776,396 788,486 708,526 624,500" fill="none" stroke="#4A8B3D" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <g fill="#1E4F3A"><circle cx="96" cy="170" r="9"></circle><circle cx="184" cy="136" r="9"></circle><circle cx="268" cy="176" r="9"></circle><circle cx="336" cy="146" r="9"></circle><circle cx="352" cy="288" r="9"></circle><circle cx="284" cy="258" r="9"></circle><circle cx="200" cy="300" r="9"></circle><circle cx="112" cy="272" r="9"></circle></g>
+            <g fill="#D99320"><circle cx="100" cy="392" r="9"></circle><circle cx="188" cy="358" r="9"></circle><circle cx="272" cy="398" r="9"></circle><circle cx="344" cy="366" r="9"></circle><circle cx="360" cy="508" r="9"></circle><circle cx="292" cy="478" r="9"></circle><circle cx="208" cy="520" r="9"></circle><circle cx="120" cy="492" r="9"></circle></g>
+            <g fill="#A82344"><circle cx="596" cy="158" r="9"></circle><circle cx="676" cy="126" r="9"></circle><circle cx="764" cy="166" r="9"></circle><circle cx="788" cy="262" r="9"></circle><circle cx="700" cy="300" r="9"></circle><circle cx="612" cy="272" r="9"></circle></g>
+            <g fill="#4A8B3D"><circle cx="604" cy="390" r="9"></circle><circle cx="692" cy="356" r="9"></circle><circle cx="776" cy="396" r="9"></circle><circle cx="788" cy="486" r="9"></circle><circle cx="708" cy="526" r="9"></circle><circle cx="624" cy="500" r="9"></circle></g>
+            <text x="450" y="610" font-family="IBM Plex Mono,monospace" font-size="25" font-weight="600" fill="#2D7A55" text-anchor="middle">los mismos 80 pedidos · 40 km menos</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div style="flex:none;height:150px;display:flex;align-items:center;justify-content:space-between;gap:48px">
+      <div style="display:flex;gap:56px;align-items:flex-end">
+        <div class="anim3">
+          <div style="font-size:54px;font-weight:800;color:var(--casinegro);letter-spacing:-.03em;line-height:1">200 → 160</div>
+          <div class="hero-label" style="margin-top:8px;font-size:24px">km / día</div>
+        </div>
+        <div class="anim3">
+          <div style="font-size:54px;font-weight:800;color:var(--casinegro);letter-spacing:-.03em;line-height:1">2,5 → 2,0</div>
+          <div class="hero-label" style="margin-top:8px;font-size:24px">km / pedido</div>
+        </div>
+        <div class="anim3">
+          <div style="font-size:76px;font-weight:900;color:var(--acento);letter-spacing:-.04em;line-height:.9">− 20 %</div>
+          <div class="hero-label" style="margin-top:8px;font-size:24px">de km por pedido</div>
+        </div>
+      </div>
+      <div style="font-size:24px;color:var(--secundario);line-height:1.4;max-width:38ch;text-align:right">El después se calcula igual que el baseline: km reales por carretera (OSRM) dentro de cada corredor ÷ los mismos 80 pedidos. <strong style="color:var(--casinegro)">160 ÷ 80 = 2,0 km por pedido.</strong></div>
+    </div>
+    <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span></div>
+  </section>
+
+  <!-- 13f · HERRAMIENTA A · LA SALIDA -->
+  <section class="slide" data-label="Herramienta A · la salida">
+    <div class="eyebrow anim" style="margin-bottom:18px">Áreas · Herramienta A · la salida</div>
+    <div class="anim" style="display:flex;align-items:center;gap:30px;margin-bottom:30px">
+      <h1 class="title" style="margin:0">Lo que devuelve: corredores listos para decidir.</h1>
+      <img class="wip-badge" src="45b16681-b67d-4979-a5b5-bb369c95d765" alt="WIP">
+    </div>
+    <div style="flex:1;min-height:0;display:grid;grid-template-columns:1.62fr 1fr;gap:56px;align-items:center">
+      <div class="shot real anim2" style="height:100%;max-height:640px"><img src="8f422bcf-30e4-400f-a669-1cd7d05b9dda" alt="Agrupador de corredores — la herramienta sobre rutas reales"></div>
+      <div class="anim3" style="display:flex;flex-direction:column">
+        <div style="padding:26px 0;border-top:1.5px solid var(--regla)">
+          <div class="eyebrow" style="font-size:24px;margin-bottom:12px">Propuestas</div>
+          <div style="font-size:30px;line-height:1.35;color:var(--casinegro);font-weight:700">Opciones de 2, 3 o 4 corredores sobre el mapa.</div>
+        </div>
+        <div style="padding:26px 0;border-top:1.5px solid var(--regla)">
+          <div class="eyebrow" style="font-size:24px;margin-bottom:12px">Comparación</div>
+          <div style="font-size:30px;line-height:1.35;color:var(--casinegro);font-weight:700">Cada opción, con su km por pedido frente al baseline.</div>
+        </div>
+        <div style="padding:26px 0;border-top:1.5px solid var(--regla);border-bottom:1.5px solid var(--regla)">
+          <div class="eyebrow" style="font-size:24px;margin-bottom:12px">Decisión</div>
+          <div style="font-size:30px;line-height:1.35;color:var(--casinegro);font-weight:700">La opción elegida se valida con la demanda (Herramienta B).</div>
+        </div>
+      </div>
+    </div>
+    <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span></div>
+  </section>
+
+
+  <!-- 15 · HERRAMIENTA B -->
+  <section class="slide" data-label="Áreas · Herramienta B" data-om-id="ca2df415:374" data-screen-label="16 Áreas · Herramienta B" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="15">
+    <div class="eyebrow anim" style="margin-bottom:20px" data-om-id="ca2df415:375">Áreas · Herramienta B</div>
+    <div class="anim" style="display:flex;align-items:center;gap:30px;margin-bottom:48px" data-om-id="ca2df415:376">
+      <h1 class="title" style="margin:0" data-om-id="ca2df415:377">Visualizador de áreas y demanda.</h1>
+      <img class="wip-badge" src="45b16681-b67d-4979-a5b5-bb369c95d765" alt="WIP" data-om-id="ca2df415:378">
+    </div>
+    <div style="flex:1;display:grid;grid-template-columns:1.1fr 0.9fr;gap:60px;align-items:center;min-height:0" data-om-id="ca2df415:379">
+      <div class="shot real anim2" style="height:100%;max-height:520px" data-om-id="ca2df415:380"><img src="4aa76e3e-fd45-4b04-a300-1e3606434fa4" alt="Visualizador Áreas Colmenas — mapa VLC1 con áreas de colores" data-om-id="ca2df415:381"></div>
+      <div class="numlist anim3" data-om-id="ca2df415:382">
+        <div class="row" data-om-id="ca2df415:383">
+          <div class="num" data-om-id="ca2df415:384">01</div>
+          <div data-om-id="ca2df415:385"><div class="head" data-om-id="ca2df415:386">Pintar</div><div class="desc" data-om-id="ca2df415:387">Áreas actuales con sus CPs sobre el mapa.</div></div>
+        </div>
+        <div class="row" data-om-id="ca2df415:388">
+          <div class="num" data-om-id="ca2df415:389">02</div>
+          <div data-om-id="ca2df415:390"><div class="head" data-om-id="ca2df415:391">Medir</div><div class="desc" data-om-id="ca2df415:392">Demanda a nivel CP, agregada por área.</div></div>
+        </div>
+        <div class="row" data-om-id="ca2df415:393">
+          <div class="num" data-om-id="ca2df415:394">03</div>
+          <div data-om-id="ca2df415:395"><div class="head" data-om-id="ca2df415:396">Simular</div><div class="desc" data-om-id="ca2df415:397">Cambios sobre el mapa con previsualización de la demanda resultante.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="progress" data-om-id="ca2df415:398"><span class="on" data-om-id="ca2df415:399"></span><span class="on" data-om-id="ca2df415:400"></span><span class="on" data-om-id="ca2df415:401"></span><span class="on" data-om-id="ca2df415:402"></span><span class="on" data-om-id="ca2df415:403"></span><span data-om-id="ca2df415:404"></span><span data-om-id="ca2df415:405"></span></div>
+  </section>
+
+  <!-- 16 · FUSIÓN -->
+  <section class="slide" data-label="Áreas · fusión" data-om-id="ca2df415:406" data-screen-label="17 Áreas · fusión" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="16">
+    <div class="eyebrow anim" style="margin-bottom:20px" data-om-id="ca2df415:407">Áreas · fusión</div>
+    <h1 class="title anim" style="margin-bottom:0" data-om-id="ca2df415:408">Cada herramienta es parcial. Juntas son la decisión.</h1>
+    <img class="anim" src="0381efda-f9d1-4d66-b5ec-d2fa244d1a5b" alt="" aria-hidden="true" style="position:absolute;right:var(--pad-x);top:var(--pad-top);width:118px;height:auto" data-om-id="ca2df415:409">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0" data-om-id="ca2df415:410">
+      <!-- cards -->
+      <div style="display:grid;grid-template-columns:1fr 116px 1fr 116px 1fr;align-items:stretch" data-om-id="ca2df415:411">
+        <div class="card anim2" data-om-id="ca2df415:412">
+          <div class="eyebrow" style="font-size:24px;margin-bottom:14px" data-om-id="ca2df415:413">Herramienta A</div>
+          <div style="font-size:30px;font-weight:800;color:var(--casinegro);margin-bottom:14px" data-om-id="ca2df415:414">Rutas reales</div>
+          <div style="font-size:24px;line-height:1.42;color:var(--cuerpo)" data-om-id="ca2df415:415">Coordenadas históricas + saltos detectados. La realidad de la carretera.</div>
+        </div>
+        <div class="glyph anim2" style="font-size:54px;color:var(--secundario)" data-om-id="ca2df415:416">+</div>
+        <div class="card anim2" data-om-id="ca2df415:417">
+          <div class="eyebrow" style="font-size:24px;margin-bottom:14px" data-om-id="ca2df415:418">Herramienta B</div>
+          <div style="font-size:30px;font-weight:800;color:var(--casinegro);margin-bottom:14px" data-om-id="ca2df415:419">Mapa con demanda</div>
+          <div style="font-size:24px;line-height:1.42;color:var(--cuerpo)" data-om-id="ca2df415:420">Configuración visual + previsualización. No sabe qué pasa en carretera.</div>
+        </div>
+        <div class="glyph anim3" style="font-size:54px;color:var(--secundario)" data-om-id="ca2df415:421">=</div>
+        <div class="card solid anim3" data-om-id="ca2df415:422">
+          <div class="eyebrow" style="font-size:24px;margin-bottom:14px" data-om-id="ca2df415:423">Fusión A + B</div>
+          <div class="card-head" style="font-size:30px;font-weight:800;margin-bottom:14px" data-om-id="ca2df415:424">Decisión sabia</div>
+          <div style="font-size:24px;line-height:1.42;color:#D7E0D8" data-om-id="ca2df415:425">Histórico real validado por demanda y geografía. De un vistazo.</div>
+        </div>
+      </div>
+      <!-- captions out, centred -->
+      <div style="display:grid;grid-template-columns:1fr 116px 1fr 116px 1fr;margin-top:44px" data-om-id="ca2df415:426">
+        <div style="text-align:center;padding:0 24px" data-om-id="ca2df415:427">
+          <div style="font-family:var(--fmono);font-size:24px;letter-spacing:.1em;color:var(--eyebrow)" data-om-id="ca2df415:428">FORTALEZA</div>
+          <div style="font-size:24px;color:var(--secundario);margin-top:8px;line-height:1.4" data-om-id="ca2df415:429">Geografía real de las rutas.</div>
+        </div>
+        <div data-om-id="ca2df415:430"></div>
+        <div style="text-align:center;padding:0 24px;border-left:1.5px solid var(--regla);border-right:1.5px solid var(--regla)" data-om-id="ca2df415:431">
+          <div style="font-family:var(--fmono);font-size:24px;letter-spacing:.1em;color:var(--eyebrow)" data-om-id="ca2df415:432">LECTURA</div>
+          <div style="font-size:24px;color:var(--secundario);margin-top:8px;line-height:1.4" data-om-id="ca2df415:433">«De un vistazo ver si tiene sentido».</div>
+        </div>
+        <div data-om-id="ca2df415:434"></div>
+        <div style="text-align:center;padding:0 24px" data-om-id="ca2df415:435">
+          <div style="font-family:var(--fmono);font-size:24px;letter-spacing:.1em;color:var(--eyebrow)" data-om-id="ca2df415:436">SIGUIENTE PASO</div>
+          <div style="font-size:24px;color:var(--secundario);margin-top:8px;line-height:1.4" data-om-id="ca2df415:437">Validar con Rutinario.</div>
+        </div>
+      </div>
+    </div>
+    <div class="progress" data-om-id="ca2df415:438"><span class="on" data-om-id="ca2df415:439"></span><span class="on" data-om-id="ca2df415:440"></span><span class="on" data-om-id="ca2df415:441"></span><span class="on" data-om-id="ca2df415:442"></span><span class="on" data-om-id="ca2df415:443"></span><span data-om-id="ca2df415:444"></span><span data-om-id="ca2df415:445"></span></div>
+  </section>
+
+  <!-- 17 · CIERRE DEL CÍRCULO -->
+  <section class="slide" data-label="Cierre del círculo" data-om-id="ca2df415:446" data-screen-label="18 Cierre del círculo" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="17">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;max-width:1180px" data-om-id="ca2df415:447">
+      <div class="eyebrow anim" style="margin-bottom:34px" data-om-id="ca2df415:448">Cierre del círculo</div>
+      <h1 class="title anim2" style="font-size:88px;margin-bottom:40px" data-om-id="ca2df415:449">Cada bloque del informe ya tiene un origen.</h1>
+      <p class="lead anim3" data-om-id="ca2df415:450">La foto final <em style="color:var(--carmesi)" data-om-id="ca2df415:451">ya no es solo una foto</em>. Es el resumen de un proceso que podemos seguir paso a paso.</p>
+    </div>
+    <div class="progress" data-om-id="ca2df415:452"><span class="on" data-om-id="ca2df415:453"></span><span class="on" data-om-id="ca2df415:454"></span><span class="on" data-om-id="ca2df415:455"></span><span class="on" data-om-id="ca2df415:456"></span><span class="on" data-om-id="ca2df415:457"></span><span class="on" data-om-id="ca2df415:458"></span><span data-om-id="ca2df415:459"></span></div>
+  </section>
+
+  <!-- 18 · TABLA DE DECISIONES -->
+  <section class="slide" data-label="Cada decisión nace de aquí" data-om-id="ca2df415:460" data-screen-label="19 Cada decisión nace de aquí" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="18">
+    <h1 class="title anim" style="margin-bottom:40px" data-om-id="ca2df415:461">Cada decisión nace de aquí.</h1>
+    <div class="anim2" style="flex:1;display:flex;flex-direction:column;min-height:0" data-om-id="ca2df415:462">
+      <div style="display:grid;grid-template-columns:1.1fr 1.3fr 1.6fr;background:var(--bosque);border-radius:8px 8px 0 0;color:#fff" data-om-id="ca2df415:463">
+        <div style="padding:20px 26px;font-family:var(--fmono);font-size:24px;letter-spacing:.12em" data-om-id="ca2df415:464">DECISIÓN</div>
+        <div style="padding:20px 26px;font-family:var(--fmono);font-size:24px;letter-spacing:.12em" data-om-id="ca2df415:465">HERRAMIENTA</div>
+        <div style="padding:20px 26px;font-family:var(--fmono);font-size:24px;letter-spacing:.12em" data-om-id="ca2df415:466">CRITERIO</div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column" data-om-id="ca2df415:467">
+        <div class="trow" data-om-id="ca2df415:468"><div class="tc head" data-om-id="ca2df415:469">Bajar productividad</div><div class="tc" data-om-id="ca2df415:470">Metabase + filtro salida en hora</div><div class="tc" data-om-id="ca2df415:471">&gt; 3 % · 4 sem. consecutivas · sale en hora</div></div>
+        <div class="trow" data-om-id="ca2df415:472"><div class="tc head" data-om-id="ca2df415:473">Subir productividad</div><div class="tc" data-om-id="ca2df415:474">Metabase · umbral espejo</div><div class="tc" data-om-id="ca2df415:475">&lt; 1,5 % · ≥ 0,5 rutas · 7,5 cols/día</div></div>
+        <div class="trow" data-om-id="ca2df415:476"><div class="tc head" data-om-id="ca2df415:477">Configurar áreas</div><div class="tc" data-om-id="ca2df415:478">Visualizador + análisis de coordenadas</div><div class="tc" data-om-id="ca2df415:479">Demanda + saltos &gt; 10 km → más productividad</div></div>
+        <div class="trow" data-om-id="ca2df415:480"><div class="tc head" data-om-id="ca2df415:481">Validar con Rutinario</div><div class="tc" data-om-id="ca2df415:482">Reuniones · seguimiento</div><div class="tc" data-om-id="ca2df415:483">Acuerdo conjunto antes de oficializar</div></div>
+      </div>
+    </div>
+    <div class="progress" data-om-id="ca2df415:484"><span class="on" data-om-id="ca2df415:485"></span><span class="on" data-om-id="ca2df415:486"></span><span class="on" data-om-id="ca2df415:487"></span><span class="on" data-om-id="ca2df415:488"></span><span class="on" data-om-id="ca2df415:489"></span><span class="on" data-om-id="ca2df415:490"></span><span data-om-id="ca2df415:491"></span></div>
+  </section>
+
+  <!-- 19 · OBJETIVO DE FONDO -->
+  <section class="slide" data-label="El objetivo de fondo" data-om-id="ca2df415:492" data-screen-label="20 El objetivo de fondo" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="19" data-deck-last-visible="">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;max-width:1280px" data-om-id="ca2df415:493">
+      <div class="eyebrow anim" style="margin-bottom:34px" data-om-id="ca2df415:494">El objetivo de fondo</div>
+      <h1 class="title anim2" style="font-size:76px;margin-bottom:44px;max-width:24ch" data-om-id="ca2df415:495">Hacer este trabajo de la forma más eficiente y sencilla posible.</h1>
+      <p class="lead anim3" style="font-size:36px;max-width:46ch" data-om-id="ca2df415:496">Cada herramienta que mejoramos, cada umbral que afinamos, cada paso que automatizamos va en la misma dirección: que las decisiones sean cada vez <strong style="color:var(--acento);font-weight:600" data-om-id="ca2df415:497">menos difíciles de tomar</strong>, más basadas en datos y más ajustadas a la realidad.</p>
+    </div>
+    <div class="progress" data-om-id="ca2df415:498"><span class="on" data-om-id="ca2df415:499"></span><span class="on" data-om-id="ca2df415:500"></span><span class="on" data-om-id="ca2df415:501"></span><span class="on" data-om-id="ca2df415:502"></span><span class="on" data-om-id="ca2df415:503"></span><span class="on" data-om-id="ca2df415:504"></span><span class="on" data-om-id="ca2df415:505"></span></div>
+  </section>
+
+</deck-stage>
+
+<style>
+  /* Table rows for slide 18 */
+  .trow{
+    display:grid;grid-template-columns:1.1fr 1.3fr 1.6fr;
+    flex:1;border-bottom:1.5px solid var(--regla);
+  }
+  .trow:nth-child(odd){background:#FBFAF5}
+  .tc{
+    padding:0 26px;display:flex;align-items:center;
+    font-size:24px;color:var(--cuerpo);line-height:1.32;
+  }
+  .tc.head{font-weight:700;color:var(--casinegro)}
+</style>
+
+<script src="58ef777d-2acc-42b5-8fa6-f9aece409bd1"></script>
+
+
+</body></html>
