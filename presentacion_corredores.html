@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Corredores — Cómo funciona</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0f14;--bg2:#13161e;--bg3:#1a1e28;--bg4:#1e2535;
+  --border:#242836;--text:#e2e8f0;--muted:#8b96b4;
+  --orange:#f97316;--green:#34d399;--red:#ef4444;--blue:#3b82f6;--purple:#a78bfa;--cyan:#7dd3fc;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;overflow:hidden}
+.mono{font-family:'IBM Plex Mono',monospace}
+
+#deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+.slide{
+  position:absolute;width:1280px;height:720px;
+  background:var(--bg);
+  padding:54px 72px 64px;
+  display:none;flex-direction:column;
+  transform-origin:center center;
+}
+.slide.on{display:flex;animation:fadein .35s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.kicker{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.18em;color:var(--orange);font-weight:600;margin-bottom:10px;text-transform:uppercase}
+h1{font-size:52px;font-weight:700;line-height:1.12;letter-spacing:-.01em}
+h2{font-size:36px;font-weight:700;line-height:1.15;margin-bottom:6px;letter-spacing:-.01em}
+.sub{font-size:17px;color:var(--muted);margin-top:8px;line-height:1.5;max-width:980px}
+.body{flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0}
+
+.footer{position:absolute;bottom:22px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#4a5370}
+.foot-brand{color:var(--orange);font-weight:600;letter-spacing:.08em}
+
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px 24px}
+.tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.08em;padding:4px 10px;border-radius:5px;text-transform:uppercase}
+
+.big-num{font-family:'IBM Plex Mono',monospace;font-weight:700;line-height:1}
+.formula{font-family:'IBM Plex Mono',monospace;font-weight:600;display:flex;align-items:center;gap:18px}
+
+.cols{display:flex;gap:24px;align-items:stretch}
+.cols>*{flex:1;min-width:0}
+
+ul.clean{list-style:none}
+ul.clean li{position:relative;padding-left:26px;margin-bottom:14px;font-size:17px;line-height:1.5}
+ul.clean li::before{content:'▸';position:absolute;left:2px;color:var(--orange);font-weight:700}
+
+svg text{font-family:'IBM Plex Mono',monospace}
+.lbl{font-size:13px;fill:var(--muted)}
+.lbl-b{font-size:13px;fill:var(--text);font-weight:600}
+
+#nav{position:fixed;bottom:18px;right:24px;display:flex;gap:8px;z-index:50}
+#nav button{background:var(--bg3);border:1px solid var(--border);color:var(--muted);width:38px;height:38px;border-radius:8px;font-size:16px;cursor:pointer;transition:all .15s}
+#nav button:hover{color:var(--orange);border-color:var(--orange)}
+#progress{position:fixed;top:0;left:0;height:3px;background:var(--orange);z-index:60;transition:width .3s ease}
+#counter{position:fixed;bottom:28px;left:24px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#4a5370;z-index:50}
+.time-hint{position:absolute;top:26px;right:72px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3d465f;letter-spacing:.05em}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div id="counter">1 / 13</div>
+<div id="nav">
+  <button onclick="go(-1)">←</button>
+  <button onclick="go(1)">→</button>
+</div>
+
+<div id="deck">
+
+<!-- ════════════ SLIDE 1 · PORTADA ════════════ -->
+<section class="slide on">
+  <div class="body" style="align-items:flex-start">
+    <div class="kicker">Proyecto · Optimización de áreas de reparto</div>
+    <h1>Corredores</h1>
+    <h1 style="color:var(--orange)">Eliminar los saltos de más de 10&nbsp;km</h1>
+    <div class="sub" style="font-size:20px;margin-top:24px;max-width:860px">
+      Una herramienta que analiza el histórico real de rutas, localiza los desplazamientos
+      en vacío de más de 10&nbsp;km y propone una división del área en <b style="color:var(--text)">corredores</b>
+      que los hace desaparecer.
+    </div>
+    <div style="display:flex;gap:14px;margin-top:42px">
+      <span class="tag" style="background:#f9731620;color:var(--orange)">Datos reales del histórico</span>
+      <span class="tag" style="background:#3b82f620;color:var(--blue)">Distancias por carretera</span>
+      <span class="tag" style="background:#34d39920;color:var(--green)">Una sola métrica: km/pedido</span>
+    </div>
+  </div>
+  <div class="footer"><span class="foot-brand">CORREDORES</span><span>Presentación del proyecto · 10–15 min</span></div>
+</section>
+
+<!-- ════════════ SLIDE 2 · EL PROBLEMA ════════════ -->
+<section class="slide">
+  <div class="time-hint">~1 min</div>
+  <div class="kicker">01 · El problema</div>
+  <h2>Hoy una misma ruta mezcla zonas que están muy lejos entre sí</h2>
+  <div class="sub">El repartidor entrega en una zona, cruza media comarca en vacío, y sigue entregando en otra.</div>
+  <div class="body">
+    <svg viewBox="0 0 1100 400" style="width:100%;max-height:400px">
+      <!-- zona norte -->
+      <ellipse cx="330" cy="120" rx="190" ry="90" fill="#3b82f612" stroke="#3b82f650" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <text x="330" y="42" text-anchor="middle" fill="#3b82f6" font-size="15" font-weight="700">ZONA NORTE</text>
+      <!-- zona sur -->
+      <ellipse cx="800" cy="290" rx="190" ry="90" fill="#f9731612" stroke="#f9731650" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <text x="800" y="215" text-anchor="middle" fill="#f97316" font-size="15" font-weight="700">ZONA SUR</text>
+      <!-- colmena -->
+      <circle cx="90" cy="200" r="16" fill="#f1f5f9" stroke="#0d1117" stroke-width="3"/>
+      <text x="90" y="245" text-anchor="middle" class="lbl-b">Colmena</text>
+      <!-- ruta: colmena -> norte (3 paradas) -> salto -> sur (3 paradas) -->
+      <path d="M106,192 L240,135" stroke="#34d399" stroke-width="3.5" fill="none"/>
+      <path d="M240,135 L320,90" stroke="#34d399" stroke-width="3.5" fill="none"/>
+      <path d="M320,90 L420,130" stroke="#34d399" stroke-width="3.5" fill="none"/>
+      <!-- el salto -->
+      <path d="M420,130 C560,160 600,230 680,265" stroke="#ef4444" stroke-width="4.5" fill="none" stroke-dasharray="10 7"/>
+      <text x="560" y="160" text-anchor="middle" fill="#ef4444" font-size="17" font-weight="700">14 km sin entregar nada</text>
+      <!-- sur -->
+      <path d="M680,265 L780,250" stroke="#34d399" stroke-width="3.5" fill="none"/>
+      <path d="M780,250 L870,300" stroke="#34d399" stroke-width="3.5" fill="none"/>
+      <!-- paradas -->
+      <g fill="#3b82f6" stroke="#0d1117" stroke-width="2">
+        <circle cx="240" cy="135" r="9"/><circle cx="320" cy="90" r="9"/><circle cx="420" cy="130" r="9"/>
+      </g>
+      <g fill="#f97316" stroke="#0d1117" stroke-width="2">
+        <circle cx="680" cy="265" r="9"/><circle cx="780" cy="250" r="9"/><circle cx="870" cy="300" r="9"/>
+      </g>
+      <!-- nota -->
+      <text x="330" y="385" text-anchor="middle" class="lbl">pedidos juntos · desplazamientos cortos</text>
+      <text x="800" y="120" text-anchor="middle" class="lbl">pedidos juntos · desplazamientos cortos</text>
+    </svg>
+    <div class="card" style="margin-top:8px;border-color:#ef444440;background:#ef44440a">
+      <span style="font-size:17px"><b style="color:var(--red)">Ese tramo en vacío es el coste oculto del área:</b>
+      tiempo y kilómetros que no entregan ningún pedido. A esos tramos los llamamos <b>saltos</b>.</span>
+    </div>
+  </div>
+  <div class="footer"><span class="foot-brand">CORREDORES</span><span>01 · El problema</span></div>
+</section>
+
+<!-- ════════════ SLIDE 3 · QUÉ ES UN SALTO ════════════ -->
+<section class="slide">
+  <div class="time-hint">~1 min</div>
+  <div class="kicker">02 · La definición</div>
+  <h2>¿Qué es exactamente un salto?</h2>
+  <div class="sub">Miramos cada ruta del histórico parada a parada, y medimos el desplazamiento entre cada pedido y el siguiente.</div>
+  <div class="body">
+    <svg viewBox="0 0 1100 300" style="width:100%;max-height:300px">
+      <!-- línea de ruta -->
+      <line x1="80" y1="150" x2="280" y2="150" stroke="#34d399" stroke-width="5"/>
+      <line x1="280" y1="150" x2="430" y2="150" stroke="#34d399" stroke-width="5"/>
+      <line x1="430" y1="150" x2="790" y2="150" stroke="#ef4444" stroke-width="6" stroke-dasharray="12 8"/>
+      <line x1="790" y1="150" x2="990" y2="150" stroke="#34d399" stroke-width="5"/>
+      <!-- paradas -->
+      <g fill="#e2e8f0" stroke="#0d1117" stroke-width="2.5">
+        <circle cx="80" cy="150" r="12"/><circle cx="280" cy="150" r="12"/>
+        <circle cx="430" cy="150" r="12"/><circle cx="790" cy="150" r="12"/>
+        <circle cx="990" cy="150" r="12"/>
+      </g>
+      <g text-anchor="middle" font-size="13" fill="#8b96b4">
+        <text x="80" y="195">pedido 1</text><text x="280" y="195">pedido 2</text>
+        <text x="430" y="195">pedido 3</text><text x="790" y="195">pedido 4</text>
+        <text x="990" y="195">pedido 5</text>
+      </g>
+      <g text-anchor="middle" font-size="15" font-weight="600">
+        <text x="180" y="125" fill="#34d399">3 km</text>
+        <text x="355" y="125" fill="#34d399">2 km</text>
+        <text x="610" y="118" fill="#ef4444" font-size="19" font-weight="700">14 km ⚠ SALTO</text>
+        <text x="890" y="125" fill="#34d399">3 km</text>
+      </g>
+      <!-- umbral -->
+      <rect x="285" y="240" width="530" height="44" rx="8" fill="#ef44441a" stroke="#ef444460"/>
+      <text x="550" y="268" text-anchor="middle" fill="#ef4444" font-size="16" font-weight="700">SALTO = desplazamiento entre dos pedidos seguidos &gt; 10 km</text>
+    </svg>
+    <div class="cols" style="margin-top:16px">
+      <div class="card"><div style="font-size:15px;color:var(--muted)">La herramienta detecta</div>
+        <div style="font-size:17px;margin-top:4px"><b>todos los saltos &gt;10&nbsp;km</b> del histórico y los pinta en el mapa: entre qué códigos postales ocurren y cuántas veces.</div></div>
+      <div class="card"><div style="font-size:15px;color:var(--muted)">Por qué 10 km</div>
+        <div style="font-size:17px;margin-top:4px">Por debajo es reparto normal entre pueblos vecinos. Por encima, es señal de que la ruta está <b>mezclando zonas que no deberían ir juntas</b>.</div></div>
+    </div>
+  </div>
+  <div class="footer"><span class="foot-brand">CORREDORES</span><span>02 · La definición</span></div>
+</section>
+
+<!-- ════════════ SLIDE 4 · LA MÉTRICA ════════════ -->
+<section class="slide">
+  <div class="time-hint">~1.5 min</div>
+  <div class="kicker">03 · La métrica</div>
+  <h2>Todo se mide con un solo número: km/pedido</h2>
+  <div class="sub">Kilómetros recorridos entre pedido y pedido, de media. Cuanto más bajo, más eficiente es el área.</div>
+  <div class="body">
+    <div class="card" style="padding:28px 32px">
+      <svg viewBox="0 0 1000 130" style="width:100%">
+        <line x1="60" y1="65" x2="280" y2="65" stroke="#34d399" stroke-width="5"/>
+        <line x1="280" y1="65" x2="490" y2="65" stroke="#34d399" stroke-width="5"/>
+        <line x1="490" y1="65" x2="660" y2="65" stroke="#34d399" stroke-width="5"/>
+        <line x1="660" y1="65" x2="930" y2="65" stroke="#34d399" stroke-width="5"/>
+        <g fill="#e2e8f0" stroke="#0d1117" stroke-width="2.5">
+          <circle cx="60" cy="65" r="11"/><circle cx="280" cy="65" r="11"/><circle cx="490" cy="65" r="11"/>
+          <circle cx="660" cy="65" r="11"/><circle cx="930" cy="65" r="11"/>
+        </g>
+        <g text-anchor="middle" font-size="14" fill="#8b96b4">
+          <text x="60" y="105">1</text><text x="280" y="105">2</text><text x="490" y="105">3</text><text x="660" y="105">4</text><text x="930" y="105">5</text>
+        </g>
+        <g text-anchor="middle" font-size="16" font-weight="600" fill="#34d399">
+          <text x="170" y="42">3 km</text><text x="385" y="42">2 km</text><text x="575" y="42">1 km</text><text x="795" y="42">2 km</text>
+        </g>
+        <text x="500" y="14" text-anchor="middle" fill="#8b96b4" font-size="13">RUTA DE EJEMPLO · 5 pedidos · 4 desplazamientos</text>
+      </svg>
+      <div class="formula" style="font-size:30px;justify-content:center;margin-top:18px">
+        <span style="color:var(--muted)">km/pedido =</span>
+        <span style="color:var(--text)">8 km</span>
+        <span style="color:var(--muted)">÷</span>
+        <span style="color:var(--text)">4 desplazamientos</span>
+        <span style="color:var(--muted)">=</span>
+        <span style="color:var(--green);font-size:38px">2,0</span>
+      </div>
+    </div>
+    <div class="cols" style="margin-top:20px">
+      <div class="card" style="border-color:#3b82f640">
+        <div class="tag" style="background:#3b82f620;color:var(--blue);margin-bottom:8px">Distancia real por carretera</div>
+        <div style="font-size:16px;line-height:1.5">No medimos en línea recta: usamos la <b>distancia y el tiempo reales por carretera</b> de cada desplazamiento del histórico (motor de rutas OSRM).</div>
+      </div>
+      <div class="card" style="border-color:#34d39940">
+        <div class="tag" style="background:#34d39920;color:var(--green);margin-bottom:8px">Una sola regla de medida</div>
+        <div style="font-size:16px;line-height:1.5">La situación actual y la propuesta de corredores se calculan con <b>exactamente la misma fórmula y los mismos datos</b>. Así la comparación es justa.</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span class="foot-brand">CORREDORES</span><span>03 · La métrica</span></div>
+</section>
+
+<!-- ════════════ SLIDE 5 · FLUJO DE LA HERRAMIENTA ════════════ -->
+<section class="slide">
+  <div class="time-hint">~1 min</div>
+  <div class="kicker">04 · La herramienta</div>
+  <h2>Cómo funciona, en 4 pasos</h2>
+  <div class="sub">Parte del histórico real de un mes de rutas y termina en una propuesta accionable.</div>
+  <div class="body">
+    <div style="display:flex;gap:16px;align-items:stretch">
+      <div class="card" style="flex:1;border-top:3px solid var(--cyan)">
+        <div class="big-num" style="font-size:30px;color:var(--cyan)">1</div>
+        <div style="font-weight:700;font-size:18px;margin:8px 0 6px">Carga el histórico</div>
+        <div style="font-size:14.5px;color:var(--muted);line-height:1.5">Un mes de rutas reales del área: cada parada, con su orden, su código postal y sus coordenadas.</div>
+      </div>
+      <div style="align-self:center;color:#3d465f;font-size:24px">→</div>
+      <div class="card" style="flex:1;border-top:3px solid var(--green)">
+        <div class="big-num" style="font-size:30px;color:var(--green)">2</div>
+        <div style="font-weight:700;font-size:18px;margin:8px 0 6px">Mide la foto actual</div>
+        <div style="font-size:14.5px;color:var(--muted);line-height:1.5">Reconstruye cada ruta y calcula el <b style="color:var(--text)">km/pedido actual</b> del área con distancias por carretera. Es el <b style="color:var(--orange)">baseline</b>.</div>
+      </div>
+      <div style="align-self:center;color:#3d465f;font-size:24px">→</div>
+      <div class="card" style="flex:1;border-top:3px solid var(--red)">
+        <div class="big-num" style="font-size:30px;color:var(--red)">3</div>
+        <div style="font-weight:700;font-size:18px;margin:8px 0 6px">Detecta los saltos</div>
+        <div style="font-size:14.5px;color:var(--muted);line-height:1.5">Localiza todos los desplazamientos <b style="color:var(--text)">&gt;10&nbsp;km</b> y entre qué códigos postales se repiten.</div>
+      </div>
+      <div style="align-self:center;color:#3d465f;font-size:24px">→</div>
+      <div class="card" style="flex:1;border-top:3px solid var(--orange)">
+        <div class="big-num" style="font-size:30px;color:var(--orange)">4</div>
+        <div style="font-weight:700;font-size:18px;margin:8px 0 6px">Propone corredores</div>
+        <div style="font-size:14.5px;color:var(--muted);line-height:1.5">Agrupa los códigos postales en 2, 3 o 4 corredores con un criterio <b style="color:var(--text)">anti-salto</b>, y calcula la mejora.</div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:22px;background:var(--bg3)">
+      <span style="font-size:16px">➕ Además incluye un <b style="color:var(--cyan)">simulador</b>: se pueden dibujar corredores a mano, código postal a código postal, y ver el km/pedido resultante al instante — con los mismos cálculos.</span>
+    </div>
+  </div>
+  <div class="footer"><span class="foot-brand">CORREDORES</span><span>04 · La herramienta</span></div>
+</section>
+
+<!-- ════════════ SLIDE 6 · EJEMPLO: 4 RUTAS ════════════ -->
+<section class="slide">
+  <div class="time-hint">~1.5 min</div>
+  <div class="kicker">05 · Ejemplo</div>
+  <h2>Un área de ejemplo con 4 rutas</h2>
+  <div class="sub">Cifras redondas para que se vea el mecanismo. Las 4 rutas mezclan Zona Norte y Zona Sur, y cada una hace 1 salto de 14&nbsp;km.</div>
+  <div class="body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <!-- plantilla de ruta x4 -->
+      <div class="card" style="padding:14px 20px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <span class="mono" style="color:var(--blue);font-weight:700;font-size:15px">RUTA 1</span>
+          <span class="mono" style="margin-left:auto;font-size:13px;color:var(--muted)">26 pedidos · 25 desplazamientos · <b style="color:var(--text)">50 km</b></span>
+        </div>
+        <svg viewBox="0 0 520 56" style="width:100%">
+          <line x1="14" y1="28" x2="200" y2="28" stroke="#3b82f6" stroke-width="4"/>
+          <line x1="200" y1="28" x2="330" y2="28" stroke="#ef4444" stroke-width="5" stroke-dasharray="9 6"/>
+          <line x1="330" y1="28" x2="506" y2="28" stroke="#f97316" stroke-width="4"/>
+          <g fill="#3b82f6" stroke="#0d1117" stroke-width="1.5"><circle cx="14" cy="28" r="6"/><circle cx="76" cy="28" r="6"/><circle cx="138" cy="28" r="6"/><circle cx="200" cy="28" r="6"/></g>
+          <g fill="#f97316" stroke="#0d1117" stroke-width="1.5"><circle cx="330" cy="28" r="6"/><circle cx="390" cy="28" r="6"/><circle cx="448" cy="28" r="6"/><circle cx="506" cy="28" r="6"/></g>
+          <text x="107" y="14" text-anchor="middle" fill="#3b82f6" font-size="11">Norte · 36 km en entregas</text>
+          <text x="265" y="50" text-anchor="middle" fill="#ef4444" font-size="12" font-weight="700">salto 14 km</text>
+          <text x="418" y="14" text-anchor="middle" fill="#f97316" font-size="11">Sur</text>
+        </svg>
+      </div>
+      <div class="card" style="padding:14px 20px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <span class="mono" style="color:var(--blue);font-weight:700;font-size:15px">RUTA 2</span>
+          <span class="mono" style="margin-left:auto;font-size:13px;color:var(--muted)">26 pedidos · 25 desplazamientos · <b style="color:var(--text)">50 km</b></span>
+        </div>
+        <svg viewBox="0 0 520 56" style="width:100%">
+          <line x1="14" y1="28" x2="200" y2="28" stroke="#3b82f6" stroke-width="4"/>
+          <line x1="200" y1="28" x2="330" y2="28" stroke="#ef4444" stroke-width="5" stroke-dasharray="9 6"/>
+          <line x1="330" y1="28" x2="506" y2="28" stroke="#f97316" stroke-width="4"/>
+          <g fill="#3b82f6" stroke="#0d1117" stroke-width="1.5"><circle cx="14" cy="28" r="6"/><circle cx="76" cy="28" r="6"/><circle cx="138" cy="28" r="6"/><circle cx="200" cy="28" r="6"/></g>
+          <g fill="#f97316" stroke="#0d1117" stroke-width="1.5"><circle cx="330" cy="28" r="6"/><circle cx="390" cy="28" r="6"/><circle cx="448" cy="28" r="6"/><circle cx="506" cy="28" r="6"/></g>
+          <text x="107" y="14" text-anchor="middle" fill="#3b82f6" font-size="11">Norte</text>
+          <text x="265" y="50" text-anchor="middle" fill="#ef4444" font-size="12" font-weight="700">salto 14 km</text>
+          <text x="418" y="14" text-anchor="middle" fill="#f97316" font-size="11">Sur · 36 km en entregas</text>
+        </svg>
+      </div>
+      <div class="card" style="padding:14px 20px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <span class="mono" style="color:var(--blue);font-weight:700;font-size:15px">RUTA 3</span>
+          <span class="mono" style="margin-left:auto;font-size:13px;color:var(--muted)">26 pedidos · 25 desplazamientos · <b style="color:var(--text)">50 km</b></span>
+        </div>
+        <svg viewBox="0 0 520 56" style="width:100%">
+          <line x1="14" y1="28" x2="200" y2="28" stroke="#3b82f6" stroke-width="4"/>
+          <line x1="200" y1="28" x2="330" y2="28" stroke="#ef4444" stroke-width="5" stroke-dasharray="9 6"/>
+          <line x1="330" y1="28" x2="506" y2="28" stroke="#f97316" stroke-width="4"/>
+          <g fill="#3b82f6" stroke="#0d1117" stroke-width="1.5"><circle cx="14" cy="28" r="6"/><circle cx="76" cy="28" r="6"/><circle cx="138" cy="28" r="6"/><circle cx="200" cy="28" r="6"/></g>
+          <g fill="#f97316" stroke="#0d1117" stroke-width="1.5"><circle cx="330" cy="28" r="6"/><circle cx="390" cy="28" r="6"/><circle cx="448" cy="28" r="6"/><circle cx="506" cy="28" r="6"/></g>
+          <text x="107" y="14" text-anchor="middle" fill="#3b82f6" font-size="11">Norte</text>
+          <text x="265" y="50" text-anchor="middle" fill="#ef4444" font-size="12" font-weight="700">salto 14 km</text>
+          <text x="418" y="14" text-anchor="middle" fill="#f97316" font-size="11">Sur</text>
+        </svg>
+      </div>
+      <div class="card" style="padding:14px 20px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <span class="mono" style="color:var(--blue);font-weight:700;font-size:15px">RUTA 4</span>
+          <span class="mono" style="margin-left:auto;font-size:13px;color:var(--muted)">26 pedidos · 25 desplazamientos · <b style="color:var(--text)">50 km</b></span>
+        </div>
+        <svg viewBox="0 0 520 56" style="width:100%">
+          <line x1="14" y1="28" x2="200" y2="28" stroke="#3b82f6" stroke-width="4"/>
+          <line x1="200" y1="28" x2="330" y2="28" stroke="#ef4444" stroke-width="5" stroke-dasharray="9 6"/>
+          <line x1="330" y1="28" x2="506" y2="28" stroke="#f97316" stroke-width="4"/>
+          <g fill="#3b82f6" stroke="#0d1117" stroke-width="1.5"><circle cx="14" cy="28" r="6"/><circle cx="76" cy="28" r="6"/><circle cx="138" cy="28" r="6"/><circle cx="200" cy="28" r="6"/></g>
+          <g fill="#f97316" stroke="#0d1117" stroke-width="1.5"><circle cx="330" cy="28" r="6"/><circle cx="390" cy="28" r="6"/><circle cx="448" cy="28" r="6"/><circle cx="506" cy="28" r="6"/></g>
+          <text x="107" y="14" text-anchor="middle" fill="#3b82f6" font-size="11">Norte</text>
+          <text x="265" y="50" text-anchor="middle" fill="#ef4444" font-size="12" font-weight="700">salto 14 km</text>
+          <text x="418" y="14" text-anchor="middle" fill="#f97316" font-size="11">Sur</text>
+        </svg>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px;display:flex;gap:40px;justify-content:center;background:var(--bg3)">
+      <div style="text-align:center"><div class="big-num" style="font-size:28px">100</div><div class="mono" style="font-size:11px;color:var(--muted);margin-top:3px">DESPLAZAMIENTOS</div></div>
+      <div style="text-align:center"><div class="big-num" style="font-size:28px">200 km</div><div class="mono" style="font-size:11px;color:var(--muted);margin-top:3px">RECORRIDOS</div></div>
+      <div style="text-align:center"><div class="big-num" style="font-size:28px;color:var(--red)">4 saltos</div><div class="mono" style="font-size:11px;color:var(--muted);margin-top:3px">DE 14 KM = 56 KM EN VACÍO</div></div>
+    </div>
+  </div>
+  <div class="footer"><span class="foot-brand">CORREDORES</span><span>05 · Ejemplo: 4 rutas</span></div>
+</section>
+
+<!-- ════════════ SLIDE 7 · BASELINE ════════════ -->
+<section class="slide">
+  <div class="time-hint">~1.5 min</div>
+  <div class="kicker">06 · El punto de partida</div>
+  <h2>El baseline: km/pedido del área hoy</h2>
+  <div class="sub">Sumamos <b>todos</b> los kilómetros de <b>todas</b> las rutas del histórico y los dividimos entre <b>todos</b> los desplazamientos. Nada más.</div>
+  <div class="body">
+    <div class="card" style="padding:26px 36px">
+      <table class="mono" style="width:100%;border-collapse:collapse;font-size:17px">
+        <tr style="color:var(--muted);font-size:13px;text-align:right">
+          <td style="text-align:left;padding:6px 0">RUTA</td><td>KM RECORRIDOS</td><td>DESPLAZAMIENTOS</td>
+        </tr>
+        <tr style="text-align:right;border-top:1px solid var(--border)"><td style="text-align:left;padding:7px 0;color:var(--blue)">Ruta 1</td><td>50 km</td><td>25</td></tr>
+        <tr style="text-align:right;border-top:1px solid var(--border)"><td style="text-align:left;padding:7px 0;color:var(--blue)">Ruta 2</td><td>50 km</td><td>25</td></tr>
+        <tr style="text-align:right;border-top:1px solid var(--border)"><td style="text-align:left;padding:7px 0;color:var(--blue)">Ruta 3</td><td>50 km</td><td>25</td></tr>
+        <tr style="text-align:right;border-top:1px solid var(--border)"><td style="text-align:left;padding:7px 0;color:var(--blue)">Ruta 4</td><td>50 km</td><td>25</td></tr>
+        <tr style="text-align:right;border-top:2px solid #3d465f;font-weight:700"><td style="text-align:left;padding:8px 0">TOTAL</td><td style="color:var(--text)">200 km</td><td style="color:var(--text)">100</td></tr>
+      </table>
+    </div>
+    <div class="formula" style="font-size:34px;justify-content:center;margin-top:26px">
+      <span style="color:var(--muted)">BASELINE =</span>
+      <span>200 km</span>
+      <span style="color:var(--muted)">÷</span>
+      <span>100</span>
+      <span style="color:var(--muted)">=</span>
+      <span class="big-num" style="color:var(--orange);font-size:46px">2,0 km/pedido</span>
+    </div>
+    <div style="text-align:center;color:var(--muted);font-size:15px;margin-top:18px">
+      Este número es la <b style="color:var(--text)">foto real de hoy</b>, con las distancias por carretera que de verdad se recorrieron.<br>
+      Cualquier propuesta de corredores se compara contra él.
+    </div>
+  </div>
+  <div class="footer"><span class="foot-brand">CORREDORES</span><span>06 · Baseline</span></div>
+</section>
+
+<!-- ════════════ SLIDE 8 · LA IDEA DEL CORREDOR ════════════ -->
+<section class="slide">
+  <div class="time-hint">~1 min</div>
+  <div class="kicker">07 · La propuesta</div>
+  <h2>Corredores: partir el área para que ninguna ruta cruce</h2>
+  <div class="sub">Un corredor es un grupo de códigos postales que siempre se sirven juntos. Cada ruta vive dentro de su corredor.</div>
+  <div class="body">
+    <svg viewBox="0 0 1100 400" style="width:100%;max-height:400px">
+      <!-- frontera -->
+      <line x1="550" y1="20" x2="550" y2="360" stroke="#e2e8f0" stroke-width="3" stroke-dasharray="14 10"/>
+      <text x="550" y="392" text-anchor="middle" fill="#e2e8f0" font-size="15" font-weight="700">FRONTERA DEL CORREDOR</text>
+      <!-- corredor norte -->
+      <rect x="40" y="30" width="470" height="330" rx="16" fill="#3b82f60d" stroke="#3b82f655" stroke-width="2"/>
+      <text x="275" y="64" text-anchor="middle" fill="#3b82f6" font-size="17" font-weight="700">CORREDOR NORTE</text>
+      <!-- corredor sur -->
+      <rect x="590" y="30" width="470" height="330" rx="16" fill="#f973160d" stroke="#f9731655" stroke-width="2"/>
+      <text x="825" y="64" text-anchor="middle" fill="#f97316" font-size="17" font-weight="700">CORREDOR SUR</text>
+      <!-- rutas norte -->
+      <path d="M100,140 L190,110 L290,150 L390,115 L460,160" stroke="#3b82f6" stroke-width="4" fill="none"/>
+      <path d="M100,280 L200,250 L300,290 L400,255 L460,300" stroke="#60a5fa" stroke-width="4" fill="none"/>
+      <g fill="#3b82f6" stroke="#0d1117" stroke-width="2">
+        <circle cx="100" cy="140" r="8"/><circle cx="190" cy="110" r="8"/><circle cx="290" cy="150" r="8"/><circle cx="390" cy="115" r="8"/><circle cx="460" cy="160" r="8"/>
+        <circle cx="100" cy="280" r="8"/><circle cx="200" cy="250" r="8"/><circle cx="300" cy="290" r="8"/><circle cx="400" cy="255" r="8"/><circle cx="460" cy="300" r="8"/>
+      </g>
+      <text x="275" y="345" text-anchor="middle" fill="#3b82f6" font-size="13">2 rutas, solo pedidos del Norte</text>
+      <!-- rutas sur -->
+      <path d="M650,140 L740,110 L840,150 L940,115 L1010,160" stroke="#f97316" stroke-width="4" fill="none"/>
+      <path d="M650,280 L750,250 L850,290 L950,255 L1010,300" stroke="#fb923c" stroke-width="4" fill="none"/>
+      <g fill="#f97316" stroke="#0d1117" stroke-width="2">
+        <circle cx="650" cy="140" r="8"/><circle cx="740" cy="110" r="8"/><circle cx="840" cy="150" r="8"/><circle cx="940" cy="115" r="8"/><circle cx="1010" cy="160" r="8"/>
+        <circle cx="650" cy="280" r="8"/><circle cx="750" cy="250" r="8"/><circle cx="850" cy="290" r="8"/><circle cx="950" cy="255" r="8"/><circle cx="1010" cy="300" r="8"/>
+      </g>
+      <text x="825" y="345" text-anchor="middle" fill="#f97316" font-size="13">2 rutas, solo pedidos del Sur</text>
+    </svg>
+    <div class="card" style="margin-top:10px;border-color:#34d39940;background:#34d3990a">
+      <span style="font-size:17px">Si los pedidos de Norte y Sur ya no comparten ruta, <b style="color:var(--green)">el salto de 14&nbsp;km entre ambos no puede ocurrir</b>: desaparece por construcción.</span>
+    </div>
+  </div>
+  <div class="footer"><span class="foot-brand">CORREDORES</span><span>07 · La propuesta</span></div>
+</section>
+
+<!-- ════════════ SLIDE 9 · EL CÁLCULO DE LA MEJORA ════════════ -->
+<section class="slide">
+  <div class="time-hint">~2 min</div>
+  <div class="kicker">08 · El cálculo de la mejora</div>
+  <h2>¿De dónde sale el km/pedido del corredor?</h2>
+  <div class="sub">Misma fórmula que el baseline, pero quitando los desplazamientos que cruzan la frontera — porque con corredores ya no existen.</div>
+  <div class="body">
+    <div class="cols">
+      <div class="card" style="border-color:#f9731650">
+        <div class="tag" style="background:#f9731620;color:var(--orange);margin-bottom:12px">HOY (baseline)</div>
+        <div class="mono" style="font-size:16px;line-height:2.1">
+          Kilómetros<span style="float:right">200 km</span><br>
+          Desplazamientos<span style="float:right">100</span>
+        </div>
+        <div style="border-top:1px solid var(--border);margin-top:10px;padding-top:12px">
+          <div class="big-num" style="font-size:36px;color:var(--orange)">2,0 <span style="font-size:16px;color:var(--muted)">km/pedido</span></div>
+        </div>
+      </div>
+      <div style="flex:0 0 250px;display:flex;flex-direction:column;justify-content:center;gap:10px">
+        <div class="card" style="border-color:#ef444455;background:#ef44440d;text-align:center;padding:14px">
+          <div class="mono" style="font-size:13px;color:var(--red);font-weight:700">FUERA LOS SALTOS</div>
+          <div class="mono" style="font-size:15px;margin-top:6px">− 4 desplazamientos</div>
+          <div class="mono" style="font-size:15px">− 4 × 14 = <b>56 km</b></div>
+        </div>
+        <div style="text-align:center;color:#3d465f;font-size:26px">↓</div>
+      </div>
+      <div class="card" style="border-color:#34d39950">
+        <div class="tag" style="background:#34d39920;color:var(--green);margin-bottom:12px">CON CORREDORES</div>
+        <div class="mono" style="font-size:16px;line-height:2.1">
+          Kilómetros<span style="float:right">200 − 56 = <b>144 km</b></span><br>
+          Desplazamientos<span style="float:right">100 − 4 = <b>96</b></span>
+        </div>
+        <div style="border-top:1px solid var(--border);margin-top:10px;padding-top:12px">
+          <div class="big-num" style="font-size:36px;color:var(--green)">1,5 <span style="font-size:16px;color:var(--muted)">km/pedido</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="formula" style="font-size:30px;justify-content:center;margin-top:30px">
+      <span style="color:var(--muted)">MEJORA =</span>
+      <span>(2,0 − 1,5)</span>
+      <span style="color:var(--muted)">÷</span>
+      <span>2,0</span>
+      <span style="color:var(--muted)">=</span>
+      <span class="big-num" style="color:var(--green);font-size:44px">−25%</span>
+      <span style="color:var(--muted);font-size:18px">de km por pedido</span>
+    </div>
+    <div style="text-align:center;color:var(--muted);font-size:15px;margin-top:16px">
+      La herramienta hace exactamente esto con los datos reales del área: cada salto que queda partido por una frontera<br>cuenta como <b style="color:var(--text)">salto eliminado</b>, y sus kilómetros salen de la cuenta.
+    </div>
+  </div>
+  <div class="footer"><span class="foot-brand">CORREDORES</span><span>08 · La mejora</span></div>
+</section>
+
+<!-- ════════════ SLIDE 10 · CÓMO SE ELIGEN LOS CORREDORES ════════════ -->
+<section class="slide">
+  <div class="time-hint">~1.5 min</div>
+  <div class="kicker">09 · El criterio de agrupación</div>
+  <h2>¿Cómo decide la herramienta qué CPs van juntos?</h2>
+  <div class="sub">Para cada par de códigos postales calcula una “distancia” que combina tres señales. Después agrupa los más cercanos hasta formar 2, 3 o 4 corredores.</div>
+  <div class="body">
+    <div style="display:flex;gap:18px">
+      <div class="card" style="flex:1;border-top:4px solid var(--blue)">
+        <div style="display:flex;align-items:baseline;gap:10px">
+          <span class="big-num" style="font-size:40px;color:var(--blue)">50%</span>
+          <span style="font-weight:700;font-size:19px">Geografía</span>
+        </div>
+        <div style="font-size:15.5px;color:var(--muted);margin-top:10px;line-height:1.55">
+          Distancia <b style="color:var(--text)">por carretera</b> entre códigos postales.<br><br>
+          CPs cercanos <b style="color:var(--blue)">→ mismo corredor</b>
+        </div>
+      </div>
+      <div class="card" style="flex:1;border-top:4px solid var(--purple)">
+        <div style="display:flex;align-items:baseline;gap:10px">
+          <span class="big-num" style="font-size:40px;color:var(--purple)">30%</span>
+          <span style="font-weight:700;font-size:19px">Afinidad</span>
+        </div>
+        <div style="font-size:15.5px;color:var(--muted);margin-top:10px;line-height:1.55">
+          ¿Cuántas rutas del histórico ya sirven a los dos CPs <b style="color:var(--text)">a la vez</b>?<br><br>
+          Ya trabajan juntos <b style="color:var(--purple)">→ mismo corredor</b>
+        </div>
+      </div>
+      <div class="card" style="flex:1;border-top:4px solid var(--red)">
+        <div style="display:flex;align-items:baseline;gap:10px">
+          <span class="big-num" style="font-size:40px;color:var(--red)">20%</span>
+          <span style="font-weight:700;font-size:19px">Anti-salto</span>
+        </div>
+        <div style="font-size:15.5px;color:var(--muted);margin-top:10px;line-height:1.55">
+          ¿Hay saltos &gt;10&nbsp;km entre estos dos CPs en el histórico?<br><br>
+          Saltos entre ellos <b style="color:var(--red)">→ corredores distintos</b>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:22px;background:var(--bg3);text-align:center">
+      <div class="mono" style="font-size:19px">
+        distancia(CP&nbsp;A,&nbsp;CP&nbsp;B) =
+        <span style="color:var(--blue)">0,5 · geografía</span> +
+        <span style="color:var(--purple)">0,3 · afinidad</span> +
+        <span style="color:var(--red)">0,2 · penalización por saltos</span>
+      </div>
+      <div style="font-size:14px;color:var(--muted);margin-top:8px">Las dos primeras señales <b style="color:var(--text)">atraen</b>; la tercera <b style="color:var(--text)">repele</b>. El equilibrio produce corredores compactos que rompen los saltos.</div>
+    </div>
+  </div>
+  <div class="footer"><span class="foot-brand">CORREDORES</span><span>09 · Criterio de agrupación</span></div>
+</section>
+
+<!-- ════════════ SLIDE 11 · ANTI-SALTO EN ACCIÓN ════════════ -->
+<section class="slide">
+  <div class="time-hint">~2 min</div>
+  <div class="kicker">10 · Anti-salto en acción</div>
+  <h2>El anti-salto, con un ejemplo</h2>
+  <div class="sub">Tres códigos postales: A, B y C. Entre B y C el histórico tiene saltos de 14&nbsp;km repetidos. Hay una trampa: como el salto ocurre <b>dentro de una ruta</b>, B y C “comparten rutas” y la afinidad tendería a juntarlos. El anti-salto corrige justo eso.</div>
+  <div class="body">
+    <div class="cols">
+      <div class="card" style="flex:1.3;padding:16px">
+        <svg viewBox="0 0 560 320" style="width:100%">
+          <!-- frontera -->
+          <line x1="335" y1="14" x2="335" y2="280" stroke="#e2e8f0" stroke-width="2.5" stroke-dasharray="11 8"/>
+          <text x="335" y="305" text-anchor="middle" fill="#e2e8f0" font-size="12" font-weight="700">frontera resultante</text>
+          <!-- CP A y B -->
+          <circle cx="115" cy="105" r="46" fill="#3b82f620" stroke="#3b82f6" stroke-width="2.5"/>
+          <text x="115" y="112" text-anchor="middle" fill="#3b82f6" font-size="22" font-weight="700">A</text>
+          <circle cx="235" cy="200" r="46" fill="#3b82f620" stroke="#3b82f6" stroke-width="2.5"/>
+          <text x="235" y="207" text-anchor="middle" fill="#3b82f6" font-size="22" font-weight="700">B</text>
+          <!-- CP C -->
+          <circle cx="460" cy="135" r="46" fill="#f9731620" stroke="#f97316" stroke-width="2.5"/>
+          <text x="460" y="142" text-anchor="middle" fill="#f97316" font-size="22" font-weight="700">C</text>
+          <!-- relaciones -->
+          <line x1="150" y1="135" x2="200" y2="170" stroke="#34d399" stroke-width="3"/>
+          <text x="130" y="170" text-anchor="end" fill="#34d399" font-size="12">cerca y comparten rutas</text>
+          <!-- salto B-C -->
+          <path d="M278,185 C330,165 360,155 416,145" stroke="#ef4444" stroke-width="4" stroke-dasharray="10 6" fill="none"/>
+          <text x="350" y="135" text-anchor="middle" fill="#ef4444" font-size="13" font-weight="700">saltos de 14 km repetidos</text>
+          <!-- flechas repulsión -->
+          <text x="350" y="230" text-anchor="middle" fill="#ef4444" font-size="13">⟵ el anti-salto los separa ⟶</text>
+        </svg>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:12px">
+        <div class="card" style="padding:16px 20px">
+          <div class="mono" style="font-size:12px;color:var(--muted);letter-spacing:.06em;margin-bottom:8px">DISTANCIA B ↔ C&nbsp;&nbsp;<b style="color:var(--text)">SIN</b> ANTI-SALTO</div>
+          <div class="mono" style="font-size:16px">geografía + afinidad = <b>0,35</b></div>
+          <div style="font-size:14px;color:var(--muted);margin-top:6px">“Cercanos” → caerían en el <b style="color:var(--red)">mismo corredor</b> y el salto seguiría ocurriendo.</div>
+        </div>
+        <div class="card" style="padding:16px 20px;border-color:#ef444450">
+          <div class="mono" style="font-size:12px;color:var(--muted);letter-spacing:.06em;margin-bottom:8px">DISTANCIA B ↔ C&nbsp;&nbsp;<b style="color:var(--red)">CON</b> ANTI-SALTO</div>
+          <div class="mono" style="font-size:16px">0,35 + <span style="color:var(--red)">0,20 de penalización</span> = <b>0,55</b></div>
+          <div style="font-size:14px;color:var(--muted);margin-top:6px">Cuantos más km de saltos acumula un par de CPs, mayor la penalización (0,20 es la máxima).</div>
+        </div>
+        <div class="card" style="padding:16px 20px;border-color:#34d39950;background:#34d3990a">
+          <div style="font-size:15px;line-height:1.5">El algoritmo ahora ve a B y C <b>lejos</b> → los pone en <b style="color:var(--green)">corredores distintos</b> → la frontera parte el salto → <b style="color:var(--green)">salto eliminado</b> y sus 14&nbsp;km fuera de la cuenta.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span class="foot-brand">CORREDORES</span><span>10 · Anti-salto</span></div>
+</section>
+
+<!-- ════════════ SLIDE 12 · LO QUE NO SE PUEDE AHORRAR ════════════ -->
+<section class="slide">
+  <div class="time-hint">~1 min</div>
+  <div class="kicker">11 · Honestidad de la métrica</div>
+  <h2>No todo el km/pedido es optimizable — y la herramienta lo separa</h2>
+  <div class="sub">Parte de los kilómetros son el reparto normal dentro de cada código postal: calle a calle, portal a portal. Eso no cambia por reagrupar CPs.</div>
+  <div class="body">
+    <div class="card" style="padding:28px 36px">
+      <div class="mono" style="font-size:13px;color:var(--muted);margin-bottom:14px">EL KM/PEDIDO DEL ÁREA SE DESCOMPONE EN DOS PARTES</div>
+      <svg viewBox="0 0 1000 90" style="width:100%">
+        <rect x="0" y="18" width="520" height="54" rx="8" fill="#47556960" stroke="#475569"/>
+        <rect x="528" y="18" width="472" height="54" rx="8" fill="#34d39925" stroke="#34d399"/>
+        <text x="260" y="42" text-anchor="middle" fill="#cbd5e1" font-size="15" font-weight="700">SUELO FIJO · reparto dentro del mismo CP</text>
+        <text x="260" y="62" text-anchor="middle" fill="#8b96b4" font-size="12">no se puede reducir agrupando CPs</text>
+        <text x="764" y="42" text-anchor="middle" fill="#34d399" font-size="15" font-weight="700">OPTIMIZABLE · desplazamientos entre CPs</text>
+        <text x="764" y="62" text-anchor="middle" fill="#8b96b4" font-size="12">aquí viven los saltos — aquí ataca el corredor</text>
+      </svg>
+    </div>
+    <ul class="clean" style="margin-top:26px">
+      <li>La herramienta calcula ese <b>suelo fijo</b> con los datos reales del área y lo muestra junto al resultado.</li>
+      <li>Así la mejora prometida se apoya <b>solo en la parte que de verdad se puede optimizar</b>: los desplazamientos entre códigos postales, y sobre todo los saltos &gt;10&nbsp;km.</li>
+      <li>Junto al porcentaje de mejora, siempre se muestra el marcador clave: <b style="color:var(--green)">cuántos saltos se eliminan y cuántos km en vacío desaparecen</b>.</li>
+    </ul>
+  </div>
+  <div class="footer"><span class="foot-brand">CORREDORES</span><span>11 · Qué es optimizable</span></div>
+</section>
+
+<!-- ════════════ SLIDE 13 · SIMULADOR + CIERRE ════════════ -->
+<section class="slide">
+  <div class="time-hint">~1.5 min</div>
+  <div class="kicker">12 · Cierre</div>
+  <h2>Y para decidir: un simulador con las mismas reglas</h2>
+  <div class="body">
+    <div class="cols">
+      <div class="card" style="border-color:#7dd3fc40">
+        <div class="tag" style="background:#7dd3fc20;color:var(--cyan);margin-bottom:10px">Simulador manual</div>
+        <ul class="clean" style="margin-top:6px">
+          <li style="font-size:16px;margin-bottom:10px">Se dibujan corredores sobre el mapa, código postal a código postal.</li>
+          <li style="font-size:16px;margin-bottom:10px">Cada cambio recalcula al instante km/pedido, mejora y saltos eliminados.</li>
+          <li style="font-size:16px;margin-bottom:0">Mismos datos y misma fórmula que el baseline: lo que ves es comparable.</li>
+        </ul>
+      </div>
+      <div class="card" style="border-color:#f9731640">
+        <div class="tag" style="background:#f9731620;color:var(--orange);margin-bottom:10px">Las 3 ideas para llevarse</div>
+        <ul class="clean" style="margin-top:6px">
+          <li style="font-size:16px;margin-bottom:10px"><b>Una métrica</b>: km/pedido, por carretera real, igual para hoy y para la propuesta.</li>
+          <li style="font-size:16px;margin-bottom:10px"><b>Un objetivo</b>: eliminar los saltos &gt;10&nbsp;km partiéndolos con fronteras de corredor.</li>
+          <li style="font-size:16px;margin-bottom:0"><b>Un mecanismo</b>: agrupación 50% geografía · 30% afinidad · 20% anti-salto.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card" style="margin-top:24px;background:var(--bg3);text-align:center;padding:26px">
+      <div class="formula" style="font-size:24px;justify-content:center">
+        <span style="color:var(--orange)">2,0 km/pedido hoy</span>
+        <span style="color:var(--muted)">→</span>
+        <span style="color:var(--green)">1,5 km/pedido con corredores</span>
+        <span style="color:var(--muted)">→</span>
+        <span class="big-num" style="color:var(--green);font-size:32px">−25%</span>
+      </div>
+      <div style="font-size:15px;color:var(--muted);margin-top:10px">En nuestro ejemplo de 4 rutas: 4 saltos de 14 km eliminados, 56 km en vacío que desaparecen.</div>
+    </div>
+    <div style="text-align:center;margin-top:26px;font-size:20px;font-weight:600">Gracias — ¿preguntas?</div>
+  </div>
+  <div class="footer"><span class="foot-brand">CORREDORES</span><span>12 · Cierre</span></div>
+</section>
+
+</div>
+
+<script>
+var slides=document.querySelectorAll('.slide'), cur=0;
+function fit(){
+  var w=window.innerWidth/1280, h=window.innerHeight/720, s=Math.min(w,h)*0.97;
+  slides.forEach(function(sl){sl.style.transform='scale('+s+')';});
+}
+function show(i){
+  cur=Math.max(0,Math.min(slides.length-1,i));
+  slides.forEach(function(s,j){s.classList.toggle('on',j===cur);});
+  document.getElementById('counter').textContent=(cur+1)+' / '+slides.length;
+  document.getElementById('progress').style.width=((cur+1)/slides.length*100)+'%';
+}
+function go(d){show(cur+d);}
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown') go(1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp') go(-1);
+  if(e.key==='Home') show(0);
+  if(e.key==='End') show(slides.length-1);
+});
+window.addEventListener('resize',fit);
+fit(); show(0);
+</script>
+</body>
+</html>
